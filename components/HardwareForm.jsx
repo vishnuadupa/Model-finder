@@ -514,7 +514,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
             {/* Speed filter */}
             <div>
               <label className="label">Minimum Speed</label>
-              <HelpText>Filters out models that are too slow for comfortable use. "Show all" includes CPU-offload models.</HelpText>
+              <HelpText>Filters out models that are too slow for comfortable use. &ldquo;Show all&rdquo; includes CPU-offload models.</HelpText>
               <div className="mt-2">
                 <SegBtn options={SPEED_OPTIONS} value={hw.speedPref} onChange={v => update({ speedPref: v })} />
               </div>
