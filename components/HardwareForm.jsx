@@ -264,7 +264,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
     if (ua.includes('Mac')) detectedOS = 'macOS';
     else if (ua.includes('Linux')) detectedOS = 'Linux';
     onChange({ ...hw, os: detectedOS });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function update(patch) {
     onChange({ ...hw, ...patch });
