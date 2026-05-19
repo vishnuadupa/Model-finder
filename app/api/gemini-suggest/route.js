@@ -108,7 +108,7 @@ Return ONLY valid JSON (no markdown, no explanation):
 
   // Try flash first, fall back to flash-lite on quota errors
   let text;
-  for (const modelId of ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b']) {
+  for (const modelId of ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash-latest']) {
     try {
       const m = genAI.getGenerativeModel({ model: modelId });
       const result = await m.generateContent(prompt);
@@ -117,7 +117,7 @@ Return ONLY valid JSON (no markdown, no explanation):
       break;
     } catch (err) {
       const is429 = err?.status === 429 || err?.message?.includes('429');
-      if (is429 && modelId !== 'gemini-1.5-flash-8b') continue; // try next model
+      if (is429 && modelId !== 'gemini-1.5-flash-latest') continue; // try next model
       if (is429) {
         const retryAfter = err?.message?.match(/(\d+)s/)?.[1];
         return Response.json(
