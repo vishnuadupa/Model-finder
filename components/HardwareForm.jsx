@@ -113,7 +113,7 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
     else if (hw.gpuLabel.startsWith('Arc')) setVendor('intel');
     else if (hw.gpuLabel.startsWith('Apple')) setVendor('apple');
     else if (hw.gpuLabel === 'No GPU (CPU only)') setVendor('none');
-  }, []);
+  }, [hw.gpuLabel]);
 
   function reset() {
     setVendor(null);

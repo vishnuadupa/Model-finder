@@ -23,10 +23,16 @@ export const metadata = {
   title: 'Local LLM Matcher — Find Models Your GPU Can Run',
   description: 'Instantly match your GPU, VRAM, and RAM to compatible local LLMs. Find the best quantization level and estimated tokens/sec for your hardware.',
   keywords: 'local LLM, GPU, VRAM, llama.cpp, ollama, quantization, gguf',
+  alternates: { canonical: '/' },
   openGraph: {
     title: 'Local LLM Matcher',
     description: 'Find which local AI models your GPU can actually run.',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Local LLM Matcher',
+    description: 'Find which local AI models your GPU can actually run.',
   },
 };
 
