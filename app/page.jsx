@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import HardwareForm from '@/components/HardwareForm';
 import ResultsPanel from '@/components/ResultsPanel';
 import GeminiAdvisor from '@/components/GeminiAdvisor';
@@ -74,14 +74,19 @@ function decodeFromURL() {
 export default function Home() {
   const [hw, setHw] = useState(DEFAULT_HW);
   const [models, setModels] = useState([]);
+  const [modelsLoading, setModelsLoading] = useState(true);
   const [selectedModel, setSelectedModel] = useState(null);
   const [geminiEnabled, setGeminiEnabled] = useState(false);
   const [copied, setCopied] = useState(false);
   const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const lsDebounce = useRef(null);
 
   useEffect(() => {
-    fetch('/models.json').then(r => r.json()).then(setModels);
+    fetch('/models.json')
+      .then(r => r.json())
+      .then(data => { setModels(data); setModelsLoading(false); })
+      .catch(() => setModelsLoading(false));
   }, []);
 
   useEffect(() => {
@@ -93,8 +98,13 @@ export default function Home() {
     } catch {}
   }, []);
 
+  // Debounce localStorage writes — don't hammer storage on every keystroke
   useEffect(() => {
-    try { localStorage.setItem('llm_matcher_hw_v2', JSON.stringify(hw)); } catch {}
+    clearTimeout(lsDebounce.current);
+    lsDebounce.current = setTimeout(() => {
+      try { localStorage.setItem('llm_matcher_hw_v2', JSON.stringify(hw)); } catch {}
+    }, 400);
+    return () => clearTimeout(lsDebounce.current);
   }, [hw]);
 
   const results = useMemo(() => {
@@ -211,7 +221,21 @@ export default function Home() {
 
           {/* Right column */}
           <div>
-            {!hasHardware ? (
+            {modelsLoading ? (
+              <div className="space-y-3 animate-pulse">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="card p-4 space-y-3">
+                    <div className="h-4 bg-slate-800 rounded w-1/3" />
+                    <div className="grid grid-cols-3 gap-3">
+                      {[...Array(3)].map((_, j) => (
+                        <div key={j} className="h-20 bg-slate-800 rounded-lg" />
+                      ))}
+                    </div>
+                    <div className="h-3 bg-slate-800 rounded w-2/3" />
+                  </div>
+                ))}
+              </div>
+            ) : !hasHardware ? (
               <div className="card p-12 text-center space-y-4">
                 <div className="text-4xl">🖥️</div>
                 <div className="text-slate-400 font-semibold">Select your GPU and RAM to see results</div>

@@ -50,7 +50,7 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
       } finally {
         setLoading(false);
       }
-    }, 600);
+    }, 350);
 
     return () => clearTimeout(debounceRef.current);
   }, [enabled, hw, currentModel]);

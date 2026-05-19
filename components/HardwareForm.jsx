@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ChevronDown, ChevronUp, Cpu, HardDrive, Zap, ToggleLeft, ToggleRight, ChevronRight, X } from 'lucide-react';
 import { GPU_PRESETS } from '@/lib/gpuPresets';
 import { CPU_PRESETS, RAM_TYPES } from '@/lib/cpuPresets';
@@ -121,7 +121,8 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
   }
 
   const vendors = OS_VENDORS[os] || OS_VENDORS.Windows;
-  const filteredGPUs = vendor ? getGPUsForVendor(vendor) : [];
+  const filteredGPUs = useMemo(() => vendor ? getGPUsForVendor(vendor) : [], [vendor]);
+  const groupedGPUs  = useMemo(() => vendor === 'nvidia' ? groupNvidiaGPUs(filteredGPUs) : null, [vendor, filteredGPUs]);
 
   // ── If GPU already selected, show a summary chip with reset ──
   if (hw.gpuLabel) {
@@ -211,8 +212,7 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
   }
 
   // ── Step 3: GPU model ─────────────────────────────────────────
-  const groups = vendor === 'nvidia' ? groupNvidiaGPUs(filteredGPUs)
-               : [{ label: null, gpus: filteredGPUs }];
+  const groups = groupedGPUs ?? [{ label: null, gpus: filteredGPUs }];
 
   return (
     <div className="space-y-3">

@@ -6,12 +6,16 @@ const ibmPlex = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
   variable: '--font-mono',
+  display: 'swap',
+  preload: true,
 });
 
 const syne = Syne({
   subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
   variable: '--font-syne',
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata = {

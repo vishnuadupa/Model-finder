@@ -69,7 +69,9 @@ function TierSection({ tier, results, hwVram }) {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {results.map((r, i) => (
-          <ResultCard key={`${r.model.name}_${r.quant}_${i}`} result={r} hwVram={hwVram} rank={i + 1} />
+          <div key={`${r.model.name}_${r.quant}`} className="transition-all duration-200">
+            <ResultCard result={r} hwVram={hwVram} rank={i + 1} />
+          </div>
         ))}
       </div>
     </div>
