@@ -16,20 +16,92 @@
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 0.16
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 0.21
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 0.27
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 0.32
+        "fileSizeGB": 0.3
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 0.37
+        "fileSizeGB": 0.36
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 0.41
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 0.56
+        "fileSizeGB": 0.53
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 1
       }
     ],
     "lastUpdated": "2026-05-19",
     "source": "ollama"
+  },
+  {
+    "name": "Gemma 3 1B",
+    "family": "gemma3",
+    "params": 1,
+    "layers": 18,
+    "numKVHeads": 4,
+    "headDim": 256,
+    "maxCtx": 32768,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": true,
+    "ollamaTag": "gemma3:1b",
+    "hfRepo": "google/gemma-3-1b-it-qat-gguf",
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 0.33
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 0.42
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 0.55
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 0.61
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 0.71
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 0.82
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 1.06
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 2
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
   },
   {
     "name": "Llama3.2 1B",
@@ -48,16 +120,89 @@
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 0.33
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 0.42
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 0.55
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 0.64
+        "fileSizeGB": 0.61
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 0.75
+        "fileSizeGB": 0.71
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 0.82
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 1.12
+        "fileSizeGB": 1.06
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 2
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Deepseek-r1 1.5B",
+    "family": "deepseek",
+    "params": 1.5,
+    "layers": 16,
+    "numKVHeads": 8,
+    "headDim": 64,
+    "hfRepo": null,
+    "ollamaTag": "deepseek-r1:1.5b",
+    "maxCtx": 4096,
+    "useCases": [
+      "reasoning",
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 0.49
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 0.63
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 0.82
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 0.91
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 1.07
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 1.23
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 1.59
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 3
       }
     ],
     "lastUpdated": "2026-05-19",
@@ -80,55 +225,43 @@
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 0.49
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 0.63
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 0.82
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 0.95
+        "fileSizeGB": 0.91
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 1.12
+        "fileSizeGB": 1.07
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 1.23
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 1.67
+        "fileSizeGB": 1.59
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 3
       }
     ],
     "lastUpdated": "2026-05-19",
     "source": "ollama"
   },
   {
-    "name": "Deepseek-r1 1.5B",
-    "family": "deepseek",
-    "params": 1.5,
-    "layers": 16,
-    "numKVHeads": 8,
-    "headDim": 64,
-    "hfRepo": null,
-    "ollamaTag": "deepseek-r1:1.5b",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat"
-    ],
-    "quality": "good",
-    "verified": false,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 0.95
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 1.12
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 1.67
-      }
-    ],
-    "lastUpdated": "2026-05-19",
-    "source": "ollama"
-  },
-  {
-    "name": "Smollm2 1.7B",
+    "name": "SmolLM2 1.7B",
     "family": "smollm2",
     "params": 1.7,
     "layers": 16,
@@ -144,16 +277,36 @@
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 0.55
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 0.71
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 0.93
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 1.08
+        "fileSizeGB": 1.03
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 1.27
+        "fileSizeGB": 1.21
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 1.4
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 1.9
+        "fileSizeGB": 1.81
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 3.4
       }
     ],
     "lastUpdated": "2026-05-19",
@@ -176,16 +329,36 @@
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 0.65
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 0.84
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 1.09
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 1.63
+        "fileSizeGB": 1.21
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 1.92
+        "fileSizeGB": 1.42
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 1.64
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 2.67
+        "fileSizeGB": 2.13
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 4
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -201,22 +374,43 @@
     "ollamaTag": "qwen2.5:3b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "chat",
+      "code"
     ],
     "quality": "good",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 0.98
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 1.26
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 1.64
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 1.91
+        "fileSizeGB": 1.82
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 2.24
+        "fileSizeGB": 2.13
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 2.46
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 3.35
+        "fileSizeGB": 3.19
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 6
       }
     ],
     "lastUpdated": "2026-05-19",
@@ -233,23 +427,42 @@
     "ollamaTag": "llama3.2:3b",
     "maxCtx": 131072,
     "useCases": [
-      "chat",
-      "code"
+      "chat"
     ],
     "quality": "good",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 1.04
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 1.34
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 1.75
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 2.02
+        "fileSizeGB": 1.94
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 2.37
+        "fileSizeGB": 2.28
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 2.63
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 3.42
+        "fileSizeGB": 3.4
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 6.4
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -266,22 +479,255 @@
     "maxCtx": 4096,
     "useCases": [
       "chat",
+      "reasoning",
       "code"
     ],
     "quality": "good",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 1.23
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 1.59
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 2.08
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 2.39
+        "fileSizeGB": 2.3
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 2.82
+        "fileSizeGB": 2.7
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 3.12
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 4.06
+        "fileSizeGB": 4.04
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 7.6
+      }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Phi-4 Mini 3.8B",
+    "family": "phi4",
+    "params": 3.8,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 80,
+    "maxCtx": 131072,
+    "useCases": [
+      "chat",
+      "reasoning",
+      "code"
+    ],
+    "quality": "great",
+    "verified": true,
+    "ollamaTag": "phi4-mini",
+    "hfRepo": "microsoft/Phi-4-mini-instruct-gguf",
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 1.23
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 1.59
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 2.08
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 2.3
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 2.7
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 3.12
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 4.04
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 7.6
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
+  },
+  {
+    "name": "Gemma 3 4B",
+    "family": "gemma3",
+    "params": 4,
+    "layers": 34,
+    "numKVHeads": 4,
+    "headDim": 256,
+    "maxCtx": 131072,
+    "useCases": [
+      "chat",
+      "vision"
+    ],
+    "quality": "great",
+    "verified": true,
+    "ollamaTag": "gemma3:4b",
+    "hfRepo": "google/gemma-3-4b-it-qat-gguf",
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 1.3
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 1.68
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 2.19
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 2.42
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 2.85
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 3.29
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 4.25
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 8
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
+  },
+  {
+    "name": "Codellama 7B",
+    "family": "codellama",
+    "params": 7,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "codellama:7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "code"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 2.27
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 3.82
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.24
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 4.98
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 5.75
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.44
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 14
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "DeepSeek R1 7B",
+    "family": "DeepSeek",
+    "params": 7,
+    "layers": 28,
+    "numKVHeads": 4,
+    "headDim": 128,
+    "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF",
+    "ollamaTag": "deepseek-r1:7b",
+    "maxCtx": 131072,
+    "useCases": [
+      "reasoning",
+      "code",
+      "chat"
+    ],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 2.27
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 3.82
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.24
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 4.98
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 5.75
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.44
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 14
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -298,55 +744,42 @@
     "maxCtx": 32768,
     "useCases": [
       "chat",
-      "code",
-      "reasoning"
-    ],
-    "quality": "great",
-    "verified": true,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 4.37
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 5.13
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 7.7
-      }
-    ],
-    "lastUpdated": "2025-05-01"
-  },
-  {
-    "name": "DeepSeek R1 7B",
-    "family": "DeepSeek",
-    "params": 7,
-    "layers": 28,
-    "numKVHeads": 4,
-    "headDim": 128,
-    "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF",
-    "ollamaTag": "deepseek-r1:7b",
-    "maxCtx": 131072,
-    "useCases": [
-      "reasoning",
       "code"
     ],
     "quality": "great",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 2.27
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 3.82
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 4.68
+        "fileSizeGB": 4.24
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 5.44
+        "fileSizeGB": 4.98
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 5.75
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 7.68
+        "fileSizeGB": 7.44
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 14
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -362,90 +795,101 @@
     "ollamaTag": "qwen2.5:7b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "chat",
+      "code",
+      "reasoning"
     ],
     "quality": "good",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 2.27
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 3.82
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 4.46
+        "fileSizeGB": 4.24
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 5.23
+        "fileSizeGB": 4.98
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 5.75
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 7.81
+        "fileSizeGB": 7.44
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 14
       }
     ],
     "lastUpdated": "2026-05-19",
     "source": "ollama"
   },
   {
-    "name": "Codellama 7B",
-    "family": "codellama",
+    "name": "Qwen2.5-Coder 7B",
+    "family": "qwen2.5-coder",
     "params": 7,
     "layers": 32,
     "numKVHeads": 8,
     "headDim": 128,
-    "hfRepo": null,
-    "ollamaTag": "codellama:7b",
-    "maxCtx": 4096,
+    "maxCtx": 131072,
     "useCases": [
+      "code",
       "chat"
     ],
-    "quality": "good",
-    "verified": false,
+    "quality": "great",
+    "verified": true,
+    "ollamaTag": "qwen2.5-coder:7b",
+    "hfRepo": "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF",
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 2.27
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 3.82
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 4.46
+        "fileSizeGB": 4.24
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 5.23
+        "fileSizeGB": 4.98
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 5.75
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 7.81
+        "fileSizeGB": 7.44
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 14
       }
     ],
     "lastUpdated": "2026-05-19",
-    "source": "ollama"
-  },
-  {
-    "name": "Wizardlm2 7B",
-    "family": "wizardlm2",
-    "params": 7,
-    "layers": 32,
-    "numKVHeads": 8,
-    "headDim": 128,
-    "hfRepo": null,
-    "ollamaTag": "wizardlm2:7b",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat"
-    ],
-    "quality": "good",
-    "verified": false,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 4.46
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 5.23
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 7.81
-      }
-    ],
-    "lastUpdated": "2026-05-19",
-    "source": "ollama"
+    "source": "manual"
   },
   {
     "name": "Starling-lm 7B",
@@ -464,16 +908,196 @@
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 2.27
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 3.82
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 4.46
+        "fileSizeGB": 4.24
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 5.23
+        "fileSizeGB": 4.98
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 5.75
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 7.81
+        "fileSizeGB": 7.44
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 14
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Wizardlm2 7B",
+    "family": "wizardlm2",
+    "params": 7,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "wizardlm2:7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat",
+      "reasoning"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 2.27
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 3.82
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.24
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 4.98
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 5.75
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.44
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 14
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Aya 8B",
+    "family": "aya",
+    "params": 8,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "aya:8b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat",
+      "multilingual"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 2.6
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 3.35
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 4.37
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.85
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.69
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 6.57
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 8.5
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 16
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Deepseek-r1 8B",
+    "family": "deepseek",
+    "params": 8,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "deepseek-r1:8b",
+    "maxCtx": 4096,
+    "useCases": [
+      "reasoning",
+      "code",
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 2.6
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 3.35
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 4.37
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.85
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.69
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 6.57
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 8.5
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 16
       }
     ],
     "lastUpdated": "2026-05-19",
@@ -491,94 +1115,45 @@
     "maxCtx": 131072,
     "useCases": [
       "chat",
-      "code",
-      "reasoning"
+      "code"
     ],
     "quality": "great",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 2.6
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 3.35
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 4.37
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 4.92
+        "fileSizeGB": 4.85
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 5.73
+        "fileSizeGB": 5.69
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 6.57
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 8.54
+        "fileSizeGB": 8.5
       },
       {
         "q": "F16",
-        "fileSizeGB": 16.07
+        "fileSizeGB": 16
       }
     ],
     "lastUpdated": "2025-05-01"
-  },
-  {
-    "name": "Deepseek-r1 8B",
-    "family": "deepseek",
-    "params": 8,
-    "layers": 32,
-    "numKVHeads": 8,
-    "headDim": 128,
-    "hfRepo": null,
-    "ollamaTag": "deepseek-r1:8b",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat"
-    ],
-    "quality": "good",
-    "verified": false,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 5.09
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 5.97
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 8.93
-      }
-    ],
-    "lastUpdated": "2026-05-19",
-    "source": "ollama"
-  },
-  {
-    "name": "Aya 8B",
-    "family": "aya",
-    "params": 8,
-    "layers": 32,
-    "numKVHeads": 8,
-    "headDim": 128,
-    "hfRepo": null,
-    "ollamaTag": "aya:8b",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat"
-    ],
-    "quality": "good",
-    "verified": false,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 5.09
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 5.97
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 8.93
-      }
-    ],
-    "lastUpdated": "2026-05-19",
-    "source": "ollama"
   },
   {
     "name": "Gemma 2 9B",
@@ -592,22 +1167,42 @@
     "maxCtx": 8192,
     "useCases": [
       "chat",
-      "reasoning"
+      "code"
     ],
     "quality": "great",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 2.93
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 3.77
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 4.92
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 5.77
+        "fileSizeGB": 5.46
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 6.65
+        "fileSizeGB": 6.4
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 7.39
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 9.83
+        "fileSizeGB": 9.56
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 18
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -616,33 +1211,108 @@
     "name": "Solar 10.7B",
     "family": "solar",
     "params": 10.7,
-    "layers": 42,
-    "numKVHeads": 4,
-    "headDim": 256,
+    "layers": 48,
+    "numKVHeads": 8,
+    "headDim": 128,
     "hfRepo": null,
     "ollamaTag": "solar:10.7b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "chat",
+      "reasoning"
     ],
     "quality": "great",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 3.48
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 4.48
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 5.84
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 6.81
+        "fileSizeGB": 6.49
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 7.99
+        "fileSizeGB": 7.61
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 8.79
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 11.94
+        "fileSizeGB": 11.37
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 21.4
       }
     ],
     "lastUpdated": "2026-05-19",
     "source": "ollama"
+  },
+  {
+    "name": "Gemma 3 12B",
+    "family": "gemma3",
+    "params": 12,
+    "layers": 48,
+    "numKVHeads": 8,
+    "headDim": 256,
+    "maxCtx": 131072,
+    "useCases": [
+      "chat",
+      "vision",
+      "reasoning"
+    ],
+    "quality": "great",
+    "verified": true,
+    "ollamaTag": "gemma3:12b",
+    "hfRepo": "google/gemma-3-12b-it-qat-gguf",
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 3.9
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 5.03
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 6.55
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 7.27
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 8.54
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 9.86
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 12.75
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 24
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
   },
   {
     "name": "Mistral Nemo 12B",
@@ -656,23 +1326,42 @@
     "maxCtx": 128000,
     "useCases": [
       "chat",
-      "code",
       "multilingual"
     ],
     "quality": "great",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 3.9
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 5.03
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 6.55
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 7.48
+        "fileSizeGB": 7.27
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 8.69
+        "fileSizeGB": 8.54
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 9.86
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 12.85
+        "fileSizeGB": 12.75
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 24
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -688,59 +1377,46 @@
     "ollamaTag": "codellama:13b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "code"
     ],
     "quality": "great",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 4.23
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 5.44
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 7.1
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 8.28
+        "fileSizeGB": 7.88
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 9.71
+        "fileSizeGB": 9.25
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 10.68
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 14.5
+        "fileSizeGB": 13.81
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 26
       }
     ],
     "lastUpdated": "2026-05-19",
     "source": "ollama"
-  },
-  {
-    "name": "Phi-3 Medium 14B",
-    "family": "Phi",
-    "params": 14,
-    "layers": 40,
-    "numKVHeads": 10,
-    "headDim": 128,
-    "hfRepo": "bartowski/Phi-3-medium-4k-instruct-GGUF",
-    "ollamaTag": "phi3:medium",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat",
-      "code",
-      "reasoning"
-    ],
-    "quality": "great",
-    "verified": true,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 8.56
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 9.93
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 14.96
-      }
-    ],
-    "lastUpdated": "2025-05-01"
   },
   {
     "name": "DeepSeek R1 14B",
@@ -754,56 +1430,96 @@
     "maxCtx": 131072,
     "useCases": [
       "reasoning",
-      "code"
+      "code",
+      "chat"
     ],
     "quality": "excellent",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 4.55
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 5.86
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 7.65
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 9.02
+        "fileSizeGB": 8.49
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 10.48
+        "fileSizeGB": 9.96
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 11.5
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 15.7
+        "fileSizeGB": 14.88
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 28
       }
     ],
     "lastUpdated": "2025-05-01"
   },
   {
-    "name": "Qwen2.5 14B",
-    "family": "Qwen",
+    "name": "Phi-3 Medium 14B",
+    "family": "Phi",
     "params": 14,
-    "layers": 48,
-    "numKVHeads": 8,
+    "layers": 40,
+    "numKVHeads": 10,
     "headDim": 128,
-    "hfRepo": "bartowski/Qwen2.5-14B-Instruct-GGUF",
-    "ollamaTag": "qwen2.5:14b",
-    "maxCtx": 131072,
+    "hfRepo": "bartowski/Phi-3-medium-4k-instruct-GGUF",
+    "ollamaTag": "phi3:medium",
+    "maxCtx": 4096,
     "useCases": [
       "chat",
-      "code",
       "reasoning",
-      "multilingual"
+      "code"
     ],
-    "quality": "excellent",
+    "quality": "great",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 4.55
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 5.86
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 7.65
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 9.02
+        "fileSizeGB": 8.49
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 10.44
+        "fileSizeGB": 9.96
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 11.5
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 15.7
+        "fileSizeGB": 14.88
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 28
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -819,26 +1535,101 @@
     "ollamaTag": "phi4:14b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "chat",
+      "reasoning",
+      "code"
     ],
     "quality": "great",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 4.55
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 5.86
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 7.65
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 8.91
+        "fileSizeGB": 8.49
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 10.46
+        "fileSizeGB": 9.96
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 11.5
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 15.62
+        "fileSizeGB": 14.88
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 28
       }
     ],
     "lastUpdated": "2026-05-19",
     "source": "ollama"
+  },
+  {
+    "name": "Qwen2.5 14B",
+    "family": "Qwen",
+    "params": 14,
+    "layers": 48,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Qwen2.5-14B-Instruct-GGUF",
+    "ollamaTag": "qwen2.5:14b",
+    "maxCtx": 131072,
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning"
+    ],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 4.55
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 5.86
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 7.65
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 8.49
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 9.96
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 11.5
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 14.88
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 28
+      }
+    ],
+    "lastUpdated": "2025-05-01"
   },
   {
     "name": "DeepSeek Coder V2 16B",
@@ -857,51 +1648,35 @@
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 5.2
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 6.7
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 8.74
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 10.01
+        "fileSizeGB": 9.7
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 11.62
+        "fileSizeGB": 11.38
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 13.14
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 17.18
+        "fileSizeGB": 17
       }
     ],
     "lastUpdated": "2025-05-01"
-  },
-  {
-    "name": "Wizardlm2 8X22B",
-    "family": "wizardlm2",
-    "params": 22,
-    "layers": 46,
-    "numKVHeads": 16,
-    "headDim": 128,
-    "hfRepo": null,
-    "ollamaTag": "wizardlm2:8x22b",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat"
-    ],
-    "quality": "great",
-    "verified": false,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 14
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 16.43
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 24.54
-      }
-    ],
-    "lastUpdated": "2026-05-19",
-    "source": "ollama"
   },
   {
     "name": "Gemma 2 27B",
@@ -915,23 +1690,138 @@
     "maxCtx": 8192,
     "useCases": [
       "chat",
-      "reasoning",
-      "long-docs"
+      "code",
+      "reasoning"
     ],
     "quality": "excellent",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 8.78
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 11.31
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 14.75
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 17.22
+        "fileSizeGB": 16.37
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 19.99
+        "fileSizeGB": 19.2
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 22.17
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 28.98
+        "fileSizeGB": 28.69
+      }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Gemma 3 27B",
+    "family": "gemma3",
+    "params": 27,
+    "layers": 62,
+    "numKVHeads": 16,
+    "headDim": 128,
+    "maxCtx": 131072,
+    "useCases": [
+      "chat",
+      "vision",
+      "reasoning"
+    ],
+    "quality": "excellent",
+    "verified": true,
+    "ollamaTag": "gemma3:27b",
+    "hfRepo": "google/gemma-3-27b-it-gguf",
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 8.78
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 11.31
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 14.75
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 16.37
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 19.2
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 22.17
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 28.69
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
+  },
+  {
+    "name": "DeepSeek R1 32B",
+    "family": "DeepSeek",
+    "params": 32,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-32B-GGUF",
+    "ollamaTag": "deepseek-r1:32b",
+    "maxCtx": 131072,
+    "useCases": [
+      "reasoning",
+      "code",
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 10.4
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 13.4
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 17.48
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 19.4
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 22.76
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 26.28
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 34
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -949,58 +1839,140 @@
     "useCases": [
       "chat",
       "code",
-      "reasoning",
-      "multilingual"
+      "reasoning"
     ],
     "quality": "excellent",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 10.4
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 13.4
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 17.48
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 20.02
+        "fileSizeGB": 19.4
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 23.25
+        "fileSizeGB": 22.76
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 26.28
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 34.82
+        "fileSizeGB": 34
       }
     ],
     "lastUpdated": "2025-05-01"
   },
   {
-    "name": "DeepSeek R1 32B",
-    "family": "DeepSeek",
+    "name": "Qwen2.5-Coder 32B",
+    "family": "qwen2.5-coder",
     "params": 32,
     "layers": 64,
     "numKVHeads": 8,
     "headDim": 128,
-    "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-32B-GGUF",
-    "ollamaTag": "deepseek-r1:32b",
     "maxCtx": 131072,
     "useCases": [
-      "reasoning",
-      "code"
+      "code",
+      "reasoning"
     ],
     "quality": "excellent",
     "verified": true,
+    "ollamaTag": "qwen2.5-coder:32b",
+    "hfRepo": "Qwen/Qwen2.5-Coder-32B-Instruct-GGUF",
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 10.4
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 13.4
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 17.48
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 20.02
+        "fileSizeGB": 19.4
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 23.25
+        "fileSizeGB": 22.76
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 26.28
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 34.82
+        "fileSizeGB": 34
       }
     ],
-    "lastUpdated": "2025-05-01"
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
+  },
+  {
+    "name": "QwQ-32B",
+    "family": "qwen2.5",
+    "params": 32,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "maxCtx": 131072,
+    "useCases": [
+      "reasoning",
+      "code",
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": true,
+    "ollamaTag": "qwq:32b",
+    "hfRepo": "Qwen/QwQ-32B-GGUF",
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 10.4
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 13.4
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 17.48
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 19.4
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 22.76
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 26.28
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 34
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
   },
   {
     "name": "Codellama 34B",
@@ -1013,54 +1985,38 @@
     "ollamaTag": "codellama:34b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "code"
     ],
     "quality": "excellent",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 11.05
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 14.24
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 18.57
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 21.64
+        "fileSizeGB": 20.61
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 25.39
+        "fileSizeGB": 24.18
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 27.92
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 37.93
-      }
-    ],
-    "lastUpdated": "2026-05-19",
-    "source": "ollama"
-  },
-  {
-    "name": "Command-r 35B",
-    "family": "command",
-    "params": 35,
-    "layers": 64,
-    "numKVHeads": 8,
-    "headDim": 128,
-    "hfRepo": null,
-    "ollamaTag": "command-r:35b",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat"
-    ],
-    "quality": "excellent",
-    "verified": false,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 22.28
-      },
-      {
-        "q": "Q5_K_M",
-        "fileSizeGB": 26.14
-      },
-      {
-        "q": "Q8_0",
-        "fileSizeGB": 39.05
+        "fileSizeGB": 36.13
       }
     ],
     "lastUpdated": "2026-05-19",
@@ -1077,22 +2033,89 @@
     "ollamaTag": "aya:35b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "chat",
+      "multilingual"
     ],
     "quality": "excellent",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 11.38
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 14.66
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 19.12
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 22.28
+        "fileSizeGB": 21.22
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 26.14
+        "fileSizeGB": 24.89
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 28.74
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 39.05
+        "fileSizeGB": 37.19
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Command-r 35B",
+    "family": "command",
+    "params": 35,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "command-r:35b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat",
+      "reasoning",
+      "long-docs"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 11.38
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 14.66
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 19.12
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 21.22
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 24.89
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 28.74
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 37.19
       }
     ],
     "lastUpdated": "2026-05-19",
@@ -1110,22 +2133,91 @@
     "maxCtx": 32768,
     "useCases": [
       "chat",
-      "code",
-      "reasoning"
+      "code"
     ],
     "quality": "excellent",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 15.28
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 19.68
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 25.67
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 26.44
+        "fileSizeGB": 28.49
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 30.99
+        "fileSizeGB": 33.43
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 38.6
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 49.94
       }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Deepseek-r1 70B",
+    "family": "deepseek",
+    "params": 70,
+    "layers": 80,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "deepseek-r1:70b",
+    "maxCtx": 4096,
+    "useCases": [
+      "reasoning",
+      "code",
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 22.75
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 29.31
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 38.24
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 42.44
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 49.79
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 57.49
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 74.38
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Llama 3.1 70B",
@@ -1140,19 +2232,38 @@
     "useCases": [
       "chat",
       "code",
-      "reasoning",
-      "long-docs"
+      "reasoning"
     ],
     "quality": "excellent",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 22.75
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 29.31
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 38.24
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 42.52
+        "fileSizeGB": 42.44
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 49.37
+        "fileSizeGB": 49.79
+      },
+      {
+        "q": "Q6_K",
+        "fileSizeGB": 57.49
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 74.38
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -1170,54 +2281,41 @@
     "useCases": [
       "chat",
       "code",
-      "reasoning",
-      "long-docs"
+      "reasoning"
     ],
     "quality": "excellent",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 22.75
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 29.31
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 38.24
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 42.52
+        "fileSizeGB": 42.44
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 49.37
-      }
-    ],
-    "lastUpdated": "2025-05-01"
-  },
-  {
-    "name": "Deepseek-r1 70B",
-    "family": "deepseek",
-    "params": 70,
-    "layers": 80,
-    "numKVHeads": 8,
-    "headDim": 128,
-    "hfRepo": null,
-    "ollamaTag": "deepseek-r1:70b",
-    "maxCtx": 4096,
-    "useCases": [
-      "chat"
-    ],
-    "quality": "excellent",
-    "verified": false,
-    "quants": [
-      {
-        "q": "Q4_K_M",
-        "fileSizeGB": 44.56
+        "fileSizeGB": 49.79
       },
       {
-        "q": "Q5_K_M",
-        "fileSizeGB": 52.28
+        "q": "Q6_K",
+        "fileSizeGB": 57.49
       },
       {
         "q": "Q8_0",
-        "fileSizeGB": 78.09
+        "fileSizeGB": 74.38
       }
     ],
-    "lastUpdated": "2026-05-19",
-    "source": "ollama"
+    "lastUpdated": "2025-05-01"
   },
   {
     "name": "Qwen2.5 72B",
@@ -1232,20 +2330,30 @@
     "useCases": [
       "chat",
       "code",
-      "reasoning",
-      "multilingual",
-      "long-docs"
+      "reasoning"
     ],
     "quality": "excellent",
     "verified": true,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 23.4
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 30.15
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 39.33
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 43.59
+        "fileSizeGB": 43.65
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 50.67
+        "fileSizeGB": 51.21
       }
     ],
     "lastUpdated": "2025-05-01"
@@ -1261,22 +2369,117 @@
     "ollamaTag": "command-r-plus:104b",
     "maxCtx": 4096,
     "useCases": [
-      "chat"
+      "chat",
+      "reasoning",
+      "long-docs"
     ],
     "quality": "excellent",
     "verified": false,
     "quants": [
       {
+        "q": "Q2_K",
+        "fileSizeGB": 33.8
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 43.55
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 56.81
+      },
+      {
         "q": "Q4_K_M",
-        "fileSizeGB": 66.2
+        "fileSizeGB": 63.05
       },
       {
         "q": "Q5_K_M",
-        "fileSizeGB": 77.67
+        "fileSizeGB": 73.97
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Mixtral 8x22B",
+    "family": "mixtral",
+    "params": 141,
+    "layers": 56,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "maxCtx": 65536,
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning",
+      "multilingual"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "ollamaTag": null,
+    "hfRepo": "mistral-community/Mixtral-8x22B-v0.1-GGUF",
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 45.83
       },
       {
-        "q": "Q8_0",
-        "fileSizeGB": 116.03
+        "q": "Q3_K_M",
+        "fileSizeGB": 59.04
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 77.02
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 85.48
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 100.29
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "manual"
+  },
+  {
+    "name": "WizardLM-2 8x22B",
+    "family": "wizardlm2",
+    "params": 141,
+    "layers": 56,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "wizardlm2:8x22b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat",
+      "reasoning",
+      "code"
+    ],
+    "quality": "great",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q2_K",
+        "fileSizeGB": 45.83
+      },
+      {
+        "q": "Q3_K_M",
+        "fileSizeGB": 59.04
+      },
+      {
+        "q": "Q4_K_S",
+        "fileSizeGB": 77.02
+      },
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 85.48
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 100.29
       }
     ],
     "lastUpdated": "2026-05-19",

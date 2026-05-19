@@ -13,6 +13,24 @@ const USE_CASE_ICONS = {
   'long-docs': '📄', multilingual: '🌍', vision: '👁️',
 };
 
+// What each quantization level means in plain English (for beginners)
+const QUANT_INFO = {
+  IQ2_XXS: { label: '2-bit extreme',  quality: '★☆☆☆', note: 'Smallest file, noticeably worse quality' },
+  Q2_K:    { label: '2-bit',          quality: '★☆☆☆', note: 'Smallest file, lower quality — use only if VRAM limited' },
+  Q3_K_M:  { label: '3-bit medium',   quality: '★★☆☆', note: 'Small file, acceptable quality for most tasks' },
+  IQ4_XS:  { label: '4-bit small',    quality: '★★★☆', note: 'Good quality, slightly smaller than Q4_K_M' },
+  Q4_K_S:  { label: '4-bit small',    quality: '★★★☆', note: 'Good quality, slightly smaller than Q4_K_M' },
+  Q4_K_M:  { label: '4-bit (default)',quality: '★★★☆', note: 'Best balance of quality and VRAM — recommended for most' },
+  Q4_0:    { label: '4-bit legacy',   quality: '★★★☆', note: 'Older 4-bit format, prefer Q4_K_M' },
+  Q5_K_M:  { label: '5-bit medium',   quality: '★★★★', note: 'High quality, needs ~15% more VRAM than Q4_K_M' },
+  Q5_K_S:  { label: '5-bit small',    quality: '★★★★', note: 'High quality, slightly smaller than Q5_K_M' },
+  Q6_K:    { label: '6-bit',          quality: '★★★★', note: 'Very high quality, nearly indistinguishable from original' },
+  Q8_0:    { label: '8-bit',          quality: '★★★★', note: 'Near-original quality, needs 2× VRAM vs Q4_K_M' },
+  F16:     { label: '16-bit (full)',   quality: '★★★★', note: 'Full original quality, needs 4× VRAM vs Q4_K_M' },
+  BF16:    { label: '16-bit BF (full)',quality: '★★★★', note: 'Full original quality (brain float format)' },
+  F32:     { label: '32-bit (full)',   quality: '★★★★', note: 'Maximum precision, needs 8× VRAM vs Q4_K_M' },
+};
+
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
   function copy() {
@@ -65,11 +83,21 @@ export default function ResultCard({ result, hwVram, rank }) {
             </span>
           )}
           <div>
-            <div className="font-semibold text-white text-sm">
+            <div className="font-semibold text-white text-sm leading-tight">
               {model.name}
-              <span className="ml-2 text-sky-400 font-mono text-xs">{quant}</span>
             </div>
-            <div className="text-xs text-slate-500 mt-0.5">{model.family} · {model.params}B params</div>
+            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+              <span className="font-mono text-xs text-sky-400 bg-sky-950/40 border border-sky-900/40 px-1.5 py-0.5 rounded">{quant}</span>
+              {QUANT_INFO[quant] && (
+                <span className="text-xs text-slate-500" title={QUANT_INFO[quant].note}>
+                  {QUANT_INFO[quant].quality} {QUANT_INFO[quant].label}
+                </span>
+              )}
+            </div>
+            <div className="text-xs text-slate-600 mt-0.5">
+              {model.params}B params
+              {model.maxCtx && <span className="ml-2">· max {model.maxCtx >= 131072 ? '128k' : model.maxCtx >= 32768 ? '32k' : model.maxCtx >= 8192 ? '8k' : '4k'} ctx</span>}
+            </div>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
@@ -87,6 +115,13 @@ export default function ResultCard({ result, hwVram, rank }) {
           )}
         </div>
       </div>
+
+      {/* Quant explanation for beginners */}
+      {QUANT_INFO[quant] && (
+        <div className="text-xs text-slate-600 bg-slate-900/40 rounded px-2 py-1 border border-slate-800/50">
+          {QUANT_INFO[quant].note}
+        </div>
+      )}
 
       {/* VRAM / RAM bar */}
       <div>
