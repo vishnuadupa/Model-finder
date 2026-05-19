@@ -44,7 +44,7 @@ function VRAMBar({ used, total }) {
   );
 }
 
-export default function ResultCard({ result, hwVram }) {
+export default function ResultCard({ result, hwVram, rank }) {
   const { model, quant, tier, tokPerSec, vramRequired, vramFree,
           ramRequired, downloadSizeGB, cpuOffloadNeeded, weightsGB, kvCacheGB } = result;
 
@@ -58,12 +58,19 @@ export default function ResultCard({ result, hwVram }) {
     <div className={`card border-l-2 ${tierAccent} p-4 space-y-3 hover:border-opacity-100 transition-all`}>
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="font-semibold text-white text-sm">
-            {model.name}
-            <span className="ml-2 text-sky-400 font-mono text-xs">{quant}</span>
+        <div className="flex items-start gap-2">
+          {rank && (
+            <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-slate-800 text-slate-500 text-xs font-mono font-bold">
+              {rank}
+            </span>
+          )}
+          <div>
+            <div className="font-semibold text-white text-sm">
+              {model.name}
+              <span className="ml-2 text-sky-400 font-mono text-xs">{quant}</span>
+            </div>
+            <div className="text-xs text-slate-500 mt-0.5">{model.family} · {model.params}B params</div>
           </div>
-          <div className="text-xs text-slate-500 mt-0.5">{model.family} · {model.params}B params</div>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
           <span className={`chip ${QUALITY_STYLE[model.quality] || QUALITY_STYLE.good}`}>

@@ -65,11 +65,11 @@ function TierSection({ tier, results, hwVram }) {
           <span className={`font-semibold ${meta.accent}`}>{meta.label}</span>
           <span className="text-xs text-slate-600 font-mono">({results.length})</span>
         </div>
-        <span className="text-xs text-slate-600">{meta.desc}</span>
+        <span className="text-xs text-slate-600">{meta.desc} · ranked by speed &amp; size</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {results.map((r, i) => (
-          <ResultCard key={`${r.model.name}_${r.quant}_${i}`} result={r} hwVram={hwVram} />
+          <ResultCard key={`${r.model.name}_${r.quant}_${i}`} result={r} hwVram={hwVram} rank={i + 1} />
         ))}
       </div>
     </div>
