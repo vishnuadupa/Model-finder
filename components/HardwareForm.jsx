@@ -15,65 +15,58 @@ const CTX_OPTIONS = [
 ];
 const USE_CASES = ['Chat', 'Code', 'Reasoning', 'Long Docs', 'Multilingual', 'Vision'];
 const SPEED_OPTIONS = [
-  { label: 'Fast 30+',    value: 'fast' },
-  { label: 'Medium 10-30', value: 'medium' },
-  { label: 'Slow <10',    value: 'slow' },
+  { label: 'Show all',    value: 'slow',   tip: 'Show every model, even slow ones' },
+  { label: '10+ tok/s',   value: 'medium', tip: 'Conversational speed minimum' },
+  { label: '30+ tok/s',   value: 'fast',   tip: 'Fast enough to feel instant' },
 ];
 
 const BACKEND_LABELS = {
-  cuda:   { label: 'CUDA',     color: 'text-green-400',  bg: 'bg-green-950/30 border-green-800/50' },
-  metal:  { label: 'Metal',    color: 'text-purple-400', bg: 'bg-purple-950/30 border-purple-800/50' },
-  rocm:   { label: 'ROCm',     color: 'text-red-400',    bg: 'bg-red-950/30 border-red-800/50' },
-  vulkan: { label: 'Vulkan',   color: 'text-amber-400',  bg: 'bg-amber-950/30 border-amber-800/50' },
-  cpu:    { label: 'CPU only', color: 'text-slate-400',  bg: 'bg-slate-900/30 border-slate-700' },
+  cuda:   { label: 'CUDA (NVIDIA)',   color: 'text-green-400',  bg: 'bg-green-950/30 border-green-800/50' },
+  metal:  { label: 'Metal (Apple)',   color: 'text-purple-400', bg: 'bg-purple-950/30 border-purple-800/50' },
+  rocm:   { label: 'ROCm (AMD Linux)',color: 'text-red-400',    bg: 'bg-red-950/30 border-red-800/50' },
+  vulkan: { label: 'Vulkan (AMD/Arc)',color: 'text-amber-400',  bg: 'bg-amber-950/30 border-amber-800/50' },
+  cpu:    { label: 'CPU only',        color: 'text-slate-400',  bg: 'bg-slate-900/30 border-slate-700' },
 };
 
 // OS → available vendors
 const OS_VENDORS = {
   Windows: [
-    { id: 'nvidia', label: 'NVIDIA',       icon: '🟢', desc: 'GeForce RTX / GTX' },
-    { id: 'amd',   label: 'AMD',           icon: '🔴', desc: 'Radeon RX' },
-    { id: 'intel', label: 'Intel Arc',     icon: '🔵', desc: 'Arc B/A series' },
-    { id: 'none',  label: 'No GPU',        icon: '⚙️',  desc: 'CPU only' },
+    { id: 'nvidia', label: 'NVIDIA',       icon: '🟢', desc: 'GeForce RTX / GTX series' },
+    { id: 'amd',   label: 'AMD',           icon: '🔴', desc: 'Radeon RX series' },
+    { id: 'intel', label: 'Intel Arc',     icon: '🔵', desc: 'Arc B / A series' },
+    { id: 'none',  label: 'No GPU',        icon: '⚙️',  desc: 'CPU-only inference' },
   ],
   Linux: [
-    { id: 'nvidia', label: 'NVIDIA',       icon: '🟢', desc: 'GeForce RTX / GTX' },
-    { id: 'amd',   label: 'AMD',           icon: '🔴', desc: 'Radeon RX — ROCm' },
+    { id: 'nvidia', label: 'NVIDIA',       icon: '🟢', desc: 'GeForce RTX / GTX series' },
+    { id: 'amd',   label: 'AMD',           icon: '🔴', desc: 'Radeon RX — ROCm backend' },
     { id: 'intel', label: 'Intel Arc',     icon: '🔵', desc: 'Arc series' },
-    { id: 'none',  label: 'No GPU',        icon: '⚙️',  desc: 'CPU only' },
+    { id: 'none',  label: 'No GPU',        icon: '⚙️',  desc: 'CPU-only inference' },
   ],
   macOS: [
-    { id: 'apple', label: 'Apple Silicon', icon: '🍎', desc: 'M1 / M2 / M3 / M4' },
-    { id: 'none',  label: 'No GPU',        icon: '⚙️',  desc: 'CPU only' },
+    { id: 'apple', label: 'Apple Silicon', icon: '🍎', desc: 'M1 / M2 / M3 / M4 — unified memory' },
+    { id: 'none',  label: 'Intel Mac',     icon: '⚙️',  desc: 'No discrete GPU / CPU only' },
   ],
 };
 
-// Vendor → GPU list filter
 function getGPUsForVendor(vendor) {
   switch (vendor) {
-    case 'nvidia': return GPU_PRESETS.filter(g =>
-      g.label.startsWith('RTX') || g.label.startsWith('GTX'));
-    case 'amd':    return GPU_PRESETS.filter(g =>
-      g.label.startsWith('RX '));
-    case 'intel':  return GPU_PRESETS.filter(g =>
-      g.label.startsWith('Arc'));
-    case 'apple':  return GPU_PRESETS.filter(g =>
-      g.label.startsWith('Apple'));
-    case 'none':   return GPU_PRESETS.filter(g =>
-      g.label === 'No GPU (CPU only)');
+    case 'nvidia': return GPU_PRESETS.filter(g => g.label.startsWith('RTX') || g.label.startsWith('GTX'));
+    case 'amd':    return GPU_PRESETS.filter(g => g.label.startsWith('RX '));
+    case 'intel':  return GPU_PRESETS.filter(g => g.label.startsWith('Arc'));
+    case 'apple':  return GPU_PRESETS.filter(g => g.label.startsWith('Apple'));
+    case 'none':   return GPU_PRESETS.filter(g => g.label === 'No GPU (CPU only)');
     default: return [];
   }
 }
 
-// Group NVIDIA GPUs by generation for display
 function groupNvidiaGPUs(gpus) {
   const groups = [
     { label: 'Blackwell (50 series)', prefix: 'RTX 5' },
-    { label: 'Ada (40 series)',        prefix: 'RTX 4' },
-    { label: 'Workstation',            match: g => g.label.startsWith('RTX 6000') || g.label.startsWith('RTX A') || g.label.startsWith('RTX 2000') || g.label.startsWith('RTX 4000 Ada') },
-    { label: 'Ampere (30 series)',     prefix: 'RTX 3' },
-    { label: 'Turing (20 series)',     prefix: 'RTX 2' },
-    { label: 'Pascal / older',         match: g => g.label.startsWith('GTX') },
+    { label: 'Ada Lovelace (40 series)', prefix: 'RTX 4' },
+    { label: 'Workstation', match: g => g.label.startsWith('RTX 6000') || g.label.startsWith('RTX A') || g.label.startsWith('RTX 2000') || g.label.startsWith('RTX 4000 Ada') },
+    { label: 'Ampere (30 series)', prefix: 'RTX 3' },
+    { label: 'Turing (20 series)', prefix: 'RTX 2' },
+    { label: 'Pascal / older', match: g => g.label.startsWith('GTX') },
   ];
   return groups.map(g => ({
     label: g.label,
@@ -88,6 +81,7 @@ function SegBtn({ options, value, onChange }) {
         <button
           key={o.value ?? o}
           onClick={() => onChange(o.value ?? o)}
+          title={o.tip || ''}
           className={`px-2.5 py-1.5 rounded-lg text-xs font-mono border transition-colors ${
             value === (o.value ?? o)
               ? 'bg-sky-600 border-sky-500 text-white'
@@ -101,22 +95,27 @@ function SegBtn({ options, value, onChange }) {
   );
 }
 
+function HelpText({ children }) {
+  return <p className="text-xs text-slate-600 mt-0.5 leading-snug">{children}</p>;
+}
+
 // ── GPU Wizard (3-step) ────────────────────────────────────────────────────
 function GPUWizard({ hw, os, onSelect, onOSChange }) {
   const [vendor, setVendor] = useState(null);
+  const [step, setStep] = useState(1); // 1=OS, 2=vendor, 3=model
 
-  // Auto-set vendor from existing selection
   useEffect(() => {
-    if (!hw.gpuLabel) { setVendor(null); return; }
+    if (!hw.gpuLabel) { setVendor(null); setStep(os ? 2 : 1); return; }
     if (hw.gpuLabel.startsWith('RTX') || hw.gpuLabel.startsWith('GTX')) setVendor('nvidia');
     else if (hw.gpuLabel.startsWith('RX ')) setVendor('amd');
     else if (hw.gpuLabel.startsWith('Arc')) setVendor('intel');
     else if (hw.gpuLabel.startsWith('Apple')) setVendor('apple');
     else if (hw.gpuLabel === 'No GPU (CPU only)') setVendor('none');
-  }, [hw.gpuLabel]);
+  }, [hw.gpuLabel, os]);
 
   function reset() {
     setVendor(null);
+    setStep(1);
     onSelect(null);
   }
 
@@ -124,7 +123,7 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
   const filteredGPUs = useMemo(() => vendor ? getGPUsForVendor(vendor) : [], [vendor]);
   const groupedGPUs  = useMemo(() => vendor === 'nvidia' ? groupNvidiaGPUs(filteredGPUs) : null, [vendor, filteredGPUs]);
 
-  // ── If GPU already selected, show a summary chip with reset ──
+  // Selected — show summary chip
   if (hw.gpuLabel) {
     const backend = (() => {
       if (hw.gpuLabel === 'No GPU (CPU only)') return 'cpu';
@@ -139,28 +138,29 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
       <div className={`rounded-lg border px-3 py-2.5 ${bMeta.bg} flex items-center justify-between gap-3`}>
         <div>
           <div className="text-sm font-semibold text-white">{hw.gpuLabel}</div>
-          <div className="flex gap-3 mt-0.5 text-xs">
+          <div className="flex gap-3 mt-0.5 text-xs flex-wrap">
             <span className={bMeta.color}>{bMeta.label}</span>
-            {hw.bandwidth > 0 && <span className="text-slate-500">{hw.bandwidth} GB/s</span>}
-            {hw.memType && <span className="text-slate-600">{hw.memType}</span>}
+            {hw.bandwidth > 0 && <span className="text-slate-500">{hw.bandwidth} GB/s memory bandwidth</span>}
+            {hw.memType && !hw.unifiedMem && <span className="text-slate-600">{hw.memType}</span>}
+            {hw.unifiedMem && hw.vram > 0 && <span className="text-slate-500">{hw.vram} GB unified</span>}
           </div>
         </div>
-        <button onClick={reset} className="text-slate-600 hover:text-slate-400 transition-colors">
+        <button onClick={reset} title="Change GPU" className="text-slate-600 hover:text-slate-400 transition-colors shrink-0">
           <X size={14} />
         </button>
       </div>
     );
   }
 
-  // ── Step 1: OS ────────────────────────────────────────────────
+  // Step 1: OS
   if (!os) {
     return (
       <div className="space-y-2">
-        <div className="text-xs text-slate-500 mb-2">What OS are you on?</div>
+        <div className="text-xs text-slate-500 mb-2">Step 1 of 3 — What operating system are you on?</div>
         {['Windows', 'Linux', 'macOS'].map(o => (
           <button
             key={o}
-            onClick={() => onOSChange(o)}
+            onClick={() => { onOSChange(o); setStep(2); }}
             className="w-full flex items-center justify-between px-4 py-3 rounded-lg border border-[#1E2D45] hover:border-sky-700 hover:bg-sky-950/20 transition-all text-left"
           >
             <span className="text-sm text-slate-200">
@@ -173,13 +173,13 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
     );
   }
 
-  // ── Step 2: Vendor ────────────────────────────────────────────
+  // Step 2: Vendor
   if (!vendor) {
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between mb-2">
-          <div className="text-xs text-slate-500">GPU brand?</div>
-          <button onClick={() => onOSChange('')} className="text-xs text-slate-600 hover:text-sky-400 transition-colors">
+          <div className="text-xs text-slate-500">Step 2 of 3 — What GPU brand?</div>
+          <button onClick={() => { onOSChange(''); setStep(1); }} className="text-xs text-slate-600 hover:text-sky-400 transition-colors">
             ← {os}
           </button>
         </div>
@@ -188,11 +188,11 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
             key={v.id}
             onClick={() => {
               if (v.id === 'none') {
-                // Immediately select CPU-only
                 const preset = GPU_PRESETS.find(g => g.label === 'No GPU (CPU only)');
                 onSelect(preset);
               } else {
                 setVendor(v.id);
+                setStep(3);
               }
             }}
             className="w-full flex items-center justify-between px-4 py-3 rounded-lg border border-[#1E2D45] hover:border-sky-700 hover:bg-sky-950/20 transition-all text-left"
@@ -211,14 +211,14 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
     );
   }
 
-  // ── Step 3: GPU model ─────────────────────────────────────────
+  // Step 3: GPU model
   const groups = groupedGPUs ?? [{ label: null, gpus: filteredGPUs }];
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="text-xs text-slate-500">Select your GPU</div>
-        <button onClick={() => setVendor(null)} className="text-xs text-slate-600 hover:text-sky-400 transition-colors">
+        <div className="text-xs text-slate-500">Step 3 of 3 — Select your exact GPU</div>
+        <button onClick={() => { setVendor(null); setStep(2); }} className="text-xs text-slate-600 hover:text-sky-400 transition-colors">
           ← Back
         </button>
       </div>
@@ -237,8 +237,8 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
                 >
                   <span className="text-sm text-slate-200">{g.label}</span>
                   <div className="flex items-center gap-2 text-xs text-slate-600 shrink-0">
-                    {g.bandwidth > 0 && <span>{g.bandwidth} GB/s</span>}
-                    {g.memType && <span className="hidden sm:inline">{g.memType}</span>}
+                    {g.vram > 0 && <span>{g.vram} GB</span>}
+                    {g.bandwidth > 0 && <span className="hidden sm:inline">{g.bandwidth} GB/s</span>}
                   </div>
                 </button>
               ))}
@@ -256,6 +256,11 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
   const [importantOpen, setImportantOpen] = useState(true);
   const hw = value;
 
+  // True when an Apple Silicon chip is selected (M1/M2/M3/M4)
+  const isApple = !!hw.unifiedMem;
+  // True when CPU-only (no discrete GPU, no Apple Silicon)
+  const isCPUOnly = hw.gpuLabel === 'No GPU (CPU only)';
+
   // Auto-detect OS on mount
   useEffect(() => {
     if (hw.os) return;
@@ -272,10 +277,12 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
 
   function onGPUSelect(preset) {
     if (!preset) {
-      update({ gpuLabel: '', vram: 0, arch: null, unifiedMem: false, flashAttn: false, bandwidth: 0, memType: null, pcie: null, gpuBuyUrl: null, maxRam: null });
+      update({ gpuLabel: '', vram: 0, arch: null, unifiedMem: false, flashAttn: false,
+               bandwidth: 0, memType: null, pcie: null, gpuBuyUrl: null, maxRam: null });
       return;
     }
-    update({
+
+    const fields = {
       gpuLabel:   preset.label,
       vram:       preset.vram,
       arch:       preset.arch || null,
@@ -286,14 +293,32 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
       pcie:       preset.pcie || null,
       gpuBuyUrl:  preset.buyUrl || null,
       maxRam:     preset.maxRam || null,
-    });
+    };
+
+    if (preset.unified) {
+      // Apple Silicon: CPU and GPU are the same chip.
+      // Infer cpuTier from chip name — affects CPU-offload scoring even though
+      // effectiveVRAM already uses the full RAM pool for Apple Silicon.
+      const lbl = preset.label;
+      const tier = lbl.includes('Ultra') ? 'ultra'
+                 : lbl.includes('Max') || lbl.includes('Pro') ? 'high'
+                 : 'mid';
+      const cpuRamFactor = tier === 'ultra' ? 1.0 : tier === 'high' ? 0.9 : 0.75;
+      // Apple Silicon uses unified LPDDR5X — set RAM bandwidth to match preset
+      // ramBandwidthFactor for Apple is effectively 1.0 (on-chip, no PCIe bottleneck)
+      fields.cpuTier = tier;
+      fields.cpuRamFactor = cpuRamFactor;
+      fields.ramBandwidthFactor = 1.0;
+    }
+
+    update(fields);
   }
 
   function onCPUChange(label) {
     const cpu = CPU_PRESETS.find(c => c.label === label);
     if (!cpu) return;
-    // cpuRamFactor is CPU cache/memory-controller efficiency — separate from RAM type speed (ramBandwidthFactor)
-    update({ cpuLabel: label, cpuTier: cpu.tier, cpuCores: cpu.cores, cpuVendor: cpu.vendor, cpuRamFactor: cpu.ramBandwidthFactor });
+    update({ cpuLabel: label, cpuTier: cpu.tier, cpuCores: cpu.cores,
+             cpuVendor: cpu.vendor, cpuRamFactor: cpu.ramBandwidthFactor });
   }
 
   function onRAMTypeChange(label) {
@@ -310,38 +335,43 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
   return (
     <div className="space-y-4">
       {/* ── Hardware card ─────────────────────────────────────── */}
-      <div className="card p-5 space-y-4">
-        <div className="flex items-center gap-2 mb-1">
+      <div className="card p-5 space-y-5">
+        <div className="flex items-center gap-2">
           <Cpu size={15} className="text-sky-400" />
-          <span className="text-sm font-semibold text-sky-400">Hardware</span>
+          <span className="text-sm font-semibold text-sky-400">Your Hardware</span>
         </div>
 
         {/* GPU Wizard */}
         <div>
-          <label className="label">GPU</label>
-          <GPUWizard
-            hw={hw}
-            os={hw.os || ''}
-            onSelect={onGPUSelect}
-            onOSChange={os => update({ os, gpuLabel: '', vram: 0, unifiedMem: false, bandwidth: 0 })}
-          />
+          <label className="label">GPU / Chip</label>
+          <HelpText>Select your graphics card or Apple Silicon chip</HelpText>
+          <div className="mt-2">
+            <GPUWizard
+              hw={hw}
+              os={hw.os || ''}
+              onSelect={onGPUSelect}
+              onOSChange={os => update({ os, gpuLabel: '', vram: 0, unifiedMem: false, bandwidth: 0 })}
+            />
+          </div>
         </div>
 
-        {/* VRAM override (only after GPU selected, non-unified) */}
-        {hw.gpuLabel && !hw.unifiedMem && hw.gpuLabel !== 'No GPU (CPU only)' && (
+        {/* VRAM override — discrete GPU only, not Apple Silicon, not CPU-only */}
+        {hw.gpuLabel && !isApple && !isCPUOnly && (
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="label">VRAM (GB)</label>
+              <HelpText>Video memory on your GPU card</HelpText>
               <input
                 type="number" min={1} max={256}
-                className="w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
+                className="mt-1.5 w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
                 value={hw.vram || ''}
                 onChange={e => { const v = Number(e.target.value); if (v >= 1) update({ vram: v }); }}
               />
             </div>
             <div>
               <label className="label">Number of GPUs</label>
-              <div className="flex gap-1.5">
+              <HelpText>Multi-GPU setups only</HelpText>
+              <div className="flex gap-1.5 mt-1.5">
                 {[1, 2, 3, 4].map(n => (
                   <button key={n} onClick={() => update({ numGPUs: n })}
                     className={`flex-1 py-2 rounded-lg text-xs font-mono border transition-colors ${
@@ -353,58 +383,95 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
           </div>
         )}
 
-        {/* CPU */}
-        <div>
-          <label className="label">CPU</label>
-          <select
-            className="w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
-            value={hw.cpuLabel || ''}
-            onChange={e => onCPUChange(e.target.value)}
-          >
-            <option value="">— Select CPU —</option>
-            {['ultra', 'high', 'mid', 'low'].map(tier => {
-              const label = tier === 'ultra' ? 'Ultra / Workstation' : tier.charAt(0).toUpperCase() + tier.slice(1) + '-end';
-              return (
-                <optgroup key={tier} label={label}>
-                  {CPU_PRESETS.filter(c => c.tier === tier && !c.apple).map(c => (
-                    <option key={c.label} value={c.label}>{c.label} ({c.cores}c)</option>
-                  ))}
-                </optgroup>
-              );
-            })}
-          </select>
-        </div>
+        {/* Apple Silicon info — replaces CPU + RAM type fields */}
+        {isApple && (
+          <div className="rounded-lg border border-purple-800/40 bg-purple-950/20 px-3 py-2.5 space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🍎</span>
+              <span className="text-xs font-semibold text-purple-300">Apple Silicon — Unified Memory</span>
+            </div>
+            <p className="text-xs text-slate-500 leading-snug">
+              The CPU, GPU, and RAM are all one chip. No separate CPU or RAM type needed — memory bandwidth is already included from your chip selection.
+            </p>
+          </div>
+        )}
+
+        {/* CPU — hidden for Apple Silicon (same chip) */}
+        {!isApple && (
+          <div>
+            <label className="label">CPU</label>
+            <HelpText>
+              {isCPUOnly
+                ? 'Your CPU handles all inference — pick the closest match'
+                : 'Used to estimate CPU offload speed when VRAM is tight'}
+            </HelpText>
+            <select
+              className="mt-1.5 w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
+              value={hw.cpuLabel || ''}
+              onChange={e => onCPUChange(e.target.value)}
+            >
+              <option value="">— Select your CPU —</option>
+              {['ultra', 'high', 'mid', 'low'].map(tier => {
+                const label = tier === 'ultra' ? 'Ultra / Workstation'
+                            : tier === 'high'  ? 'High-end Desktop / Laptop'
+                            : tier === 'mid'   ? 'Mid-range Desktop / Laptop'
+                            : 'Budget / Older';
+                return (
+                  <optgroup key={tier} label={label}>
+                    {CPU_PRESETS.filter(c => c.tier === tier && !c.apple).map(c => (
+                      <option key={c.label} value={c.label}>{c.label} ({c.cores}-core)</option>
+                    ))}
+                  </optgroup>
+                );
+              })}
+            </select>
+          </div>
+        )}
 
         {/* RAM */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className={`grid gap-3 ${isApple ? 'grid-cols-1' : 'grid-cols-2'}`}>
           <div>
-            <label className="label">System RAM (GB)</label>
+            <label className="label">
+              {isApple ? 'Unified Memory (GB)' : 'System RAM (GB)'}
+            </label>
+            <HelpText>
+              {isApple
+                ? 'The total RAM on your Mac — also acts as GPU memory'
+                : 'Total installed RAM in your PC or laptop'}
+            </HelpText>
             <select
-              className="w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
+              className="mt-1.5 w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
               value={hw.ram || ''}
               onChange={e => update({ ram: Number(e.target.value) })}
             >
-              <option value="">— RAM —</option>
-              {RAM_OPTIONS.filter(r => !hw.maxRam || r <= hw.maxRam).map(r => <option key={r} value={r}>{r} GB</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="label">RAM Type</label>
-            <select
-              className="w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
-              value={hw.ramTypeLabel || ''}
-              onChange={e => onRAMTypeChange(e.target.value)}
-            >
-              <option value="">— Type —</option>
-              {RAM_TYPES.map(r => (
-                <option key={r.label} value={r.label}>{r.label}</option>
+              <option value="">— Select RAM —</option>
+              {RAM_OPTIONS.filter(r => !hw.maxRam || r <= hw.maxRam).map(r => (
+                <option key={r} value={r}>{r} GB</option>
               ))}
             </select>
           </div>
+
+          {/* RAM Type — hidden for Apple Silicon */}
+          {!isApple && (
+            <div>
+              <label className="label">RAM Type</label>
+              <HelpText>Affects CPU-offload speed when VRAM is full</HelpText>
+              <select
+                className="mt-1.5 w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
+                value={hw.ramTypeLabel || ''}
+                onChange={e => onRAMTypeChange(e.target.value)}
+              >
+                <option value="">— RAM type —</option>
+                {RAM_TYPES.map(r => (
+                  <option key={r.label} value={r.label}>{r.label}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── Performance settings ──────────────────────────────── */}
+      {/* ── What do you need? ─────────────────────────────────── */}
       <div className="card overflow-hidden">
         <button
           className="w-full flex items-center justify-between p-4 text-sm font-semibold text-slate-300 hover:text-white"
@@ -412,20 +479,27 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
         >
           <span className="flex items-center gap-2">
             <Zap size={14} className="text-amber-400" />
-            Performance Settings
+            What do you need?
           </span>
           {importantOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
 
         {importantOpen && (
-          <div className="px-5 pb-5 space-y-4 border-t border-[#1E2D45] pt-4">
+          <div className="px-5 pb-5 space-y-5 border-t border-[#1E2D45] pt-4">
+            {/* Context length */}
             <div>
               <label className="label">Context Length</label>
-              <SegBtn options={CTX_OPTIONS} value={hw.contextLength} onChange={v => update({ contextLength: v })} />
+              <HelpText>How much text the model can see at once. 4k handles normal chats; 32k+ for long documents.</HelpText>
+              <div className="mt-2">
+                <SegBtn options={CTX_OPTIONS} value={hw.contextLength} onChange={v => update({ contextLength: v })} />
+              </div>
             </div>
+
+            {/* Use cases */}
             <div>
-              <label className="label">Use Cases</label>
-              <div className="flex flex-wrap gap-2">
+              <label className="label">Use Cases <span className="text-slate-600 font-normal">(optional)</span></label>
+              <HelpText>Select what you want to do — matching models are ranked higher in results.</HelpText>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {USE_CASES.map(uc => (
                   <button key={uc} onClick={() => toggleUseCase(uc)}
                     className={`chip border transition-colors ${
@@ -436,15 +510,20 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
                 ))}
               </div>
             </div>
+
+            {/* Speed filter */}
             <div>
-              <label className="label">Acceptable Speed</label>
-              <SegBtn options={SPEED_OPTIONS} value={hw.speedPref} onChange={v => update({ speedPref: v })} />
+              <label className="label">Minimum Speed</label>
+              <HelpText>Filters out models that are too slow for comfortable use. "Show all" includes CPU-offload models.</HelpText>
+              <div className="mt-2">
+                <SegBtn options={SPEED_OPTIONS} value={hw.speedPref} onChange={v => update({ speedPref: v })} />
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* ── Advanced ──────────────────────────────────────────── */}
+      {/* ── Advanced (optional) ───────────────────────────────── */}
       <div className="card overflow-hidden">
         <button
           className="w-full flex items-center justify-between p-4 text-sm font-semibold text-slate-500 hover:text-slate-300"
@@ -452,7 +531,8 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
         >
           <span className="flex items-center gap-2">
             <HardDrive size={14} className="text-slate-500" />
-            Advanced
+            Advanced Settings
+            <span className="text-xs font-normal text-slate-700">— most users skip this</span>
           </span>
           {advancedOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
@@ -461,37 +541,46 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
           <div className="px-5 pb-5 space-y-4 border-t border-[#1E2D45] pt-4">
             <div>
               <label className="label">Storage Type</label>
-              <SegBtn
-                options={[
-                  { label: 'NVMe PCIe 4+', value: 'nvme' },
-                  { label: 'SATA SSD', value: 'sata' },
-                  { label: 'HDD', value: 'hdd' },
-                ]}
-                value={hw.ssd}
-                onChange={v => update({ ssd: v })}
-              />
+              <HelpText>NVMe is fastest for loading models. Only matters if you have less RAM than the model size.</HelpText>
+              <div className="mt-2">
+                <SegBtn
+                  options={[
+                    { label: 'NVMe SSD', value: 'nvme' },
+                    { label: 'SATA SSD', value: 'sata' },
+                    { label: 'HDD',      value: 'hdd' },
+                  ]}
+                  value={hw.ssd}
+                  onChange={v => update({ ssd: v })}
+                />
+              </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            {/* Flash Attention — relevant for all backends */}
+            <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="text-sm text-slate-300">Flash Attention</div>
-                <div className="text-xs text-slate-600">Reduces KV cache VRAM ~30%</div>
+                <div className="text-xs text-slate-600 mt-0.5">
+                  Reduces KV cache VRAM by ~30%, especially at long context lengths. Supported in llama.cpp by default.
+                </div>
               </div>
               <button
                 onClick={() => update({ flashAttn: !hw.flashAttn })}
-                className={`relative w-11 h-6 rounded-full transition-colors ${hw.flashAttn ? 'bg-sky-600' : 'bg-slate-700'}`}
+                className={`relative shrink-0 w-11 h-6 rounded-full transition-colors ${hw.flashAttn ? 'bg-sky-600' : 'bg-slate-700'}`}
+                title={hw.flashAttn ? 'Flash Attention enabled' : 'Flash Attention disabled'}
               >
                 <span className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${hw.flashAttn ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
 
-            {(hw.arch || hw.pcie || hw.memType || hw.bandwidth) && (
+            {/* GPU tech details (auto-filled from preset) */}
+            {(hw.arch || hw.pcie || hw.memType || hw.bandwidth > 0) && (
               <div className="space-y-1 pt-2 border-t border-[#1E2D45]">
+                <div className="text-xs text-slate-600 mb-1.5">Auto-filled from GPU selection</div>
                 {[
                   ['Architecture', hw.arch],
                   ['VRAM Type', hw.memType],
                   ['PCIe Gen', hw.pcie ? `PCIe ${hw.pcie}.0` : null],
-                  ['Mem Bandwidth', hw.bandwidth > 0 ? `${hw.bandwidth} GB/s` : null],
+                  ['Memory Bandwidth', hw.bandwidth > 0 ? `${hw.bandwidth} GB/s` : null],
                 ].filter(([, v]) => v).map(([k, v]) => (
                   <div key={k} className="flex justify-between text-xs">
                     <span className="text-slate-600">{k}</span>
@@ -504,21 +593,23 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
         )}
       </div>
 
-      {/* ── Gemini Toggle ─────────────────────────────────────── */}
-      <div className="card p-4 flex items-center justify-between">
+      {/* ── Gemini AI Advisor Toggle ───────────────────────────── */}
+      <div className="card p-4 flex items-center justify-between gap-3">
         <div>
           <div className="text-sm font-semibold text-slate-300 flex items-center gap-2">
             <span className="text-yellow-400">⚡</span>
             Gemini AI Advisor
           </div>
           <div className="text-xs text-slate-600 mt-0.5">
-            {geminiEnabled ? 'Analysing your full config for speed estimates' : 'Enable for AI tok/s estimates + model suggestions'}
+            {geminiEnabled
+              ? 'AI-powered speed estimates and next/previous model suggestions'
+              : 'Enable for AI-powered speed tips and model comparisons'}
           </div>
         </div>
-        <button onClick={onGeminiToggle}>
+        <button onClick={onGeminiToggle} title={geminiEnabled ? 'Disable Gemini AI' : 'Enable Gemini AI'}>
           {geminiEnabled
             ? <ToggleRight size={32} className="text-yellow-400" />
-            : <ToggleLeft size={32} className="text-slate-600" />}
+            : <ToggleLeft  size={32} className="text-slate-600" />}
         </button>
       </div>
     </div>

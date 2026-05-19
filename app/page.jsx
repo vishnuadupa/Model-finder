@@ -215,10 +215,10 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'var(--font-syne)' }}>
-            Which LLMs can your <span className="text-sky-400">GPU</span> run?
+            Which AI models can your <span className="text-sky-400">hardware</span> run?
           </h1>
           <p className="text-slate-500 text-sm max-w-lg mx-auto">
-            Enter your full hardware config. Scores use memory bandwidth, OS backend, RAM type, and CPU offload capacity for accurate results.
+            Pick your GPU (or Apple Silicon chip), RAM, and what you want to do — we&apos;ll show you every model that fits, ranked by speed.
           </p>
         </div>
 
@@ -276,9 +276,15 @@ export default function Home() {
             ) : !hasHardware ? (
               <div className="card p-12 text-center space-y-4">
                 <div className="text-4xl">🖥️</div>
-                <div className="text-slate-400 font-semibold">Select your GPU and RAM to see results</div>
-                <div className="text-slate-600 text-sm max-w-sm mx-auto">
-                  Scoring uses GPU memory bandwidth, OS backend efficiency, RAM type, and CPU offload capacity — not just VRAM size.
+                <div className="text-slate-400 font-semibold">Select your hardware to see results</div>
+                <div className="text-slate-600 text-sm max-w-sm mx-auto space-y-3">
+                  <p>Use the form on the left to pick your GPU (or Apple Silicon chip) and RAM.</p>
+                  <div className="text-left inline-block space-y-1.5 text-xs text-slate-700">
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Works for NVIDIA, AMD, Intel Arc, Apple Silicon, and CPU-only</span></div>
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Shows exactly how much VRAM / unified memory each model needs</span></div>
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Estimates tokens per second for your specific hardware</span></div>
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Explains what each quantization level means in plain English</span></div>
+                  </div>
                 </div>
               </div>
             ) : (

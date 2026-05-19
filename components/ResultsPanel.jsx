@@ -6,7 +6,7 @@ const TIER_META = {
   recommended: {
     icon: <Sparkles size={14} className="text-green-400" />,
     label: 'Recommended',
-    desc: 'Runs fast with room to spare',
+    desc: 'Fits comfortably in memory — fast and reliable',
     accent: 'text-green-400',
     border: 'border-green-900/50',
     bg: 'bg-green-950/10',
@@ -14,7 +14,7 @@ const TIER_META = {
   comfortable: {
     icon: <Zap size={14} className="text-sky-400" />,
     label: 'Comfortable',
-    desc: 'Runs well, near optimal',
+    desc: 'Fits in memory with a bit less headroom — still good',
     accent: 'text-sky-400',
     border: 'border-sky-900/50',
     bg: 'bg-sky-950/10',
@@ -22,7 +22,7 @@ const TIER_META = {
   stretch: {
     icon: <AlertTriangle size={14} className="text-amber-400" />,
     label: 'Stretch',
-    desc: 'Tight on VRAM or needs CPU offload',
+    desc: 'Very tight on memory — may need CPU offload (slower)',
     accent: 'text-amber-400',
     border: 'border-amber-900/50',
     bg: 'bg-amber-950/10',
