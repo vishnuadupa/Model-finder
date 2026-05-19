@@ -221,7 +221,7 @@ export default function Home() {
         <div className="lg:hidden sticky top-0 z-30 bg-[#080B12]/95 backdrop-blur border-b border-[#1E2D45]">
           <div className="flex">
             <button
-              onClick={() => setMobileTab('hardware')}
+              onClick={() => { setMobileTab('hardware'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
                 mobileTab === 'hardware'
                   ? 'border-sky-500 text-sky-400'
@@ -231,7 +231,7 @@ export default function Home() {
               <Settings size={14} /> Hardware
             </button>
             <button
-              onClick={() => setMobileTab('results')}
+              onClick={() => { setMobileTab('results'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
                 mobileTab === 'results'
                   ? 'border-sky-500 text-sky-400'
@@ -316,7 +316,7 @@ export default function Home() {
                 <div className="text-4xl">🖥️</div>
                 <div className="text-slate-400 font-semibold">Select your hardware to see results</div>
                 <div className="text-slate-600 text-sm max-w-sm mx-auto space-y-3">
-                  <p>Use the form above to pick your GPU (or Apple Silicon chip) and RAM.</p>
+                  <p>Use the <span className="hidden lg:inline">form on the left</span><span className="lg:hidden">Hardware tab above</span> to pick your GPU (or Apple Silicon chip) and RAM.</p>
                   <div className="text-left inline-block space-y-1.5 text-xs text-slate-700">
                     <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Works for NVIDIA, AMD, Intel Arc, Apple Silicon, and CPU-only</span></div>
                     <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Shows exactly how much VRAM / unified memory each model needs</span></div>

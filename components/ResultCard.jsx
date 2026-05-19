@@ -31,7 +31,7 @@ const QUANT_INFO = {
   F32:     { label: '32-bit (full)',   quality: '★★★★', note: 'Maximum precision, needs 8× VRAM vs Q4_K_M' },
 };
 
-function CopyButton({ text }) {
+function CopyButton({ text, label }) {
   const [copied, setCopied] = useState(false);
   function copy() {
     navigator.clipboard.writeText(text);
@@ -41,10 +41,11 @@ function CopyButton({ text }) {
   return (
     <button
       onClick={copy}
-      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors font-mono"
+      title={text}
+      className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors font-mono min-w-0 max-w-full"
     >
-      {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
-      {copied ? 'Copied!' : text}
+      {copied ? <Check size={12} className="text-green-400 shrink-0" /> : <Copy size={12} className="shrink-0" />}
+      <span className="truncate">{copied ? 'Copied!' : (label || text)}</span>
     </button>
   );
 }
@@ -176,14 +177,17 @@ export default function ResultCard({ result, hwVram, rank }) {
       {/* Actions */}
       <div className="flex flex-wrap gap-2 pt-1 border-t border-[#1E2D45]">
         {model.ollamaTag && (
-          <CopyButton text={`ollama run ${model.ollamaTag}`} />
+          <CopyButton
+            text={`ollama run ${model.ollamaTag}`}
+            label={`ollama run ${model.ollamaTag}`}
+          />
         )}
         {model.ollamaTag && (
           <a
             href={`https://ollama.com/library/${model.ollamaTag.split(':')[0]}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors whitespace-nowrap"
           >
             <ExternalLink size={12} /> Ollama
           </a>
@@ -193,7 +197,7 @@ export default function ResultCard({ result, hwVram, rank }) {
             href={`https://huggingface.co/${model.hfRepo}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors whitespace-nowrap"
           >
             <ExternalLink size={12} /> HuggingFace
           </a>
@@ -203,7 +207,7 @@ export default function ResultCard({ result, hwVram, rank }) {
             href={`https://huggingface.co/${model.hfRepo}/tree/main`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-emerald-900/50 hover:border-emerald-600 rounded-lg text-xs text-slate-400 hover:text-emerald-400 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-emerald-900/50 hover:border-emerald-600 rounded-lg text-xs text-slate-400 hover:text-emerald-400 transition-colors whitespace-nowrap"
           >
             <ExternalLink size={12} /> Download GGUF
           </a>

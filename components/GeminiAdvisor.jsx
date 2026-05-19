@@ -75,7 +75,7 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
         {loading && <Loader2 size={13} className="text-slate-500 animate-spin" />}
       </div>
 
-      <div className="text-xs text-slate-600 font-mono">
+      <div className="text-xs text-slate-600 font-mono truncate">
         {hw.gpuLabel} · {hw.bandwidth > 0 ? `${hw.bandwidth} GB/s · ` : ''}{currentModel.name}
       </div>
 
