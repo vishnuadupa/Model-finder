@@ -200,7 +200,7 @@ export default function Home() {
                   disabled={summaryLoading}
                   className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  {summaryLoading ? 'Generating...' : '✨ Claude AI Summary'}
+                  {summaryLoading ? 'Generating...' : '✨ Gemini AI Summary'}
                 </button>
                 {summary && (
                   <p className="text-sm text-slate-300 leading-relaxed">{summary}</p>
