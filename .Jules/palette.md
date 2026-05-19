@@ -1,0 +1,3 @@
+## 2024-05-19 - Improved Screen Reader Support for Interactive Controls
+**Learning:** Icon-only buttons (like the clear 'X'), custom toggle switches, and collapsible accordions heavily depend on `aria-label`, `role="switch"`, `aria-checked`, and `aria-expanded` attributes respectively to provide context to screen readers, which is crucial since visual indicators alone aren't sufficient.
+**Action:** When building or auditing custom form controls or toggleable sections, explicitly verify that semantic roles and appropriate ARIA state attributes are applied to maintain accessibility parity with standard HTML elements.

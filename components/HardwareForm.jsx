@@ -145,7 +145,7 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
             {hw.memType && <span className="text-slate-600">{hw.memType}</span>}
           </div>
         </div>
-        <button onClick={reset} className="text-slate-600 hover:text-slate-400 transition-colors">
+        <button onClick={reset} aria-label="Clear selected GPU" className="text-slate-600 hover:text-slate-400 transition-colors">
           <X size={14} />
         </button>
       </div>
@@ -407,6 +407,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
         <button
           className="w-full flex items-center justify-between p-4 text-sm font-semibold text-slate-300 hover:text-white"
           onClick={() => setImportantOpen(o => !o)}
+          aria-expanded={importantOpen}
         >
           <span className="flex items-center gap-2">
             <Zap size={14} className="text-amber-400" />
@@ -447,6 +448,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
         <button
           className="w-full flex items-center justify-between p-4 text-sm font-semibold text-slate-500 hover:text-slate-300"
           onClick={() => setAdvancedOpen(o => !o)}
+          aria-expanded={advancedOpen}
         >
           <span className="flex items-center gap-2">
             <HardDrive size={14} className="text-slate-500" />
@@ -476,6 +478,9 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
                 <div className="text-xs text-slate-600">Reduces KV cache VRAM ~30%</div>
               </div>
               <button
+                role="switch"
+                aria-checked={hw.flashAttn}
+                aria-label="Toggle Flash Attention"
                 onClick={() => update({ flashAttn: !hw.flashAttn })}
                 className={`relative w-11 h-6 rounded-full transition-colors ${hw.flashAttn ? 'bg-sky-600' : 'bg-slate-700'}`}
               >
@@ -513,7 +518,12 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
             {geminiEnabled ? 'Analysing your full config for speed estimates' : 'Enable for AI tok/s estimates + model suggestions'}
           </div>
         </div>
-        <button onClick={onGeminiToggle}>
+        <button
+          role="switch"
+          aria-checked={geminiEnabled}
+          aria-label="Toggle Gemini AI Advisor"
+          onClick={onGeminiToggle}
+        >
           {geminiEnabled
             ? <ToggleRight size={32} className="text-yellow-400" />
             : <ToggleLeft size={32} className="text-slate-600" />}
