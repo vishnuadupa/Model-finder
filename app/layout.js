@@ -1,5 +1,6 @@
 import { IBM_Plex_Mono, Syne } from 'next/font/google';
 import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 const ibmPlex = IBM_Plex_Mono({
@@ -51,6 +52,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="antialiased min-h-screen">
         {children}
+        <Analytics />
       </body>
     </html>
   );
