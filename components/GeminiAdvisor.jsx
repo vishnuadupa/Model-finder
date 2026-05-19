@@ -35,6 +35,11 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ hw, currentModel, allModels }),
         });
+        if (res.status === 429) {
+          const data = await res.json().catch(() => ({}));
+          const wait = data.retryAfter || 60;
+          throw new Error(`rate_limited:${wait}`);
+        }
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: res.statusText }));
           throw new Error(err.error || 'Request failed');
@@ -68,12 +73,26 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
         {hw.gpuLabel} · {hw.bandwidth > 0 ? `${hw.bandwidth} GB/s · ` : ''}{currentModel.name}
       </div>
 
-      {error && (
-        <div className="flex items-start gap-2 text-xs text-red-400 bg-red-950/20 border border-red-900/40 rounded-lg px-3 py-2">
-          <AlertCircle size={12} className="shrink-0 mt-0.5" />
-          <span>{error.includes('GEMINI') || error.includes('API key') ? 'Add GEMINI_API_KEY to .env.local' : error}</span>
-        </div>
-      )}
+      {error && (() => {
+        const isRateLimit = error.startsWith('rate_limited:');
+        const retryAfter  = isRateLimit ? error.split(':')[1] : null;
+        return (
+          <div className={`flex items-start gap-2 text-xs rounded-lg px-3 py-2 ${
+            isRateLimit
+              ? 'text-amber-400 bg-amber-950/20 border border-amber-900/40'
+              : 'text-red-400 bg-red-950/20 border border-red-900/40'
+          }`}>
+            <AlertCircle size={12} className="shrink-0 mt-0.5" />
+            <span>
+              {isRateLimit
+                ? `Gemini quota reached — retry in ~${retryAfter}s. Enable billing at ai.google.dev for higher limits.`
+                : error.includes('GEMINI') || error.includes('API key')
+                  ? 'Add GEMINI_API_KEY to Vercel env vars'
+                  : error}
+            </span>
+          </div>
+        );
+      })()}
 
       {loading && !result && (
         <div className="space-y-2 animate-pulse">

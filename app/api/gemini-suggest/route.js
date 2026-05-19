@@ -104,11 +104,30 @@ Return ONLY valid JSON (no markdown, no explanation):
   }
 }`;
 
-  const genAI  = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model  = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-  const result = await model.generateContent(prompt);
-  const text   = result.response.text()
-    .replace(/```json\n?/g, '').replace(/\n?```/g, '').trim();
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+  // Try flash first, fall back to flash-lite on quota errors
+  let text;
+  for (const modelId of ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b']) {
+    try {
+      const m = genAI.getGenerativeModel({ model: modelId });
+      const result = await m.generateContent(prompt);
+      text = result.response.text()
+        .replace(/```json\n?/g, '').replace(/\n?```/g, '').trim();
+      break;
+    } catch (err) {
+      const is429 = err?.status === 429 || err?.message?.includes('429');
+      if (is429 && modelId !== 'gemini-1.5-flash-8b') continue; // try next model
+      if (is429) {
+        const retryAfter = err?.message?.match(/(\d+)s/)?.[1];
+        return Response.json(
+          { error: 'rate_limited', retryAfter: retryAfter ? Number(retryAfter) : 60 },
+          { status: 429 }
+        );
+      }
+      throw err;
+    }
+  }
 
   let data;
   try {

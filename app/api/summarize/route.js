@@ -49,10 +49,28 @@ Write a 2-paragraph plain-English summary:
 
 Direct and specific. No markdown. Under 120 words total.`;
 
-  const genAI  = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model  = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-  const result = await model.generateContent(prompt);
-  const summary = result.response.text().trim();
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+  let summary;
+  for (const modelId of ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b']) {
+    try {
+      const m = genAI.getGenerativeModel({ model: modelId });
+      const result = await m.generateContent(prompt);
+      summary = result.response.text().trim();
+      break;
+    } catch (err) {
+      const is429 = err?.status === 429 || err?.message?.includes('429');
+      if (is429 && modelId !== 'gemini-1.5-flash-8b') continue;
+      if (is429) {
+        const retryAfter = err?.message?.match(/(\d+)s/)?.[1];
+        return Response.json(
+          { error: `Gemini quota exceeded. Retry in ${retryAfter || 60}s.` },
+          { status: 429 }
+        );
+      }
+      throw err;
+    }
+  }
 
   if (store) {
     await store.set(cacheKey, summary, { ex: 86400 }).catch(() => {});
