@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { Copy, Check, ExternalLink, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
 
-const QUALITY_STYLE = {
-  good:      'bg-slate-800 text-slate-300',
-  great:     'bg-blue-900/50 text-blue-300',
-  excellent: 'bg-purple-900/50 text-purple-300',
+const QUALITY_COLORS = {
+  good:      'text-slate-400  bg-slate-800/60  border-slate-700/50',
+  great:     'text-sky-400    bg-sky-900/40    border-sky-800/50',
+  excellent: 'text-purple-400 bg-purple-900/40 border-purple-800/50',
 };
 
 const USE_CASE_ICONS = {
@@ -13,25 +13,40 @@ const USE_CASE_ICONS = {
   'long-docs': '📄', multilingual: '🌍', vision: '👁️',
 };
 
-// What each quantization level means in plain English (for beginners)
 const QUANT_INFO = {
-  IQ2_XXS: { label: '2-bit extreme',  quality: '★☆☆☆', note: 'Smallest file, noticeably worse quality' },
-  Q2_K:    { label: '2-bit',          quality: '★☆☆☆', note: 'Smallest file, lower quality — use only if VRAM limited' },
-  Q3_K_M:  { label: '3-bit medium',   quality: '★★☆☆', note: 'Small file, acceptable quality for most tasks' },
-  IQ4_XS:  { label: '4-bit small',    quality: '★★★☆', note: 'Good quality, slightly smaller than Q4_K_M' },
-  Q4_K_S:  { label: '4-bit small',    quality: '★★★☆', note: 'Good quality, slightly smaller than Q4_K_M' },
-  Q4_K_M:  { label: '4-bit (default)',quality: '★★★☆', note: 'Best balance of quality and VRAM — recommended for most' },
-  Q4_0:    { label: '4-bit legacy',   quality: '★★★☆', note: 'Older 4-bit format, prefer Q4_K_M' },
-  Q5_K_M:  { label: '5-bit medium',   quality: '★★★★', note: 'High quality, needs ~15% more VRAM than Q4_K_M' },
-  Q5_K_S:  { label: '5-bit small',    quality: '★★★★', note: 'High quality, slightly smaller than Q5_K_M' },
-  Q6_K:    { label: '6-bit',          quality: '★★★★', note: 'Very high quality, nearly indistinguishable from original' },
-  Q8_0:    { label: '8-bit',          quality: '★★★★', note: 'Near-original quality, needs 2× VRAM vs Q4_K_M' },
-  F16:     { label: '16-bit (full)',   quality: '★★★★', note: 'Full original quality, needs 4× VRAM vs Q4_K_M' },
-  BF16:    { label: '16-bit BF (full)',quality: '★★★★', note: 'Full original quality (brain float format)' },
-  F32:     { label: '32-bit (full)',   quality: '★★★★', note: 'Maximum precision, needs 8× VRAM vs Q4_K_M' },
+  IQ2_XXS: { label: '2-bit XS',      stars: 1, note: 'Smallest file, noticeably worse quality' },
+  Q2_K:    { label: '2-bit',         stars: 1, note: 'Smallest file — use only if very VRAM-limited' },
+  Q3_K_M:  { label: '3-bit',         stars: 2, note: 'Small file, acceptable quality for most tasks' },
+  IQ4_XS:  { label: '4-bit XS',      stars: 3, note: 'Good quality, slightly smaller than Q4_K_M' },
+  Q4_K_S:  { label: '4-bit small',   stars: 3, note: 'Good quality, slightly smaller than Q4_K_M' },
+  Q4_K_M:  { label: '4-bit',         stars: 3, note: 'Best balance of quality and size — recommended' },
+  Q4_0:    { label: '4-bit legacy',  stars: 3, note: 'Older format — prefer Q4_K_M' },
+  Q5_K_M:  { label: '5-bit',         stars: 4, note: 'High quality, ~15% more VRAM than Q4_K_M' },
+  Q5_K_S:  { label: '5-bit small',   stars: 4, note: 'High quality, slightly smaller than Q5_K_M' },
+  Q6_K:    { label: '6-bit',         stars: 4, note: 'Very high quality, nearly indistinguishable' },
+  Q8_0:    { label: '8-bit',         stars: 5, note: 'Near-original quality, 2× VRAM of Q4_K_M' },
+  F16:     { label: 'Full 16-bit',   stars: 5, note: 'Full original quality, 4× VRAM of Q4_K_M' },
+  BF16:    { label: 'BF 16-bit',     stars: 5, note: 'Full original quality (brain float format)' },
+  F32:     { label: 'Full 32-bit',   stars: 5, note: 'Max precision, 8× VRAM of Q4_K_M' },
 };
 
-function CopyButton({ text, label }) {
+const TIER_LEFT = {
+  recommended: 'border-l-emerald-500',
+  comfortable: 'border-l-sky-500',
+  stretch:     'border-l-amber-500',
+};
+
+function Stars({ count }) {
+  return (
+    <span className="font-mono text-[11px] tracking-tight">
+      {Array.from({ length: 5 }, (_, i) => (
+        <span key={i} className={i < count ? 'text-amber-400' : 'text-[#1E2E42]'}>★</span>
+      ))}
+    </span>
+  );
+}
+
+function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
   function copy() {
     navigator.clipboard.writeText(text);
@@ -42,174 +57,177 @@ function CopyButton({ text, label }) {
     <button
       onClick={copy}
       title={text}
-      className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors font-mono min-w-0 max-w-full"
+      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#070B14] border border-[#1B2A40] hover:border-sky-700/60 rounded-lg text-xs text-[#7A94B0] hover:text-sky-400 transition-all font-mono min-w-0"
     >
-      {copied ? <Check size={12} className="text-green-400 shrink-0" /> : <Copy size={12} className="shrink-0" />}
-      <span className="truncate">{copied ? 'Copied!' : (label || text)}</span>
+      {copied
+        ? <Check size={11} className="text-emerald-400 shrink-0" />
+        : <Copy size={11} className="shrink-0" />}
+      <span className="truncate max-w-[140px]">{copied ? 'Copied!' : text}</span>
     </button>
   );
 }
 
-function VRAMBar({ used, total }) {
+function VRAMBar({ used, total, cpuOnly }) {
   const pct = total > 0 ? Math.min((used / total) * 100, 100) : 0;
-  const color = pct > 90 ? 'bg-red-500' : pct > 70 ? 'bg-amber-500' : 'bg-sky-500';
+  const color = pct > 92 ? 'bg-rose-500' : pct > 75 ? 'bg-amber-500' : 'bg-sky-500';
+  const glowColor = pct > 92 ? 'rgba(239,68,68,0.3)' : pct > 75 ? 'rgba(245,158,11,0.3)' : 'rgba(14,165,233,0.3)';
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-        <div className={`h-full ${color} rounded-full transition-all`} style={{ width: `${pct}%` }} />
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-[#4A6280] uppercase tracking-wider text-[10px] font-semibold">
+          {cpuOnly ? 'RAM Usage' : 'VRAM Usage'}
+        </span>
+        <span className="font-mono text-[#8096B2]">{used} / {total} GB</span>
       </div>
-      <span className="text-xs text-slate-500 font-mono whitespace-nowrap">{used}/{total} GB</span>
+      <div className="h-2 bg-[#0A1220] rounded-full overflow-hidden border border-[#141F30]">
+        <div
+          className={`h-full ${color} rounded-full transition-all`}
+          style={{ width: `${pct}%`, boxShadow: `0 0 6px ${glowColor}` }}
+        />
+      </div>
     </div>
   );
 }
 
 export default function ResultCard({ result, hwVram, rank }) {
-  const { model, quant, tier, tokPerSec, vramRequired, vramFree,
-          ramRequired, downloadSizeGB, cpuOffloadNeeded, cpuOnly, weightsGB, kvCacheGB } = result;
-
-  const tierAccent = tier === 'recommended' ? 'border-l-green-500'
-                   : tier === 'comfortable' ? 'border-l-sky-500'
-                   : 'border-l-amber-500';
+  const {
+    model, quant, tier, tokPerSec, vramRequired, vramFree,
+    ramRequired, downloadSizeGB, cpuOffloadNeeded, cpuOnly,
+    weightsGB, kvCacheGB,
+  } = result;
 
   const effectiveVram = hwVram || (vramRequired + (vramFree > 0 ? vramFree : 0));
+  const qi = QUANT_INFO[quant];
+  const tierBorder = TIER_LEFT[tier] || 'border-l-slate-600';
 
   return (
-    <div className={`card border-l-2 ${tierAccent} p-4 space-y-3 hover:border-opacity-100 transition-all`}>
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-start gap-2">
+    <div className={`card border-l-[3px] ${tierBorder} p-5 space-y-4 hover:border-t-[#263D5C] transition-all duration-200`}
+         style={{ '--tw-shadow': '0 4px 20px rgba(0,0,0,0.45)' }}>
+
+      {/* ── Header ── */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-2.5 min-w-0">
           {rank && (
-            <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-slate-800 text-slate-500 text-xs font-mono font-bold">
+            <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-[#0A1220] text-[#3D5270] text-[10px] font-mono font-bold border border-[#141F30]">
               {rank}
             </span>
           )}
-          <div>
-            <div className="font-semibold text-white text-sm leading-tight">
-              {model.name}
+          <div className="min-w-0">
+            <div className="font-semibold text-[#E4ECF7] text-sm leading-snug truncate">{model.name}</div>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
+              {/* Quant badge */}
+              <span className="font-mono text-xs text-sky-400 bg-sky-950/40 border border-sky-900/30 px-1.5 py-0.5 rounded-md">
+                {quant}
+              </span>
+              {qi && <Stars count={qi.stars} />}
+              {qi && <span className="text-[11px] text-[#4A6280]">{qi.label}</span>}
             </div>
-            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              <span className="font-mono text-xs text-sky-400 bg-sky-950/40 border border-sky-900/40 px-1.5 py-0.5 rounded">{quant}</span>
-              {QUANT_INFO[quant] && (
-                <span className="text-xs text-slate-500" title={QUANT_INFO[quant].note}>
-                  {QUANT_INFO[quant].quality} {QUANT_INFO[quant].label}
+            <div className="text-[11px] text-[#3D5270] mt-0.5 font-mono">
+              {model.params}B params
+              {model.maxCtx && (
+                <span className="ml-2 text-[#2A3E57]">
+                  · {model.maxCtx >= 131072 ? '128k' : model.maxCtx >= 32768 ? '32k' : model.maxCtx >= 8192 ? '8k' : '4k'} ctx
                 </span>
               )}
             </div>
-            <div className="text-xs text-slate-600 mt-0.5">
-              {model.params}B params
-              {model.maxCtx && <span className="ml-2">· max {model.maxCtx >= 131072 ? '128k' : model.maxCtx >= 32768 ? '32k' : model.maxCtx >= 8192 ? '8k' : '4k'} ctx</span>}
-            </div>
           </div>
         </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className={`chip ${QUALITY_STYLE[model.quality] || QUALITY_STYLE.good}`}>
+
+        {/* Quality + verified */}
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <span className={`chip border text-[11px] ${QUALITY_COLORS[model.quality] || QUALITY_COLORS.good}`}>
             {model.quality}
           </span>
-          {model.verified ? (
-            <span className="flex items-center gap-1 text-xs text-green-500">
-              <CheckCircle size={10} /> verified
-            </span>
-          ) : (
-            <span className="flex items-center gap-1 text-xs text-amber-500">
-              <AlertCircle size={10} /> unverified
-            </span>
-          )}
+          {model.verified
+            ? <span className="flex items-center gap-1 text-[11px] text-emerald-500/80"><CheckCircle size={9} />verified</span>
+            : <span className="flex items-center gap-1 text-[11px] text-amber-500/60"><AlertCircle size={9} />unverified</span>}
         </div>
       </div>
 
-      {/* Quant explanation for beginners */}
-      {QUANT_INFO[quant] && (
-        <div className="text-xs text-slate-600 bg-slate-900/40 rounded px-2 py-1 border border-slate-800/50">
-          {QUANT_INFO[quant].note}
-        </div>
+      {/* ── Quant note ── */}
+      {qi && (
+        <p className="text-[11px] text-[#3D5270] bg-[#080C1A] rounded-lg px-3 py-1.5 border border-[#141F30] leading-relaxed">
+          {qi.note}
+        </p>
       )}
 
-      {/* VRAM / RAM bar */}
-      <div>
-        <div className="label">{cpuOnly ? 'RAM Usage' : 'VRAM Usage'}</div>
-        <VRAMBar used={vramRequired} total={effectiveVram} />
-        <div className="flex gap-3 mt-1 text-xs text-slate-600 font-mono">
-          <span>Weights: {weightsGB} GB</span>
-          <span>KV Cache: {kvCacheGB} GB</span>
+      {/* ── VRAM bar ── */}
+      <VRAMBar used={vramRequired} total={effectiveVram} cpuOnly={cpuOnly} />
+      <div className="flex gap-3 text-[11px] text-[#3D5270] font-mono -mt-2">
+        <span>Weights {weightsGB} GB</span>
+        <span>·</span>
+        <span>KV cache {kvCacheGB} GB</span>
+      </div>
+
+      {/* ── Stats ── */}
+      <div className="grid grid-cols-3 gap-2">
+        {/* tok/s — hero metric */}
+        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30] col-span-1">
+          <div className="text-sky-400 font-bold font-mono text-base leading-none">{tokPerSec}</div>
+          <div className="text-[10px] text-[#3D5270] mt-1 uppercase tracking-wider">tok/s</div>
+        </div>
+        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30]">
+          <div className="text-[#C8D8EA] font-bold font-mono text-sm leading-none">{ramRequired} GB</div>
+          <div className="text-[10px] text-[#3D5270] mt-1 uppercase tracking-wider">min RAM</div>
+        </div>
+        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30]">
+          <div className="text-[#C8D8EA] font-bold font-mono text-sm leading-none">{downloadSizeGB} GB</div>
+          <div className="text-[10px] text-[#3D5270] mt-1 uppercase tracking-wider">download</div>
         </div>
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="bg-[#080B12] rounded-lg p-2">
-          <div className="text-sky-300 font-bold font-mono text-sm">{tokPerSec}</div>
-          <div className="text-xs text-slate-600">tok/s</div>
-        </div>
-        <div className="bg-[#080B12] rounded-lg p-2">
-          <div className="text-slate-300 font-bold font-mono text-sm">{ramRequired} GB</div>
-          <div className="text-xs text-slate-600">min RAM</div>
-        </div>
-        <div className="bg-[#080B12] rounded-lg p-2">
-          <div className="text-slate-300 font-bold font-mono text-sm">{downloadSizeGB} GB</div>
-          <div className="text-xs text-slate-600">download</div>
-        </div>
-      </div>
-
-      {/* CPU offload / CPU-only warning */}
+      {/* ── Warnings ── */}
       {cpuOnly ? (
-        <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/30 border border-amber-800/50 rounded-lg">
-          <AlertTriangle size={12} className="text-amber-400 shrink-0" />
-          <span className="text-xs text-amber-300">CPU-only inference — expect 2–8 tok/s</span>
+        <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/20 border border-amber-800/30 rounded-lg">
+          <AlertTriangle size={11} className="text-amber-400 shrink-0" />
+          <span className="text-[11px] text-amber-300/80">CPU-only inference — expect 2–8 tok/s</span>
         </div>
       ) : cpuOffloadNeeded ? (
-        <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/30 border border-amber-800/50 rounded-lg">
-          <AlertTriangle size={12} className="text-amber-400 shrink-0" />
-          <span className="text-xs text-amber-300">Needs CPU offload — VRAM too small, slower inference</span>
+        <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/20 border border-amber-800/30 rounded-lg">
+          <AlertTriangle size={11} className="text-amber-400 shrink-0" />
+          <span className="text-[11px] text-amber-300/80">Needs CPU offload — VRAM too small, slower</span>
         </div>
       ) : null}
 
-      {/* Use case chips */}
+      {/* ── Use cases ── */}
       {model.useCases?.length > 0 && (
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {model.useCases.map(uc => (
-            <span key={uc} className="chip bg-slate-800/50 text-slate-400 text-xs">
+            <span key={uc} className="chip bg-[#0A1220] text-[#4A6280] border border-[#141F30] text-[11px]">
               {USE_CASE_ICONS[uc] || '·'} {uc}
             </span>
           ))}
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-[#1E2D45]">
-        {model.ollamaTag && (
-          <CopyButton
-            text={`ollama run ${model.ollamaTag}`}
-            label={`ollama run ${model.ollamaTag}`}
-          />
-        )}
+      {/* ── Actions ── */}
+      <div className="flex flex-wrap gap-2 pt-1 border-t border-[#131E2F]">
+        {model.ollamaTag && <CopyButton text={`ollama run ${model.ollamaTag}`} />}
         {model.ollamaTag && (
           <a
             href={`https://ollama.com/library/${model.ollamaTag.split(':')[0]}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors whitespace-nowrap"
+            target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#070B14] border border-[#1B2A40] hover:border-sky-700/60 rounded-lg text-xs text-[#7A94B0] hover:text-sky-400 transition-all whitespace-nowrap"
           >
-            <ExternalLink size={12} /> Ollama
+            <ExternalLink size={11} /> Ollama
           </a>
         )}
         {model.hfRepo && (
           <a
             href={`https://huggingface.co/${model.hfRepo}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors whitespace-nowrap"
+            target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#070B14] border border-[#1B2A40] hover:border-sky-700/60 rounded-lg text-xs text-[#7A94B0] hover:text-sky-400 transition-all whitespace-nowrap"
           >
-            <ExternalLink size={12} /> HuggingFace
+            <ExternalLink size={11} /> HuggingFace
           </a>
         )}
         {model.hfRepo && (
           <a
             href={`https://huggingface.co/${model.hfRepo}/tree/main`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-2 bg-[#080B12] border border-emerald-900/50 hover:border-emerald-600 rounded-lg text-xs text-slate-400 hover:text-emerald-400 transition-colors whitespace-nowrap"
+            target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#070B14] border border-emerald-900/40 hover:border-emerald-600/60 rounded-lg text-xs text-[#7A94B0] hover:text-emerald-400 transition-all whitespace-nowrap"
           >
-            <ExternalLink size={12} /> Download GGUF
+            <ExternalLink size={11} /> Download GGUF
           </a>
         )}
       </div>

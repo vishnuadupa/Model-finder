@@ -2,30 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ──────────────────────────────────────────
+   bg:      #070B14  page background
+   surface: #0D1526  card surface
+   inset:   #080C1A  input / inset surface
+   border:  #1B2A40  default border
+   b-hi:    #263D5C  border on hover / active
+   b-focus: #2C70AD  border on focus
+   txt-1:   #E4ECF7  primary text
+   txt-2:   #8096B2  secondary text
+   txt-3:   #3D5270  muted / placeholder text
+   accent:  #38BDF8  sky-400
+   ──────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: dark;
+}
+
 body {
-  background: #080B12;
-  color: #E2E8F0;
-  font-family: 'IBM Plex Mono', monospace;
+  background: #070B14;
+  color: #E4ECF7;
+  /* Inter for prose readability; IBM Plex Mono only for code/numbers */
+  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Monospace only where it counts — data, code, metrics */
+.font-mono,
+code, pre,
+input[type="number"],
+.mono {
+  font-family: var(--font-mono), 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 @layer utilities {
+  /* ── Cards ───────────────────────────────── */
   .card {
-    @apply bg-[#0F1623] border border-[#1E2D45] rounded-xl;
+    @apply bg-[#0D1526] border border-[#1B2A40] rounded-2xl;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.025);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
+
+  /* ── Buttons ─────────────────────────────── */
   .btn-primary {
-    @apply bg-sky-500 hover:bg-sky-400 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm;
+    @apply bg-sky-500 hover:bg-sky-400 active:scale-[0.98] text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 text-sm;
+    box-shadow: 0 1px 10px rgba(14, 165, 233, 0.3);
   }
+  .btn-primary:hover {
+    box-shadow: 0 2px 14px rgba(14, 165, 233, 0.45);
+  }
+
   .btn-ghost {
-    @apply border border-[#1E2D45] hover:border-sky-700 text-slate-400 hover:text-sky-400 px-3 py-1.5 rounded-lg transition-colors text-sm;
+    @apply border border-[#1B2A40] hover:border-[#2D4968] text-[#7A94B0] hover:text-sky-400 px-3 py-2 rounded-xl transition-all duration-150 text-sm;
   }
+
+  /* ── Chips / tags ────────────────────────── */
   .chip {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium;
   }
+
+  /* ── Form labels ─────────────────────────── */
   .label {
-    @apply text-xs text-slate-500 uppercase tracking-wider mb-1 block;
+    @apply text-xs text-[#4A6280] uppercase tracking-[0.07em] mb-1.5 block font-semibold;
   }
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #080B12; }
-::-webkit-scrollbar-thumb { background: #1E2D45; border-radius: 3px; }
+/* ── Input & select base ──────────────────────────────────── */
+select,
+input[type="number"],
+input[type="text"],
+textarea {
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #2C70AD !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.10) !important;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1B2A40; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #2D4968; }
+
+/* ── Text selection ───────────────────────────────────────── */
+::selection {
+  background: rgba(56, 189, 248, 0.18);
+  color: #E4ECF7;
+}
+
+/* ── Smooth transitions for interactive elements ─────────── */
+button { transition: all 0.12s ease; }
+a { transition: color 0.12s ease; }

@@ -4,28 +4,28 @@ import { Sparkles, Zap, AlertTriangle, Server } from 'lucide-react';
 
 const TIER_META = {
   recommended: {
-    icon: <Sparkles size={14} className="text-green-400" />,
-    label: 'Recommended',
-    desc: 'Fits comfortably in memory — fast and reliable',
-    accent: 'text-green-400',
-    border: 'border-green-900/50',
-    bg: 'bg-green-950/10',
+    icon:   <Sparkles size={13} className="text-emerald-400" />,
+    label:  'Recommended',
+    desc:   'Fits comfortably — fast and reliable',
+    accent: 'text-emerald-400',
+    dot:    'bg-emerald-400',
+    bar:    'bg-emerald-500/20 border-emerald-900/30',
   },
   comfortable: {
-    icon: <Zap size={14} className="text-sky-400" />,
-    label: 'Comfortable',
-    desc: 'Fits in memory with a bit less headroom — still good',
+    icon:   <Zap size={13} className="text-sky-400" />,
+    label:  'Comfortable',
+    desc:   'Fits well — slightly less headroom',
     accent: 'text-sky-400',
-    border: 'border-sky-900/50',
-    bg: 'bg-sky-950/10',
+    dot:    'bg-sky-400',
+    bar:    'bg-sky-500/10 border-sky-900/30',
   },
   stretch: {
-    icon: <AlertTriangle size={14} className="text-amber-400" />,
-    label: 'Stretch',
-    desc: 'Very tight on memory — may need CPU offload (slower)',
+    icon:   <AlertTriangle size={13} className="text-amber-400" />,
+    label:  'Stretch',
+    desc:   'Very tight — may need CPU offload',
     accent: 'text-amber-400',
-    border: 'border-amber-900/50',
-    bg: 'bg-amber-950/10',
+    dot:    'bg-amber-400',
+    bar:    'bg-amber-500/10 border-amber-900/30',
   },
 };
 
@@ -33,19 +33,19 @@ const RUNPOD_URL = 'https://runpod.io?ref=YOURCODE';
 
 function CloudCTA({ modelName }) {
   return (
-    <div className="card p-4 border-dashed flex items-center justify-between gap-4">
+    <div className="card p-4 border-dashed border-[#1B2A40] flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <Server size={18} className="text-slate-500" />
+        <Server size={16} className="text-[#3D5270] shrink-0" />
         <div>
-          <div className="text-sm text-slate-300">Can&apos;t run {modelName} locally?</div>
-          <div className="text-xs text-slate-600">Cloud GPU alternative</div>
+          <div className="text-sm text-[#C8D8EA]">Can&apos;t run {modelName} locally?</div>
+          <div className="text-xs text-[#3D5270]">Rent a cloud GPU instead</div>
         </div>
       </div>
       <a
         href={RUNPOD_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-ghost shrink-0 text-xs"
+        className="btn-ghost shrink-0 text-xs whitespace-nowrap"
       >
         RunPod ~$0.20/hr →
       </a>
@@ -58,20 +58,24 @@ function TierSection({ tier, results, hwVram }) {
   if (!results.length) return null;
 
   return (
-    <div className={`rounded-xl border ${meta.border} ${meta.bg} p-4 space-y-3`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+    <div className="space-y-3">
+      {/* Section header */}
+      <div className={`flex items-center justify-between px-4 py-2.5 rounded-xl border ${meta.bar}`}>
+        <div className="flex items-center gap-2.5">
+          <span className={`w-1.5 h-1.5 rounded-full ${meta.dot} shadow-[0_0_6px_currentColor]`} />
           {meta.icon}
-          <span className={`font-semibold ${meta.accent}`}>{meta.label}</span>
-          <span className="text-xs text-slate-600 font-mono">({results.length})</span>
+          <span className={`font-semibold text-sm ${meta.accent}`}>{meta.label}</span>
+          <span className="text-xs text-[#3D5270] font-mono bg-[#080C1A] px-1.5 py-0.5 rounded-md border border-[#141F30]">
+            {results.length}
+          </span>
         </div>
-        <span className="text-xs text-slate-600">{meta.desc} · ranked by speed &amp; size</span>
+        <span className="text-xs text-[#3D5270] hidden sm:block">{meta.desc}</span>
       </div>
+
+      {/* Cards grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {results.map((r, i) => (
-          <div key={`${r.model.name}_${r.quant}`} className="transition-all duration-200">
-            <ResultCard result={r} hwVram={hwVram} rank={i + 1} />
-          </div>
+          <ResultCard key={`${r.model.name}_${r.quant}`} result={r} hwVram={hwVram} rank={i + 1} />
         ))}
       </div>
     </div>
@@ -89,10 +93,10 @@ export default function ResultsPanel({ results, hw }) {
 
   if (totalCount === 0) {
     return (
-      <div className="card p-8 text-center space-y-3">
+      <div className="card p-10 text-center space-y-3">
         <div className="text-3xl">😅</div>
-        <div className="text-slate-300 font-semibold">No compatible models found</div>
-        <div className="text-sm text-slate-600">
+        <div className="text-[#C8D8EA] font-semibold">No compatible models found</div>
+        <div className="text-sm text-[#4A6280] leading-relaxed">
           Try reducing context length, enabling Flash Attention, or adding more RAM.
         </div>
         <CloudCTA modelName="any local model" />
@@ -102,14 +106,21 @@ export default function ResultsPanel({ results, hw }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-slate-400">
-          <span className="text-white font-semibold">{totalCount}</span> compatible models found
-        </div>
-        <div className="flex gap-3 text-xs font-mono text-slate-600">
-          {results.recommended?.length > 0 && <span className="text-green-500">✓ {results.recommended.length} recommended</span>}
-          {results.comfortable?.length > 0 && <span className="text-sky-500">✓ {results.comfortable.length} comfortable</span>}
-          {results.stretch?.length > 0 && <span className="text-amber-500">⚠ {results.stretch.length} stretch</span>}
+      <div className="flex items-center justify-between px-1">
+        <p className="text-sm text-[#7A94B0]">
+          <span className="text-white font-semibold font-mono">{totalCount}</span> models fit your hardware
+        </p>
+        <div className="flex gap-2 text-[11px] font-mono">
+          {results.recommended?.length > 0 && (
+            <span className="text-emerald-500/80 bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-900/30">
+              {results.recommended.length} recommended
+            </span>
+          )}
+          {results.comfortable?.length > 0 && (
+            <span className="text-sky-500/80 bg-sky-950/30 px-2 py-0.5 rounded-full border border-sky-900/30 hidden sm:inline">
+              {results.comfortable.length} comfortable
+            </span>
+          )}
         </div>
       </div>
 

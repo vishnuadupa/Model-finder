@@ -193,13 +193,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#080B12]">
-      <header className="border-b border-[#1E2D45] px-6 py-4">
+      <header className="border-b border-[#1B2A40] px-6 py-4 bg-[#070B14]/95 sticky top-0 z-40 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 bg-sky-500 rounded flex items-center justify-center">
+            <div className="w-7 h-7 bg-sky-500/90 rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(14,165,233,0.4)]">
               <Cpu size={14} className="text-white" />
             </div>
-            <span className="font-bold text-white" style={{ fontFamily: 'var(--font-syne)' }}>
+            <span className="font-bold text-white tracking-tight" style={{ fontFamily: 'var(--font-syne)' }}>
               Local LLM Matcher
             </span>
           </div>
@@ -216,9 +216,9 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Mobile tab bar — only visible on small screens when hardware is selected ── */}
+      {/* ── Mobile tab bar — sits below sticky header ── */}
       {hasHardware && (
-        <div className="lg:hidden sticky top-0 z-30 bg-[#080B12]/95 backdrop-blur border-b border-[#1E2D45]">
+        <div className="lg:hidden sticky top-[57px] z-30 bg-[#070B14]/95 backdrop-blur-md border-b border-[#1B2A40]">
           <div className="flex">
             <button
               onClick={() => { setMobileTab('hardware'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
@@ -251,12 +251,19 @@ export default function Home() {
       )}
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'var(--font-syne)' }}>
-            Which AI models can your <span className="text-sky-400">hardware</span> run?
+        {/* Hero */}
+        <div className="relative text-center mb-12 pt-2">
+          {/* Atmospheric glow */}
+          <div className="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
+            <div className="w-[480px] h-[120px] bg-sky-500/[0.06] rounded-full blur-3xl" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 tracking-tight" style={{ fontFamily: 'var(--font-syne)' }}>
+            Which AI models can your{' '}
+            <span className="text-sky-400" style={{ textShadow: '0 0 32px rgba(56,189,248,0.35)' }}>hardware</span>{' '}
+            run?
           </h1>
-          <p className="text-slate-500 text-sm max-w-lg mx-auto">
-            Pick your GPU (or Apple Silicon chip), RAM, and what you want to do — we&apos;ll show you every model that fits, ranked by speed.
+          <p className="text-[#7A94B0] text-sm max-w-md mx-auto leading-relaxed">
+            Pick your GPU or Apple Silicon chip, set your RAM, and we&apos;ll show every model that fits — ranked by speed.
           </p>
         </div>
 

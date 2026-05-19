@@ -1,4 +1,4 @@
-import { IBM_Plex_Mono, Syne } from 'next/font/google';
+import { IBM_Plex_Mono, Syne, Inter } from 'next/font/google';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
@@ -15,6 +15,14 @@ const syne = Syne({
   subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
   variable: '--font-syne',
+  display: 'swap',
+  preload: true,
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-inter',
   display: 'swap',
   preload: true,
 });
@@ -39,7 +47,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${ibmPlex.variable} ${syne.variable}`}>
+    <html lang="en" className={`${ibmPlex.variable} ${syne.variable} ${inter.variable}`}>
       <head>
         {process.env.NEXT_PUBLIC_ADSENSE && (
           <Script
