@@ -11,7 +11,23 @@ async function getKV() {
 }
 
 export async function POST(req) {
-  const { hw, topModels, useCase } = await req.json();
+  let payload;
+  try {
+    payload = await req.json();
+  } catch (err) {
+    return Response.json({ error: 'Invalid JSON payload' }, { status: 400 });
+  }
+
+  const { hw, topModels, useCase } = payload;
+
+  if (!hw || typeof hw !== 'object' || !Array.isArray(topModels)) {
+    return Response.json({ error: 'Invalid input format' }, { status: 400 });
+  }
+
+  // Basic payload size check to mitigate DoS
+  if (topModels.length > 100) {
+    return Response.json({ error: 'Payload too large' }, { status: 413 });
+  }
 
   if (!process.env.GEMINI_API_KEY) {
     return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 503 });
@@ -68,8 +84,14 @@ Direct and specific. No markdown. Under 120 words total.`;
           { status: 429 }
         );
       }
-      throw err;
+      // Securely handle unhandled exceptions from Gemini API without leaking stack trace
+      console.error('Gemini API Error:', err.message || err);
+      return Response.json({ error: 'Internal server error during summarization' }, { status: 500 });
     }
+  }
+
+  if (!summary) {
+    return Response.json({ error: 'Summarization failed' }, { status: 500 });
   }
 
   if (store) {

@@ -1,0 +1,4 @@
+## 2026-05-19 - Added API Input Validation & Secure Error Handling
+**Vulnerability:** Next.js API routes (`app/api/gemini-suggest/route.js` and `app/api/summarize/route.js`) lacked proper input validation for request payloads and exposed unhandled exceptions directly from the Gemini API.
+**Learning:** In Next.js App Router API handlers, unhandled exceptions might leak internal paths or stack traces. Unbounded array inputs could also lead to high memory consumption (DoS risk) especially when serialized for KV caching or hashing.
+**Prevention:** Always wrap `req.json()` in a try/catch, strictly type-check input object properties, set maximum array lengths for payload items, and catch backend API errors to return a generic 500 response while securely logging the actual error via `console.error`.

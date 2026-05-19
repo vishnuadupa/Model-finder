@@ -11,7 +11,23 @@ async function getKV() {
 }
 
 export async function POST(req) {
-  const { hw, currentModel, allModels } = await req.json();
+  let payload;
+  try {
+    payload = await req.json();
+  } catch (err) {
+    return Response.json({ error: 'Invalid JSON payload' }, { status: 400 });
+  }
+
+  const { hw, currentModel, allModels } = payload;
+
+  if (!hw || typeof hw !== 'object' || !currentModel || typeof currentModel !== 'object' || !Array.isArray(allModels)) {
+    return Response.json({ error: 'Invalid input format' }, { status: 400 });
+  }
+
+  // Basic payload size check to mitigate DoS (e.g. allModels too large)
+  if (allModels.length > 1000) {
+    return Response.json({ error: 'Payload too large' }, { status: 413 });
+  }
 
   if (!process.env.GEMINI_API_KEY) {
     return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 503 });
@@ -125,8 +141,14 @@ Return ONLY valid JSON (no markdown, no explanation):
           { status: 429 }
         );
       }
-      throw err;
+      // Securely handle unhandled exceptions from Gemini API without leaking stack trace
+      console.error('Gemini API Error:', err.message || err);
+      return Response.json({ error: 'Internal server error during generation' }, { status: 500 });
     }
+  }
+
+  if (!text) {
+    return Response.json({ error: 'Generation failed' }, { status: 500 });
   }
 
   let data;
