@@ -91,19 +91,27 @@ Write a 2-paragraph plain-English summary:
 Direct and specific. No markdown. Under 120 words.`;
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash-001', 'gemini-1.5-flash-002'];
   let summary;
-  for (const modelId of ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash-latest']) {
+  let lastErr;
+  for (const modelId of MODELS) {
     try {
       const m = genAI.getGenerativeModel({ model: modelId });
       const result = await m.generateContent(prompt);
-      summary = result.response.text().trim().slice(0, 1000); // cap output length
+      summary = result.response.text().trim().slice(0, 1000);
+      lastErr = null;
       break;
     } catch (err) {
-      const is429 = err?.status === 429 || err?.message?.includes('429');
-      if (is429 && modelId !== 'gemini-1.5-flash-latest') continue;
-      if (is429) return Response.json({ error: `Gemini quota exceeded. Retry in 60s.` }, { status: 429 });
+      lastErr = err;
+      const status = err?.status ?? 0;
+      if (status === 429 || status === 404) continue;
       throw err;
     }
+  }
+  if (lastErr) {
+    const is429 = lastErr?.status === 429 || lastErr?.message?.includes('429');
+    if (is429) return Response.json({ error: 'Gemini quota exceeded. Retry in 60s.' }, { status: 429 });
+    return Response.json({ error: 'Gemini unavailable — check your API key project settings' }, { status: 503 });
   }
 
   if (store) await store.set(cacheKey, summary, { ex: 86400 }).catch(() => {});
