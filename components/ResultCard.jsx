@@ -131,14 +131,36 @@ export default function ResultCard({ result, hwVram }) {
         {model.ollamaTag && (
           <CopyButton text={`ollama run ${model.ollamaTag}`} />
         )}
-        <a
-          href={`https://huggingface.co/${model.hfRepo}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors"
-        >
-          <ExternalLink size={12} /> HuggingFace
-        </a>
+        {model.ollamaTag && (
+          <a
+            href={`https://ollama.com/library/${model.ollamaTag.split(':')[0]}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors"
+          >
+            <ExternalLink size={12} /> Ollama
+          </a>
+        )}
+        {model.hfRepo && (
+          <a
+            href={`https://huggingface.co/${model.hfRepo}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-[#1E2D45] hover:border-sky-700 rounded-lg text-xs text-slate-400 hover:text-sky-400 transition-colors"
+          >
+            <ExternalLink size={12} /> HuggingFace
+          </a>
+        )}
+        {model.hfRepo && (
+          <a
+            href={`https://huggingface.co/${model.hfRepo}/tree/main`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#080B12] border border-emerald-900/50 hover:border-emerald-600 rounded-lg text-xs text-slate-400 hover:text-emerald-400 transition-colors"
+          >
+            <ExternalLink size={12} /> Download GGUF
+          </a>
+        )}
       </div>
     </div>
   );
