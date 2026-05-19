@@ -104,7 +104,7 @@ Direct and specific. No markdown. Under 120 words.`;
     } catch (err) {
       lastErr = err;
       const status = err?.status ?? 0;
-      if (status === 429 || status === 404) continue;
+      if (status === 429 || status === 404 || status === 503) continue;
       throw err;
     }
   }

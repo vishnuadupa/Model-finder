@@ -136,8 +136,8 @@ Return ONLY valid JSON:
     } catch (err) {
       lastErr = err;
       const status = err?.status ?? 0;
-      // 429 = quota, 404 = model not available for this key — both: try next
-      if (status === 429 || status === 404) continue;
+      // 429 = quota, 404 = model not found, 503 = overloaded — all: try next
+      if (status === 429 || status === 404 || status === 503) continue;
       throw err;
     }
   }
