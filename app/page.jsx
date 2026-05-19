@@ -5,7 +5,7 @@ import ResultsPanel from '@/components/ResultsPanel';
 import GeminiAdvisor from '@/components/GeminiAdvisor';
 import { analyzeHardware } from '@/lib/scoring';
 import { GPU_PRESETS } from '@/lib/gpuPresets';
-import { Share2, BookOpen, Cpu } from 'lucide-react';
+import { Share2, BookOpen, Cpu, Settings, LayoutList } from 'lucide-react';
 
 // Re-derive all GPU-preset-derived fields from a label — used on URL/localStorage load
 // so fields like maxRam, bandwidth, flashAttn stay consistent with preset data
@@ -108,6 +108,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [mobileTab, setMobileTab] = useState('hardware'); // 'hardware' | 'results'
   const lsDebounce = useRef(null);
 
   useEffect(() => {
@@ -154,7 +155,10 @@ export default function Home() {
 
   useEffect(() => {
     const first = results.recommended?.[0] || results.comfortable?.[0] || results.stretch?.[0];
-    if (first) setSelectedModel(first.model);
+    if (first) {
+      setSelectedModel(first.model);
+      setMobileTab('results'); // auto-switch to results on mobile when they appear
+    }
   }, [results]);
 
   const shareURL = useCallback(() => {
@@ -212,6 +216,40 @@ export default function Home() {
         </div>
       </header>
 
+      {/* ── Mobile tab bar — only visible on small screens when hardware is selected ── */}
+      {hasHardware && (
+        <div className="lg:hidden sticky top-0 z-30 bg-[#080B12]/95 backdrop-blur border-b border-[#1E2D45]">
+          <div className="flex">
+            <button
+              onClick={() => setMobileTab('hardware')}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
+                mobileTab === 'hardware'
+                  ? 'border-sky-500 text-sky-400'
+                  : 'border-transparent text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              <Settings size={14} /> Hardware
+            </button>
+            <button
+              onClick={() => setMobileTab('results')}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
+                mobileTab === 'results'
+                  ? 'border-sky-500 text-sky-400'
+                  : 'border-transparent text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              <LayoutList size={14} />
+              Results
+              {totalResults > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-sky-900 text-sky-300 font-mono">
+                  {totalResults}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3" style={{ fontFamily: 'var(--font-syne)' }}>
@@ -223,11 +261,14 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
-          {/* Left column */}
-          <div className="space-y-4 lg:sticky lg:top-6">
+          {/* Left column — hardware form
+              On mobile: hidden when results tab is active (and hardware is selected) */}
+          <div className={`space-y-4 lg:block lg:sticky lg:top-6 lg:self-start ${
+            hasHardware && mobileTab !== 'hardware' ? 'hidden' : ''
+          }`}>
             <HardwareForm
               value={hw}
-              onChange={setHw}
+              onChange={v => { setHw(v); setMobileTab('hardware'); }}
               geminiEnabled={geminiEnabled}
               onGeminiToggle={() => setGeminiEnabled(e => !e)}
             />
@@ -255,11 +296,36 @@ export default function Home() {
                 )}
               </div>
             )}
+
+            {/* Mobile: nudge to results after form is filled */}
+            {hasHardware && mobileTab === 'hardware' && totalResults > 0 && (
+              <button
+                onClick={() => setMobileTab('results')}
+                className="lg:hidden w-full btn-primary flex items-center justify-center gap-2"
+              >
+                <LayoutList size={14} /> View {totalResults} results →
+              </button>
+            )}
           </div>
 
-          {/* Right column */}
-          <div>
-            {modelsLoading ? (
+          {/* Right column — results
+              On mobile: hidden when hardware tab is active (and hardware is selected) */}
+          <div className={`lg:block ${hasHardware && mobileTab !== 'results' ? 'hidden' : ''}`}>
+            {!hasHardware ? (
+              <div className="card p-12 text-center space-y-4">
+                <div className="text-4xl">🖥️</div>
+                <div className="text-slate-400 font-semibold">Select your hardware to see results</div>
+                <div className="text-slate-600 text-sm max-w-sm mx-auto space-y-3">
+                  <p>Use the form above to pick your GPU (or Apple Silicon chip) and RAM.</p>
+                  <div className="text-left inline-block space-y-1.5 text-xs text-slate-700">
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Works for NVIDIA, AMD, Intel Arc, Apple Silicon, and CPU-only</span></div>
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Shows exactly how much VRAM / unified memory each model needs</span></div>
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Estimates tokens per second for your specific hardware</span></div>
+                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Explains what each quantization level means in plain English</span></div>
+                  </div>
+                </div>
+              </div>
+            ) : modelsLoading ? (
               <div className="space-y-3 animate-pulse">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="card p-4 space-y-3">
@@ -272,20 +338,6 @@ export default function Home() {
                     <div className="h-3 bg-slate-800 rounded w-2/3" />
                   </div>
                 ))}
-              </div>
-            ) : !hasHardware ? (
-              <div className="card p-12 text-center space-y-4">
-                <div className="text-4xl">🖥️</div>
-                <div className="text-slate-400 font-semibold">Select your hardware to see results</div>
-                <div className="text-slate-600 text-sm max-w-sm mx-auto space-y-3">
-                  <p>Use the form on the left to pick your GPU (or Apple Silicon chip) and RAM.</p>
-                  <div className="text-left inline-block space-y-1.5 text-xs text-slate-700">
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Works for NVIDIA, AMD, Intel Arc, Apple Silicon, and CPU-only</span></div>
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Shows exactly how much VRAM / unified memory each model needs</span></div>
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Estimates tokens per second for your specific hardware</span></div>
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Explains what each quantization level means in plain English</span></div>
-                  </div>
-                </div>
               </div>
             ) : (
               <ResultsPanel results={results} hw={hw} />

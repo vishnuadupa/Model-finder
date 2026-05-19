@@ -102,20 +102,28 @@ function HelpText({ children }) {
 // ── GPU Wizard (3-step) ────────────────────────────────────────────────────
 function GPUWizard({ hw, os, onSelect, onOSChange }) {
   const [vendor, setVendor] = useState(null);
-  const [step, setStep] = useState(1); // 1=OS, 2=vendor, 3=model
+  // osConfirmed tracks whether the user has EXPLICITLY clicked an OS button.
+  // We always show Step 1 until they click, even if hw.os was auto-detected —
+  // otherwise auto-detection skips Step 1 entirely and the OS buttons never appear.
+  const [osConfirmed, setOsConfirmed] = useState(() => !!os);
 
   useEffect(() => {
-    if (!hw.gpuLabel) { setVendor(null); setStep(os ? 2 : 1); return; }
+    if (!hw.gpuLabel) { setVendor(null); return; }
     if (hw.gpuLabel.startsWith('RTX') || hw.gpuLabel.startsWith('GTX')) setVendor('nvidia');
     else if (hw.gpuLabel.startsWith('RX ')) setVendor('amd');
     else if (hw.gpuLabel.startsWith('Arc')) setVendor('intel');
     else if (hw.gpuLabel.startsWith('Apple')) setVendor('apple');
     else if (hw.gpuLabel === 'No GPU (CPU only)') setVendor('none');
+  }, [hw.gpuLabel]);
+
+  // When a GPU is loaded from localStorage/URL (gpuLabel already set), mark os as confirmed
+  useEffect(() => {
+    if (hw.gpuLabel && os) setOsConfirmed(true);
   }, [hw.gpuLabel, os]);
 
   function reset() {
     setVendor(null);
-    setStep(1);
+    setOsConfirmed(false);
     onSelect(null);
   }
 
