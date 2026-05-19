@@ -91,7 +91,7 @@ Write a 2-paragraph plain-English summary:
 Direct and specific. No markdown. Under 120 words.`;
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash-001', 'gemini-1.5-flash-002'];
+  const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
   let summary;
   let lastErr;
   for (const modelId of MODELS) {
