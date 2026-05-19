@@ -14,7 +14,9 @@ async function getKV() {
 const VALID_USE_CASES = new Set(['chat', 'code', 'reasoning', 'long-docs', 'multilingual', 'vision', 'general chat', '']);
 
 export async function POST(req) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const ip = req.headers.get('x-vercel-forwarded-for')
+          ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+          ?? 'unknown';
   const { allowed, retryAfter } = rateLimit(ip, { limit: 5, windowMs: 60_000 });
   if (!allowed) {
     return Response.json({ error: `Quota exceeded. Retry in ${retryAfter}s.` }, { status: 429 });
