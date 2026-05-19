@@ -17,9 +17,14 @@ export async function POST(req) {
     return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 503 });
   }
 
-  const cacheKey = 'gemini_' + crypto
+  const cacheKey = 'gemini_v2_' + crypto
     .createHash('md5')
-    .update(JSON.stringify({ hw, model: currentModel.name }))
+    .update(JSON.stringify({
+      gpu: hw.gpuLabel, vram: hw.vram, ram: hw.ram,
+      bw: hw.bandwidth, ctx: hw.contextLength, fa: hw.flashAttn,
+      os: hw.os, cpu: hw.cpuLabel, ramType: hw.ramTypeLabel,
+      model: currentModel.name,
+    }))
     .digest('hex');
 
   const store = await getKV();
@@ -28,60 +33,88 @@ export async function POST(req) {
     if (cached) return Response.json({ ...cached, cached: true });
   }
 
-  // Sort models by params to find neighbors
+  // Sort by params to find neighbours
   const sorted = [...allModels].sort((a, b) => a.params - b.params);
-  const idx = sorted.findIndex(m => m.name === currentModel.name);
+  const idx    = sorted.findIndex(m => m.name === currentModel.name);
   const modelUp   = idx < sorted.length - 1 ? sorted[idx + 1] : null;
   const modelDown = idx > 0 ? sorted[idx - 1] : null;
 
   const effectiveVram = hw.unifiedMem ? hw.ram : (hw.vram * (hw.numGPUs || 1));
 
-  const prompt = `You are an expert on local LLM performance benchmarks.
+  // Derive backend
+  let backend = 'CUDA';
+  if (hw.gpuLabel?.startsWith('Apple')) backend = 'Metal';
+  else if (hw.gpuLabel?.startsWith('RX ') || hw.gpuLabel?.startsWith('Radeon')) {
+    backend = hw.os === 'Linux' ? 'ROCm' : 'Vulkan';
+  } else if (hw.gpuLabel?.startsWith('Arc')) backend = 'Vulkan/SYCL';
+  else if (!hw.gpuLabel || hw.gpuLabel === 'No GPU (CPU only)') backend = 'CPU only';
 
-User hardware:
-- GPU: ${hw.gpuLabel}, effective VRAM: ${effectiveVram}GB${hw.unifiedMem ? ' (unified memory)' : ''}
-- RAM: ${hw.ram}GB system RAM
-- CPU: ${hw.cpuTier || 'mid'}-end
+  const prompt = `You are an expert on local LLM inference performance.
+
+HARDWARE CONFIGURATION:
+- GPU: ${hw.gpuLabel || 'None'}
+- Effective VRAM: ${effectiveVram} GB${hw.unifiedMem ? ' (unified — all RAM is VRAM)' : ''}
+- GPU Memory Bandwidth: ${hw.bandwidth || 'unknown'} GB/s
+- GPU Memory Type: ${hw.memType || 'unknown'}
+- GPU Architecture: ${hw.arch || 'unknown'}
+- Number of GPUs: ${hw.numGPUs || 1}
+- Inference backend: ${backend}
+- OS: ${hw.os || 'Windows'}
+- CPU: ${hw.cpuLabel || hw.cpuTier + '-end'}
+- CPU cores: ${hw.cpuCores || 'unknown'}
+- System RAM: ${hw.ram} GB
+- RAM type: ${hw.ramTypeLabel || 'DDR4'} (~${hw.ramBandwidthGB || 51} GB/s bandwidth)
 - Storage: ${hw.ssd || 'nvme'}
-- Flash Attention: ${hw.flashAttn ? 'yes' : 'no'}
-- Context length: ${hw.contextLength || 4096} tokens
+- Flash Attention: ${hw.flashAttn ? 'enabled' : 'disabled'}
+- Target context length: ${hw.contextLength || 4096} tokens
 
-Current model being viewed: ${currentModel.name} (${currentModel.params}B params, Q4_K_M quant)
-Model one step UP in size: ${modelUp ? `${modelUp.name} (${modelUp.params}B)` : 'none — already largest'}
-Model one step DOWN in size: ${modelDown ? `${modelDown.name} (${modelDown.params}B)` : 'none — already smallest'}
+CURRENT MODEL BEING ANALYSED:
+${currentModel.name} (${currentModel.params}B params, Q4_K_M quant)
+Model VRAM requirement at this context: approximately ${
+  ((currentModel.params * 4.85 * 1.05) / 8).toFixed(1)
+} GB
 
-Return valid JSON only (no markdown, no explanation outside JSON):
+NEIGHBOURING MODELS FOR COMPARISON:
+- One size UP: ${modelUp ? `${modelUp.name} (${modelUp.params}B)` : 'none — this is the largest'}
+- One size DOWN: ${modelDown ? `${modelDown.name} (${modelDown.params}B)` : 'none — this is the smallest'}
+
+IMPORTANT CONTEXT:
+- Memory bandwidth (${hw.bandwidth || '?'} GB/s) is the primary bottleneck for autoregressive decoding
+- Formula: tok/s ≈ bandwidth_GB_s / model_vram_GB * backend_efficiency
+- Backend efficiencies: CUDA=100%, Metal=88%, ROCm=82%, Vulkan=62%, CPU=8%
+- Multi-GPU adds bandwidth linearly with small overhead
+- Flash Attention helps with long contexts but not raw tok/s at short context
+- Apple Metal is very efficient for unified memory — factor in full RAM bandwidth
+
+Return ONLY valid JSON (no markdown, no explanation):
 {
   "tokPerSec": "65-80",
-  "tokPerSecNote": "one sentence explaining why based on GPU bandwidth and model size",
+  "tokPerSecNote": "precise one sentence: cite the bandwidth figure and why",
   "modelUp": {
     "name": "${modelUp?.name || 'N/A'}",
     "canRun": true,
     "tokPerSec": "30-45",
-    "tradeoff": "one sentence — quality gain vs speed/VRAM cost"
+    "tradeoff": "one sentence — quality/capability gain vs speed and VRAM cost"
   },
   "modelDown": {
     "name": "${modelDown?.name || 'N/A'}",
     "canRun": true,
     "tokPerSec": "110-140",
-    "tradeoff": "one sentence — speed gain vs quality loss"
+    "tradeoff": "one sentence — speed gain vs quality trade-off"
   }
 }`;
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-  const gemResult = await model.generateContent(prompt);
-  const text = gemResult.response.text()
-    .replace(/```json\n?/g, '')
-    .replace(/\n?```/g, '')
-    .trim();
+  const genAI  = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model  = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const result = await model.generateContent(prompt);
+  const text   = result.response.text()
+    .replace(/```json\n?/g, '').replace(/\n?```/g, '').trim();
 
   let data;
   try {
     data = JSON.parse(text);
   } catch {
-    return Response.json({ error: 'Failed to parse Gemini response' }, { status: 500 });
+    return Response.json({ error: 'Gemini returned unparseable response' }, { status: 500 });
   }
 
   if (store) {

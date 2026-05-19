@@ -2,29 +2,38 @@ name: Update Model Database
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # 6am UTC daily
-  workflow_dispatch:       # run manually anytime
+    - cron: '0 6 * * *'   # 6am UTC daily
+  workflow_dispatch:        # run manually anytime
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - run: npm ci
-      - name: Run scraper
+
+      - name: Run HuggingFace scraper
         run: node scripts/update-models.js
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_TOKEN:        ${{ secrets.HF_TOKEN }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Run Ollama library scraper
+        run: node scripts/scrape-ollama.js
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
       - name: Commit if changed
         run: |
           git diff --quiet public/models.json || (
-            git config user.name 'model-bot'
+            git config user.name  'model-bot'
             git config user.email 'bot@noreply.github.com'
             git add public/models.json
-            git commit -m "🤖 Models update $(date +%Y-%m-%d)"
+            git commit -m "🤖 Models update $(date +%Y-%m-%d) [$(jq length public/models.json) total]"
             git push
           )
