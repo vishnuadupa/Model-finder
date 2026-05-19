@@ -2,26 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #080B12;
+  color: #E2E8F0;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .card {
+    @apply bg-[#0F1623] border border-[#1E2D45] rounded-xl;
+  }
+  .btn-primary {
+    @apply bg-sky-500 hover:bg-sky-400 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm;
+  }
+  .btn-ghost {
+    @apply border border-[#1E2D45] hover:border-sky-700 text-slate-400 hover:text-sky-400 px-3 py-1.5 rounded-lg transition-colors text-sm;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono;
+  }
+  .label {
+    @apply text-xs text-slate-500 uppercase tracking-wider mb-1 block;
   }
 }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #080B12; }
+::-webkit-scrollbar-thumb { background: #1E2D45; border-radius: 3px; }

@@ -1,0 +1,379 @@
+[
+  {
+    "name": "Phi-3 Mini 3.8B",
+    "family": "Phi",
+    "params": 3.8,
+    "layers": 32,
+    "numKVHeads": 32,
+    "headDim": 96,
+    "hfRepo": "bartowski/Phi-3-mini-4k-instruct-GGUF",
+    "ollamaTag": "phi3:mini",
+    "maxCtx": 4096,
+    "useCases": ["chat", "code"],
+    "quality": "good",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 2.39 },
+      { "q": "Q5_K_M", "fileSizeGB": 2.82 },
+      { "q": "Q8_0",   "fileSizeGB": 4.06 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Gemma 2 2B",
+    "family": "Gemma",
+    "params": 2,
+    "layers": 26,
+    "numKVHeads": 4,
+    "headDim": 256,
+    "hfRepo": "bartowski/gemma-2-2b-it-GGUF",
+    "ollamaTag": "gemma2:2b",
+    "maxCtx": 8192,
+    "useCases": ["chat"],
+    "quality": "good",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 1.63 },
+      { "q": "Q5_K_M", "fileSizeGB": 1.92 },
+      { "q": "Q8_0",   "fileSizeGB": 2.67 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Llama 3.2 3B",
+    "family": "Llama",
+    "params": 3.2,
+    "layers": 28,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Llama-3.2-3B-Instruct-GGUF",
+    "ollamaTag": "llama3.2:3b",
+    "maxCtx": 131072,
+    "useCases": ["chat", "code"],
+    "quality": "good",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 2.02 },
+      { "q": "Q5_K_M", "fileSizeGB": 2.37 },
+      { "q": "Q8_0",   "fileSizeGB": 3.42 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Mistral 7B v0.3",
+    "family": "Mistral",
+    "params": 7,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Mistral-7B-Instruct-v0.3-GGUF",
+    "ollamaTag": "mistral:7b",
+    "maxCtx": 32768,
+    "useCases": ["chat", "code", "reasoning"],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 4.37 },
+      { "q": "Q5_K_M", "fileSizeGB": 5.13 },
+      { "q": "Q8_0",   "fileSizeGB": 7.70 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Llama 3.1 8B",
+    "family": "Llama",
+    "params": 8,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
+    "ollamaTag": "llama3.1:8b",
+    "maxCtx": 131072,
+    "useCases": ["chat", "code", "reasoning"],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 4.92 },
+      { "q": "Q5_K_M", "fileSizeGB": 5.73 },
+      { "q": "Q8_0",   "fileSizeGB": 8.54 },
+      { "q": "F16",    "fileSizeGB": 16.07 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "DeepSeek R1 7B",
+    "family": "DeepSeek",
+    "params": 7,
+    "layers": 28,
+    "numKVHeads": 4,
+    "headDim": 128,
+    "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF",
+    "ollamaTag": "deepseek-r1:7b",
+    "maxCtx": 131072,
+    "useCases": ["reasoning", "code"],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 4.68 },
+      { "q": "Q5_K_M", "fileSizeGB": 5.44 },
+      { "q": "Q8_0",   "fileSizeGB": 7.68 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Gemma 2 9B",
+    "family": "Gemma",
+    "params": 9,
+    "layers": 42,
+    "numKVHeads": 4,
+    "headDim": 256,
+    "hfRepo": "bartowski/gemma-2-9b-it-GGUF",
+    "ollamaTag": "gemma2:9b",
+    "maxCtx": 8192,
+    "useCases": ["chat", "reasoning"],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 5.77 },
+      { "q": "Q5_K_M", "fileSizeGB": 6.65 },
+      { "q": "Q8_0",   "fileSizeGB": 9.83 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Mistral Nemo 12B",
+    "family": "Mistral",
+    "params": 12,
+    "layers": 40,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Mistral-Nemo-Instruct-2407-GGUF",
+    "ollamaTag": "mistral-nemo:12b",
+    "maxCtx": 128000,
+    "useCases": ["chat", "code", "multilingual"],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 7.48 },
+      { "q": "Q5_K_M", "fileSizeGB": 8.69 },
+      { "q": "Q8_0",   "fileSizeGB": 12.85 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Phi-3 Medium 14B",
+    "family": "Phi",
+    "params": 14,
+    "layers": 40,
+    "numKVHeads": 10,
+    "headDim": 128,
+    "hfRepo": "bartowski/Phi-3-medium-4k-instruct-GGUF",
+    "ollamaTag": "phi3:medium",
+    "maxCtx": 4096,
+    "useCases": ["chat", "code", "reasoning"],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 8.56 },
+      { "q": "Q5_K_M", "fileSizeGB": 9.93 },
+      { "q": "Q8_0",   "fileSizeGB": 14.96 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "DeepSeek R1 14B",
+    "family": "DeepSeek",
+    "params": 14,
+    "layers": 28,
+    "numKVHeads": 4,
+    "headDim": 128,
+    "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF",
+    "ollamaTag": "deepseek-r1:14b",
+    "maxCtx": 131072,
+    "useCases": ["reasoning", "code"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 9.02 },
+      { "q": "Q5_K_M", "fileSizeGB": 10.48 },
+      { "q": "Q8_0",   "fileSizeGB": 15.70 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "DeepSeek Coder V2 16B",
+    "family": "DeepSeek",
+    "params": 16,
+    "layers": 28,
+    "numKVHeads": 4,
+    "headDim": 128,
+    "hfRepo": "bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF",
+    "ollamaTag": "deepseek-coder-v2:16b",
+    "maxCtx": 163840,
+    "useCases": ["code"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 10.01 },
+      { "q": "Q5_K_M", "fileSizeGB": 11.62 },
+      { "q": "Q8_0",   "fileSizeGB": 17.18 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Qwen2.5 14B",
+    "family": "Qwen",
+    "params": 14,
+    "layers": 48,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Qwen2.5-14B-Instruct-GGUF",
+    "ollamaTag": "qwen2.5:14b",
+    "maxCtx": 131072,
+    "useCases": ["chat", "code", "reasoning", "multilingual"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 9.02 },
+      { "q": "Q5_K_M", "fileSizeGB": 10.44 },
+      { "q": "Q8_0",   "fileSizeGB": 15.70 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Gemma 2 27B",
+    "family": "Gemma",
+    "params": 27,
+    "layers": 46,
+    "numKVHeads": 16,
+    "headDim": 128,
+    "hfRepo": "bartowski/gemma-2-27b-it-GGUF",
+    "ollamaTag": "gemma2:27b",
+    "maxCtx": 8192,
+    "useCases": ["chat", "reasoning", "long-docs"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 17.22 },
+      { "q": "Q5_K_M", "fileSizeGB": 19.99 },
+      { "q": "Q8_0",   "fileSizeGB": 28.98 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Qwen2.5 32B",
+    "family": "Qwen",
+    "params": 32,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Qwen2.5-32B-Instruct-GGUF",
+    "ollamaTag": "qwen2.5:32b",
+    "maxCtx": 131072,
+    "useCases": ["chat", "code", "reasoning", "multilingual"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 20.02 },
+      { "q": "Q5_K_M", "fileSizeGB": 23.25 },
+      { "q": "Q8_0",   "fileSizeGB": 34.82 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "DeepSeek R1 32B",
+    "family": "DeepSeek",
+    "params": 32,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-32B-GGUF",
+    "ollamaTag": "deepseek-r1:32b",
+    "maxCtx": 131072,
+    "useCases": ["reasoning", "code"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 20.02 },
+      { "q": "Q5_K_M", "fileSizeGB": 23.25 },
+      { "q": "Q8_0",   "fileSizeGB": 34.82 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Mixtral 8x7B",
+    "family": "Mixtral",
+    "params": 47,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Mixtral-8x7B-Instruct-v0.1-GGUF",
+    "ollamaTag": "mixtral:8x7b",
+    "maxCtx": 32768,
+    "useCases": ["chat", "code", "reasoning"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 26.44 },
+      { "q": "Q5_K_M", "fileSizeGB": 30.99 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Llama 3.1 70B",
+    "family": "Llama",
+    "params": 70,
+    "layers": 80,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Meta-Llama-3.1-70B-Instruct-GGUF",
+    "ollamaTag": "llama3.1:70b",
+    "maxCtx": 131072,
+    "useCases": ["chat", "code", "reasoning", "long-docs"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 42.52 },
+      { "q": "Q5_K_M", "fileSizeGB": 49.37 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Llama 3.3 70B",
+    "family": "Llama",
+    "params": 70,
+    "layers": 80,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Llama-3.3-70B-Instruct-GGUF",
+    "ollamaTag": "llama3.3:70b",
+    "maxCtx": 131072,
+    "useCases": ["chat", "code", "reasoning", "long-docs"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 42.52 },
+      { "q": "Q5_K_M", "fileSizeGB": 49.37 }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Qwen2.5 72B",
+    "family": "Qwen",
+    "params": 72,
+    "layers": 80,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Qwen2.5-72B-Instruct-GGUF",
+    "ollamaTag": "qwen2.5:72b",
+    "maxCtx": 131072,
+    "useCases": ["chat", "code", "reasoning", "multilingual", "long-docs"],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      { "q": "Q4_K_M", "fileSizeGB": 43.59 },
+      { "q": "Q5_K_M", "fileSizeGB": 50.67 }
+    ],
+    "lastUpdated": "2025-05-01"
+  }
+]
