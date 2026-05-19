@@ -59,7 +59,7 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
     }, 350);
 
     return () => clearTimeout(debounceRef.current);
-  }, [enabled, hw, currentModel]);
+  }, [enabled, hw, currentModel, allModels]);
 
   if (!enabled || !currentModel) return null;
 

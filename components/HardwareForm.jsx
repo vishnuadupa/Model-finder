@@ -113,7 +113,7 @@ function GPUWizard({ hw, os, onSelect, onOSChange }) {
     else if (hw.gpuLabel.startsWith('Arc')) setVendor('intel');
     else if (hw.gpuLabel.startsWith('Apple')) setVendor('apple');
     else if (hw.gpuLabel === 'No GPU (CPU only)') setVendor('none');
-  }, []);
+  }, [hw.gpuLabel]);
 
   function reset() {
     setVendor(null);
@@ -264,7 +264,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
     if (ua.includes('Mac')) detectedOS = 'macOS';
     else if (ua.includes('Linux')) detectedOS = 'Linux';
     onChange({ ...hw, os: detectedOS });
-  }, []);
+  }, [hw.os, onChange, hw]);
 
   function update(patch) {
     onChange({ ...hw, ...patch });
