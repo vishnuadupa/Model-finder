@@ -4,8 +4,8 @@ export const runtime = 'edge';
 
 export function GET(req) {
   const { searchParams } = new URL(req.url);
-  const gpu = searchParams.get('gpu') || 'Your GPU';
-  const top = searchParams.get('top')?.split(',').filter(Boolean) || [];
+  const gpu = (searchParams.get('gpu') || 'Your GPU').slice(0, 60).replace(/[<>"&]/g, '');
+  const top = (searchParams.get('top') || '').split(',').filter(Boolean).slice(0, 4).map(s => s.slice(0, 60).replace(/[<>"&]/g, ''));
 
   return new ImageResponse(
     (

@@ -94,7 +94,15 @@ export default function Home() {
     if (fromURL) { setHw(fromURL); return; }
     try {
       const saved = localStorage.getItem('llm_matcher_hw_v2');
-      if (saved) setHw({ ...DEFAULT_HW, ...JSON.parse(saved) });
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Only pick known keys — never spread arbitrary storage values onto hw
+        const ALLOWED_KEYS = Object.keys(DEFAULT_HW);
+        const safe = Object.fromEntries(
+          ALLOWED_KEYS.map(k => [k, parsed[k]]).filter(([, v]) => v !== undefined)
+        );
+        setHw({ ...DEFAULT_HW, ...safe });
+      }
     } catch {}
   }, []);
 

@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import crypto from 'crypto';
+import { rateLimit } from '@/lib/rateLimit';
 
 let kv = null;
 async function getKV() {
@@ -10,16 +11,59 @@ async function getKV() {
   return kv;
 }
 
+const VALID_USE_CASES = new Set(['chat', 'code', 'reasoning', 'long-docs', 'multilingual', 'vision', 'general chat', '']);
+
 export async function POST(req) {
-  const { hw, topModels, useCase } = await req.json();
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const { allowed, retryAfter } = rateLimit(ip, { limit: 5, windowMs: 60_000 });
+  if (!allowed) {
+    return Response.json({ error: `Quota exceeded. Retry in ${retryAfter}s.` }, { status: 429 });
+  }
+
+  const contentLength = Number(req.headers.get('content-length') ?? 0);
+  if (contentLength > 20_480) {
+    return Response.json({ error: 'Request too large' }, { status: 413 });
+  }
 
   if (!process.env.GEMINI_API_KEY) {
     return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 503 });
   }
 
-  const cacheKey = 'summary_v2_' + crypto
+  let hw, topModels, useCase;
+  try {
+    ({ hw, topModels, useCase } = await req.json());
+  } catch {
+    return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  if (!hw || typeof hw !== 'object') return Response.json({ error: 'Invalid hw' }, { status: 400 });
+  if (!Array.isArray(topModels) || topModels.length === 0) return Response.json({ error: 'Invalid topModels' }, { status: 400 });
+
+  // Allowlist useCase — no arbitrary strings into the prompt
+  const safeUseCase = VALID_USE_CASES.has(useCase) ? useCase : 'general chat';
+
+  // Sanitize model list — only safe fields, bounded lengths
+  const safeModels = topModels.slice(0, 5).map(m => ({
+    name:     String(m.name     ?? '').slice(0, 100).replace(/[<>"]/g, ''),
+    quant:    String(m.quant    ?? '').slice(0, 20).replace(/[^A-Za-z0-9_.]/g, ''),
+    tokPerSec:typeof m.tokPerSec === 'number' && isFinite(m.tokPerSec)
+              ? Math.round(m.tokPerSec) : 0,
+  }));
+
+  const effectiveVram = hw.unifiedMem ? (hw.ram || 0) : ((hw.vram || 0) * (hw.numGPUs || 1));
+  const gpuLabel  = String(hw.gpuLabel  || '').slice(0, 100);
+  const ramType   = String(hw.ramTypeLabel || 'DDR4').slice(0, 30);
+  const cpuLabel  = String(hw.cpuLabel  || hw.cpuTier || 'mid-end').slice(0, 100);
+  const osLabel   = String(hw.os        || 'Windows').slice(0, 20);
+  const backend   = gpuLabel.startsWith('Apple') ? 'Metal'
+                  : gpuLabel.startsWith('RX ') && osLabel === 'Linux' ? 'ROCm'
+                  : gpuLabel === 'No GPU (CPU only)' ? 'CPU only'
+                  : 'CUDA';
+
+  const cacheKey = 'summary_v3_' + crypto
     .createHash('md5')
-    .update(JSON.stringify({ hw, topModels: topModels.map(m => m.name), useCase }))
+    .update(JSON.stringify({ gpuLabel, vram: effectiveVram, ram: hw.ram, bw: hw.bandwidth,
+                              ctx: hw.contextLength, models: safeModels.map(m => m.name), safeUseCase }))
     .digest('hex');
 
   const store = await getKV();
@@ -28,53 +72,40 @@ export async function POST(req) {
     if (cached) return Response.json({ summary: cached, cached: true });
   }
 
-  const effectiveVram = hw.unifiedMem ? hw.ram : (hw.vram * (hw.numGPUs || 1));
-
   const prompt = `You are an expert on running local LLMs. A user has this hardware:
-- GPU: ${hw.gpuLabel} — ${effectiveVram}GB effective VRAM, ${hw.bandwidth || '?'} GB/s bandwidth
-- RAM: ${hw.ram}GB (${hw.ramTypeLabel || 'DDR4'})
-- CPU: ${hw.cpuLabel || hw.cpuTier + '-end'}
-- OS: ${hw.os || 'Windows'} — backend: ${hw.gpuLabel?.startsWith('Apple') ? 'Metal' : hw.gpuLabel?.startsWith('RX') && hw.os === 'Linux' ? 'ROCm' : 'CUDA'}
-- Storage: ${hw.ssd || 'nvme'}
-- Context length target: ${hw.contextLength || 4096} tokens
+- GPU: ${gpuLabel} — ${effectiveVram}GB effective VRAM, ${hw.bandwidth || '?'} GB/s bandwidth
+- RAM: ${hw.ram}GB (${ramType})
+- CPU: ${cpuLabel}
+- OS: ${osLabel} — backend: ${backend}
+- Context: ${hw.contextLength || 4096} tokens
 
-Their top compatible models:
-${topModels.slice(0, 5).map((m, i) => `${i + 1}. ${m.name} ${m.quant} (~${m.tokPerSec} tok/s)`).join('\n')}
+Top compatible models:
+${safeModels.map((m, i) => `${i + 1}. ${m.name} ${m.quant} (~${m.tokPerSec} tok/s)`).join('\n')}
 
-Primary use case: ${useCase || 'general chat'}
+Use case: ${safeUseCase}
 
 Write a 2-paragraph plain-English summary:
-1. What their hardware is good for overall (mention the bandwidth and what model sizes that enables)
+1. What their hardware is good for (mention bandwidth)
 2. Top recommendation for their use case and why
 
-Direct and specific. No markdown. Under 120 words total.`;
+Direct and specific. No markdown. Under 120 words.`;
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
   let summary;
   for (const modelId of ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash-latest']) {
     try {
       const m = genAI.getGenerativeModel({ model: modelId });
       const result = await m.generateContent(prompt);
-      summary = result.response.text().trim();
+      summary = result.response.text().trim().slice(0, 1000); // cap output length
       break;
     } catch (err) {
       const is429 = err?.status === 429 || err?.message?.includes('429');
       if (is429 && modelId !== 'gemini-1.5-flash-latest') continue;
-      if (is429) {
-        const retryAfter = err?.message?.match(/(\d+)s/)?.[1];
-        return Response.json(
-          { error: `Gemini quota exceeded. Retry in ${retryAfter || 60}s.` },
-          { status: 429 }
-        );
-      }
+      if (is429) return Response.json({ error: `Gemini quota exceeded. Retry in 60s.` }, { status: 429 });
       throw err;
     }
   }
 
-  if (store) {
-    await store.set(cacheKey, summary, { ex: 86400 }).catch(() => {});
-  }
-
+  if (store) await store.set(cacheKey, summary, { ex: 86400 }).catch(() => {});
   return Response.json({ summary, cached: false });
 }

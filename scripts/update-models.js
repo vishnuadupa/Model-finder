@@ -146,6 +146,12 @@ async function main() {
 
       try {
         const scraped = await scrapeRepo(m.id);
+        // Sanitize scraped strings before writing to public JSON
+        if (scraped.name)   scraped.name   = String(scraped.name).slice(0, 150).replace(/[<>"&]/g, '');
+        if (scraped.family) scraped.family = String(scraped.family).slice(0, 50).replace(/[<>"&]/g, '');
+        if (scraped.hfRepo && !/^[\w\-./]+$/.test(scraped.hfRepo)) scraped.hfRepo = null;
+        if (scraped.ollamaTag && !/^[\w\-.:]+$/.test(scraped.ollamaTag)) scraped.ollamaTag = null;
+        if (Array.isArray(scraped.useCases)) scraped.useCases = scraped.useCases.filter(u => typeof u === 'string' && u.length < 30);
         if (scraped.quants.length > 0 && scraped.params && scraped.params <= 200) {
           models.push(scraped);
           KNOWN.add(m.id);

@@ -16,6 +16,12 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
     if (!hw?.vram && !hw?.unifiedMem) return;
 
     // Build a key so we only re-fetch when inputs actually change
+    // Compute neighbours client-side — don't send full allModels to the server
+    const sorted      = [...allModels].sort((a, b) => a.params - b.params);
+    const idx         = sorted.findIndex(m => m.name === currentModel.name);
+    const modelUpName   = idx < sorted.length - 1 ? sorted[idx + 1].name : null;
+    const modelDownName = idx > 0                  ? sorted[idx - 1].name : null;
+
     const key = JSON.stringify({
       gpu: hw.gpuLabel, vram: hw.vram, ram: hw.ram, bw: hw.bandwidth,
       ctx: hw.contextLength, fa: hw.flashAttn, os: hw.os,
@@ -33,7 +39,7 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
         const res = await fetch('/api/gemini-suggest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hw, currentModel, allModels }),
+          body: JSON.stringify({ hw, currentModel, modelUpName, modelDownName }),
         });
         if (res.status === 429) {
           const data = await res.json().catch(() => ({}));
