@@ -83,7 +83,9 @@ export default function ResultsPanel({ results, hw }) {
     + (results.comfortable?.length || 0)
     + (results.stretch?.length || 0);
 
-  const hwVram = hw?.unifiedMem ? hw.ram : (hw?.vram || 0) * (hw?.numGPUs || 1);
+  const hwVram = hw?.unifiedMem              ? (hw.maxRam ? Math.min(hw.ram, hw.maxRam) : hw.ram)
+              : hw?.gpuLabel === 'No GPU (CPU only)' ? hw.ram   // entire RAM is the pool
+              : (hw?.vram || 0) * (hw?.numGPUs || 1);
 
   if (totalCount === 0) {
     return (

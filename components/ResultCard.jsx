@@ -46,7 +46,7 @@ function VRAMBar({ used, total }) {
 
 export default function ResultCard({ result, hwVram, rank }) {
   const { model, quant, tier, tokPerSec, vramRequired, vramFree,
-          ramRequired, downloadSizeGB, cpuOffloadNeeded, weightsGB, kvCacheGB } = result;
+          ramRequired, downloadSizeGB, cpuOffloadNeeded, cpuOnly, weightsGB, kvCacheGB } = result;
 
   const tierAccent = tier === 'recommended' ? 'border-l-green-500'
                    : tier === 'comfortable' ? 'border-l-sky-500'
@@ -88,9 +88,9 @@ export default function ResultCard({ result, hwVram, rank }) {
         </div>
       </div>
 
-      {/* VRAM bar */}
+      {/* VRAM / RAM bar */}
       <div>
-        <div className="label">VRAM Usage</div>
+        <div className="label">{cpuOnly ? 'RAM Usage' : 'VRAM Usage'}</div>
         <VRAMBar used={vramRequired} total={effectiveVram} />
         <div className="flex gap-3 mt-1 text-xs text-slate-600 font-mono">
           <span>Weights: {weightsGB} GB</span>
@@ -114,13 +114,18 @@ export default function ResultCard({ result, hwVram, rank }) {
         </div>
       </div>
 
-      {/* CPU offload warning */}
-      {cpuOffloadNeeded && (
+      {/* CPU offload / CPU-only warning */}
+      {cpuOnly ? (
         <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/30 border border-amber-800/50 rounded-lg">
           <AlertTriangle size={12} className="text-amber-400 shrink-0" />
-          <span className="text-xs text-amber-300">Needs CPU offloading — slower inference</span>
+          <span className="text-xs text-amber-300">CPU-only inference — expect 2–8 tok/s</span>
         </div>
-      )}
+      ) : cpuOffloadNeeded ? (
+        <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/30 border border-amber-800/50 rounded-lg">
+          <AlertTriangle size={12} className="text-amber-400 shrink-0" />
+          <span className="text-xs text-amber-300">Needs CPU offload — VRAM too small, slower inference</span>
+        </div>
+      ) : null}
 
       {/* Use case chips */}
       {model.useCases?.length > 0 && (

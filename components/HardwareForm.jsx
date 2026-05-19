@@ -272,7 +272,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
 
   function onGPUSelect(preset) {
     if (!preset) {
-      update({ gpuLabel: '', vram: 0, arch: null, unifiedMem: false, flashAttn: false, bandwidth: 0, memType: null, pcie: null, gpuBuyUrl: null });
+      update({ gpuLabel: '', vram: 0, arch: null, unifiedMem: false, flashAttn: false, bandwidth: 0, memType: null, pcie: null, gpuBuyUrl: null, maxRam: null });
       return;
     }
     update({
@@ -285,13 +285,15 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
       memType:    preset.memType || null,
       pcie:       preset.pcie || null,
       gpuBuyUrl:  preset.buyUrl || null,
+      maxRam:     preset.maxRam || null,
     });
   }
 
   function onCPUChange(label) {
     const cpu = CPU_PRESETS.find(c => c.label === label);
     if (!cpu) return;
-    update({ cpuLabel: label, cpuTier: cpu.tier, cpuCores: cpu.cores, cpuVendor: cpu.vendor, ramBandwidthFactor: cpu.ramBandwidthFactor });
+    // cpuRamFactor is CPU cache/memory-controller efficiency — separate from RAM type speed (ramBandwidthFactor)
+    update({ cpuLabel: label, cpuTier: cpu.tier, cpuCores: cpu.cores, cpuVendor: cpu.vendor, cpuRamFactor: cpu.ramBandwidthFactor });
   }
 
   function onRAMTypeChange(label) {
@@ -334,7 +336,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
                 type="number" min={1} max={256}
                 className="w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
                 value={hw.vram || ''}
-                onChange={e => update({ vram: Number(e.target.value) })}
+                onChange={e => { const v = Number(e.target.value); if (v >= 1) update({ vram: v }); }}
               />
             </div>
             <div>
@@ -383,7 +385,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
               onChange={e => update({ ram: Number(e.target.value) })}
             >
               <option value="">— RAM —</option>
-              {RAM_OPTIONS.map(r => <option key={r} value={r}>{r} GB</option>)}
+              {RAM_OPTIONS.filter(r => !hw.maxRam || r <= hw.maxRam).map(r => <option key={r} value={r}>{r} GB</option>)}
             </select>
           </div>
           <div>

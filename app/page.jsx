@@ -4,7 +4,26 @@ import HardwareForm from '@/components/HardwareForm';
 import ResultsPanel from '@/components/ResultsPanel';
 import GeminiAdvisor from '@/components/GeminiAdvisor';
 import { analyzeHardware } from '@/lib/scoring';
+import { GPU_PRESETS } from '@/lib/gpuPresets';
 import { Share2, BookOpen, Cpu } from 'lucide-react';
+
+// Re-derive all GPU-preset-derived fields from a label — used on URL/localStorage load
+// so fields like maxRam, bandwidth, flashAttn stay consistent with preset data
+function gpuFieldsFromLabel(label) {
+  if (!label) return {};
+  const preset = GPU_PRESETS.find(g => g.label === label);
+  if (!preset) return {};
+  return {
+    vram:       preset.vram,
+    arch:       preset.arch || null,
+    unifiedMem: !!preset.unified,
+    flashAttn:  preset.flashAttn,
+    bandwidth:  preset.bandwidth || 0,
+    memType:    preset.memType || null,
+    pcie:       preset.pcie || null,
+    maxRam:     preset.maxRam || null,
+  };
+}
 
 const DEFAULT_HW = {
   gpuLabel:           '',
@@ -16,17 +35,19 @@ const DEFAULT_HW = {
   memType:            null,
   arch:               null,
   pcie:               null,
+  maxRam:             null,
   cpuLabel:           '',
   cpuTier:            'mid',
   cpuCores:           null,
   cpuVendor:          null,
-  ramBandwidthFactor: 0.65,
+  cpuRamFactor:       0.7,   // CPU memory-controller efficiency (from CPU preset)
+  ramBandwidthFactor: 0.65,  // RAM type speed factor (from RAM type preset) — separate from cpuRamFactor
   ramBandwidthGB:     51,
   ramTypeLabel:       '',
   contextLength:      4096,
   os:                 '',
   useCases:           [],
-  speedPref:          'medium',
+  speedPref:          'slow', // default: show all speeds; user opts in to filtering
   ssd:                'nvme',
   flashAttn:          false,
   gpuBuyUrl:          null,
@@ -59,24 +80,22 @@ function decodeFromURL() {
   if (typeof window === 'undefined') return null;
   const p = new URLSearchParams(window.location.search);
   if (!p.get('vram') && !p.get('gpu')) return null;
+  const gpuLabel = p.get('gpu') || '';
   return {
     ...DEFAULT_HW,
-    gpuLabel:           p.get('gpu') || '',
-    vram:               Number(p.get('vram') || 0),
+    ...gpuFieldsFromLabel(gpuLabel), // re-derive vram/bandwidth/flashAttn/maxRam from preset
+    gpuLabel,
     ram:                Number(p.get('ram') || 16),
     cpuLabel:           p.get('cpu') || '',
     cpuTier:            p.get('ctier') || 'mid',
     ssd:                p.get('ssd') || 'nvme',
     contextLength:      Number(p.get('ctx') || 4096),
-    unifiedMem:         p.get('uni') === '1',
     numGPUs:            Number(p.get('gpus') || 1),
-    flashAttn:          p.get('fa') === '1',
     os:                 p.get('os') || '',
-    bandwidth:          Number(p.get('bw') || 0),
     ramTypeLabel:       p.get('ramt') || '',
     ramBandwidthGB:     Number(p.get('rambw') || 51),
     ramBandwidthFactor: Number(p.get('rambf') || 0.65),
-    speedPref:          p.get('sp') || 'medium',
+    speedPref:          p.get('sp') || 'slow',
   };
 }
 
@@ -105,12 +124,13 @@ export default function Home() {
       const saved = localStorage.getItem('llm_matcher_hw_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Only pick known keys — never spread arbitrary storage values onto hw
         const ALLOWED_KEYS = Object.keys(DEFAULT_HW);
         const safe = Object.fromEntries(
           ALLOWED_KEYS.map(k => [k, parsed[k]]).filter(([, v]) => v !== undefined)
         );
-        setHw({ ...DEFAULT_HW, ...safe });
+        // Re-derive GPU preset fields so maxRam/bandwidth/flashAttn stay in sync with preset data
+        const gpuDerived = gpuFieldsFromLabel(safe.gpuLabel || '');
+        setHw({ ...DEFAULT_HW, ...safe, ...gpuDerived });
       }
     } catch {}
   }, []);
@@ -125,7 +145,8 @@ export default function Home() {
   }, [hw]);
 
   const results = useMemo(() => {
-    if (!hw.ram || (!hw.vram && !hw.unifiedMem) || !models.length) {
+    const hasCPUOnly = hw.gpuLabel === 'No GPU (CPU only)';
+    if (!hw.ram || (!hw.vram && !hw.unifiedMem && !hasCPUOnly) || !models.length) {
       return { recommended: [], comfortable: [], stretch: [] };
     }
     return analyzeHardware(hw, hw.contextLength || 4096, hw.flashAttn, models, hw.os);
@@ -164,7 +185,7 @@ export default function Home() {
     + (results.comfortable?.length || 0)
     + (results.stretch?.length || 0);
 
-  const hasHardware = hw.ram && (hw.vram > 0 || hw.unifiedMem);
+  const hasHardware = hw.ram && (hw.vram > 0 || hw.unifiedMem || hw.gpuLabel === 'No GPU (CPU only)');
 
   return (
     <div className="min-h-screen bg-[#080B12]">
@@ -220,7 +241,7 @@ export default function Home() {
               />
             )}
 
-            {hasHardware && totalResults > 0 && (
+            {geminiEnabled && hasHardware && totalResults > 0 && (
               <div className="card p-4 space-y-3">
                 <button
                   onClick={fetchSummary}
