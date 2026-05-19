@@ -1,23 +1,163 @@
 [
   {
-    "name": "Phi-3 Mini 3.8B",
-    "family": "Phi",
-    "params": 3.8,
-    "layers": 32,
-    "numKVHeads": 32,
-    "headDim": 96,
-    "hfRepo": "bartowski/Phi-3-mini-4k-instruct-GGUF",
-    "ollamaTag": "phi3:mini",
+    "name": "Qwen2.5 0.5B",
+    "family": "qwen2.5",
+    "params": 0.5,
+    "layers": 16,
+    "numKVHeads": 8,
+    "headDim": 64,
+    "hfRepo": null,
+    "ollamaTag": "qwen2.5:0.5b",
     "maxCtx": 4096,
-    "useCases": ["chat", "code"],
-    "quality": "good",
-    "verified": true,
-    "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 2.39 },
-      { "q": "Q5_K_M", "fileSizeGB": 2.82 },
-      { "q": "Q8_0",   "fileSizeGB": 4.06 }
+    "useCases": [
+      "chat"
     ],
-    "lastUpdated": "2025-05-01"
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 0.32
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 0.37
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 0.56
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Llama3.2 1B",
+    "family": "llama3.2",
+    "params": 1,
+    "layers": 16,
+    "numKVHeads": 8,
+    "headDim": 64,
+    "hfRepo": null,
+    "ollamaTag": "llama3.2:1b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 0.64
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 0.75
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 1.12
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Qwen2.5 1.5B",
+    "family": "qwen2.5",
+    "params": 1.5,
+    "layers": 16,
+    "numKVHeads": 8,
+    "headDim": 64,
+    "hfRepo": null,
+    "ollamaTag": "qwen2.5:1.5b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 0.95
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 1.12
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 1.67
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Deepseek-r1 1.5B",
+    "family": "deepseek",
+    "params": 1.5,
+    "layers": 16,
+    "numKVHeads": 8,
+    "headDim": 64,
+    "hfRepo": null,
+    "ollamaTag": "deepseek-r1:1.5b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 0.95
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 1.12
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 1.67
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Smollm2 1.7B",
+    "family": "smollm2",
+    "params": 1.7,
+    "layers": 16,
+    "numKVHeads": 8,
+    "headDim": 64,
+    "hfRepo": null,
+    "ollamaTag": "smollm2:1.7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 1.08
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 1.27
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 1.9
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Gemma 2 2B",
@@ -29,15 +169,58 @@
     "hfRepo": "bartowski/gemma-2-2b-it-GGUF",
     "ollamaTag": "gemma2:2b",
     "maxCtx": 8192,
-    "useCases": ["chat"],
+    "useCases": [
+      "chat"
+    ],
     "quality": "good",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 1.63 },
-      { "q": "Q5_K_M", "fileSizeGB": 1.92 },
-      { "q": "Q8_0",   "fileSizeGB": 2.67 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 1.63
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 1.92
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 2.67
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Qwen2.5 3B",
+    "family": "qwen2.5",
+    "params": 3,
+    "layers": 28,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "qwen2.5:3b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 1.91
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 2.24
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 3.35
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Llama 3.2 3B",
@@ -49,13 +232,57 @@
     "hfRepo": "bartowski/Llama-3.2-3B-Instruct-GGUF",
     "ollamaTag": "llama3.2:3b",
     "maxCtx": 131072,
-    "useCases": ["chat", "code"],
+    "useCases": [
+      "chat",
+      "code"
+    ],
     "quality": "good",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 2.02 },
-      { "q": "Q5_K_M", "fileSizeGB": 2.37 },
-      { "q": "Q8_0",   "fileSizeGB": 3.42 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 2.02
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 2.37
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 3.42
+      }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Phi-3 Mini 3.8B",
+    "family": "Phi",
+    "params": 3.8,
+    "layers": 32,
+    "numKVHeads": 32,
+    "headDim": 96,
+    "hfRepo": "bartowski/Phi-3-mini-4k-instruct-GGUF",
+    "ollamaTag": "phi3:mini",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat",
+      "code"
+    ],
+    "quality": "good",
+    "verified": true,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 2.39
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 2.82
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 4.06
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -69,34 +296,26 @@
     "hfRepo": "bartowski/Mistral-7B-Instruct-v0.3-GGUF",
     "ollamaTag": "mistral:7b",
     "maxCtx": 32768,
-    "useCases": ["chat", "code", "reasoning"],
-    "quality": "great",
-    "verified": true,
-    "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 4.37 },
-      { "q": "Q5_K_M", "fileSizeGB": 5.13 },
-      { "q": "Q8_0",   "fileSizeGB": 7.70 }
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning"
     ],
-    "lastUpdated": "2025-05-01"
-  },
-  {
-    "name": "Llama 3.1 8B",
-    "family": "Llama",
-    "params": 8,
-    "layers": 32,
-    "numKVHeads": 8,
-    "headDim": 128,
-    "hfRepo": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
-    "ollamaTag": "llama3.1:8b",
-    "maxCtx": 131072,
-    "useCases": ["chat", "code", "reasoning"],
     "quality": "great",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 4.92 },
-      { "q": "Q5_K_M", "fileSizeGB": 5.73 },
-      { "q": "Q8_0",   "fileSizeGB": 8.54 },
-      { "q": "F16",    "fileSizeGB": 16.07 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.37
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.13
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.7
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -110,15 +329,256 @@
     "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-7B-GGUF",
     "ollamaTag": "deepseek-r1:7b",
     "maxCtx": 131072,
-    "useCases": ["reasoning", "code"],
+    "useCases": [
+      "reasoning",
+      "code"
+    ],
     "quality": "great",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 4.68 },
-      { "q": "Q5_K_M", "fileSizeGB": 5.44 },
-      { "q": "Q8_0",   "fileSizeGB": 7.68 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.68
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.44
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.68
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Qwen2.5 7B",
+    "family": "qwen2.5",
+    "params": 7,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "qwen2.5:7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.46
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.23
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.81
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Codellama 7B",
+    "family": "codellama",
+    "params": 7,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "codellama:7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.46
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.23
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.81
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Wizardlm2 7B",
+    "family": "wizardlm2",
+    "params": 7,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "wizardlm2:7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.46
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.23
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.81
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Starling-lm 7B",
+    "family": "starling",
+    "params": 7,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "starling-lm:7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.46
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.23
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 7.81
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Llama 3.1 8B",
+    "family": "Llama",
+    "params": 8,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
+    "ollamaTag": "llama3.1:8b",
+    "maxCtx": 131072,
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning"
+    ],
+    "quality": "great",
+    "verified": true,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 4.92
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.73
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 8.54
+      },
+      {
+        "q": "F16",
+        "fileSizeGB": 16.07
+      }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Deepseek-r1 8B",
+    "family": "deepseek",
+    "params": 8,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "deepseek-r1:8b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 5.09
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.97
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 8.93
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Aya 8B",
+    "family": "aya",
+    "params": 8,
+    "layers": 32,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "aya:8b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "good",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 5.09
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 5.97
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 8.93
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Gemma 2 9B",
@@ -130,15 +590,59 @@
     "hfRepo": "bartowski/gemma-2-9b-it-GGUF",
     "ollamaTag": "gemma2:9b",
     "maxCtx": 8192,
-    "useCases": ["chat", "reasoning"],
+    "useCases": [
+      "chat",
+      "reasoning"
+    ],
     "quality": "great",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 5.77 },
-      { "q": "Q5_K_M", "fileSizeGB": 6.65 },
-      { "q": "Q8_0",   "fileSizeGB": 9.83 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 5.77
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 6.65
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 9.83
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Solar 10.7B",
+    "family": "solar",
+    "params": 10.7,
+    "layers": 42,
+    "numKVHeads": 4,
+    "headDim": 256,
+    "hfRepo": null,
+    "ollamaTag": "solar:10.7b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "great",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 6.81
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 7.99
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 11.94
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Mistral Nemo 12B",
@@ -150,15 +654,60 @@
     "hfRepo": "bartowski/Mistral-Nemo-Instruct-2407-GGUF",
     "ollamaTag": "mistral-nemo:12b",
     "maxCtx": 128000,
-    "useCases": ["chat", "code", "multilingual"],
+    "useCases": [
+      "chat",
+      "code",
+      "multilingual"
+    ],
     "quality": "great",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 7.48 },
-      { "q": "Q5_K_M", "fileSizeGB": 8.69 },
-      { "q": "Q8_0",   "fileSizeGB": 12.85 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 7.48
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 8.69
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 12.85
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Codellama 13B",
+    "family": "codellama",
+    "params": 13,
+    "layers": 40,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "codellama:13b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "great",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 8.28
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 9.71
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 14.5
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Phi-3 Medium 14B",
@@ -170,13 +719,26 @@
     "hfRepo": "bartowski/Phi-3-medium-4k-instruct-GGUF",
     "ollamaTag": "phi3:medium",
     "maxCtx": 4096,
-    "useCases": ["chat", "code", "reasoning"],
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning"
+    ],
     "quality": "great",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 8.56 },
-      { "q": "Q5_K_M", "fileSizeGB": 9.93 },
-      { "q": "Q8_0",   "fileSizeGB": 14.96 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 8.56
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 9.93
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 14.96
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -190,33 +752,25 @@
     "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF",
     "ollamaTag": "deepseek-r1:14b",
     "maxCtx": 131072,
-    "useCases": ["reasoning", "code"],
-    "quality": "excellent",
-    "verified": true,
-    "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 9.02 },
-      { "q": "Q5_K_M", "fileSizeGB": 10.48 },
-      { "q": "Q8_0",   "fileSizeGB": 15.70 }
+    "useCases": [
+      "reasoning",
+      "code"
     ],
-    "lastUpdated": "2025-05-01"
-  },
-  {
-    "name": "DeepSeek Coder V2 16B",
-    "family": "DeepSeek",
-    "params": 16,
-    "layers": 28,
-    "numKVHeads": 4,
-    "headDim": 128,
-    "hfRepo": "bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF",
-    "ollamaTag": "deepseek-coder-v2:16b",
-    "maxCtx": 163840,
-    "useCases": ["code"],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 10.01 },
-      { "q": "Q5_K_M", "fileSizeGB": 11.62 },
-      { "q": "Q8_0",   "fileSizeGB": 17.18 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 9.02
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 10.48
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 15.7
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -230,15 +784,124 @@
     "hfRepo": "bartowski/Qwen2.5-14B-Instruct-GGUF",
     "ollamaTag": "qwen2.5:14b",
     "maxCtx": 131072,
-    "useCases": ["chat", "code", "reasoning", "multilingual"],
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning",
+      "multilingual"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 9.02 },
-      { "q": "Q5_K_M", "fileSizeGB": 10.44 },
-      { "q": "Q8_0",   "fileSizeGB": 15.70 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 9.02
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 10.44
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 15.7
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Phi4 14B",
+    "family": "phi4",
+    "params": 14,
+    "layers": 48,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "phi4:14b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "great",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 8.91
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 10.46
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 15.62
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "DeepSeek Coder V2 16B",
+    "family": "DeepSeek",
+    "params": 16,
+    "layers": 28,
+    "numKVHeads": 4,
+    "headDim": 128,
+    "hfRepo": "bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF",
+    "ollamaTag": "deepseek-coder-v2:16b",
+    "maxCtx": 163840,
+    "useCases": [
+      "code"
+    ],
+    "quality": "excellent",
+    "verified": true,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 10.01
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 11.62
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 17.18
+      }
+    ],
+    "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Wizardlm2 8X22B",
+    "family": "wizardlm2",
+    "params": 22,
+    "layers": 46,
+    "numKVHeads": 16,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "wizardlm2:8x22b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "great",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 14
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 16.43
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 24.54
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Gemma 2 27B",
@@ -250,13 +913,26 @@
     "hfRepo": "bartowski/gemma-2-27b-it-GGUF",
     "ollamaTag": "gemma2:27b",
     "maxCtx": 8192,
-    "useCases": ["chat", "reasoning", "long-docs"],
+    "useCases": [
+      "chat",
+      "reasoning",
+      "long-docs"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 17.22 },
-      { "q": "Q5_K_M", "fileSizeGB": 19.99 },
-      { "q": "Q8_0",   "fileSizeGB": 28.98 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 17.22
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 19.99
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 28.98
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -270,13 +946,27 @@
     "hfRepo": "bartowski/Qwen2.5-32B-Instruct-GGUF",
     "ollamaTag": "qwen2.5:32b",
     "maxCtx": 131072,
-    "useCases": ["chat", "code", "reasoning", "multilingual"],
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning",
+      "multilingual"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 20.02 },
-      { "q": "Q5_K_M", "fileSizeGB": 23.25 },
-      { "q": "Q8_0",   "fileSizeGB": 34.82 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 20.02
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 23.25
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 34.82
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -290,15 +980,123 @@
     "hfRepo": "bartowski/DeepSeek-R1-Distill-Qwen-32B-GGUF",
     "ollamaTag": "deepseek-r1:32b",
     "maxCtx": 131072,
-    "useCases": ["reasoning", "code"],
+    "useCases": [
+      "reasoning",
+      "code"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 20.02 },
-      { "q": "Q5_K_M", "fileSizeGB": 23.25 },
-      { "q": "Q8_0",   "fileSizeGB": 34.82 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 20.02
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 23.25
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 34.82
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Codellama 34B",
+    "family": "codellama",
+    "params": 34,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "codellama:34b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 21.64
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 25.39
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 37.93
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Command-r 35B",
+    "family": "command",
+    "params": 35,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "command-r:35b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 22.28
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 26.14
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 39.05
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
+  },
+  {
+    "name": "Aya 35B",
+    "family": "aya",
+    "params": 35,
+    "layers": 64,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "aya:35b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 22.28
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 26.14
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 39.05
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Mixtral 8x7B",
@@ -310,12 +1108,22 @@
     "hfRepo": "bartowski/Mixtral-8x7B-Instruct-v0.1-GGUF",
     "ollamaTag": "mixtral:8x7b",
     "maxCtx": 32768,
-    "useCases": ["chat", "code", "reasoning"],
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 26.44 },
-      { "q": "Q5_K_M", "fileSizeGB": 30.99 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 26.44
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 30.99
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -329,12 +1137,23 @@
     "hfRepo": "bartowski/Meta-Llama-3.1-70B-Instruct-GGUF",
     "ollamaTag": "llama3.1:70b",
     "maxCtx": 131072,
-    "useCases": ["chat", "code", "reasoning", "long-docs"],
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning",
+      "long-docs"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 42.52 },
-      { "q": "Q5_K_M", "fileSizeGB": 49.37 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 42.52
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 49.37
+      }
     ],
     "lastUpdated": "2025-05-01"
   },
@@ -348,14 +1167,57 @@
     "hfRepo": "bartowski/Llama-3.3-70B-Instruct-GGUF",
     "ollamaTag": "llama3.3:70b",
     "maxCtx": 131072,
-    "useCases": ["chat", "code", "reasoning", "long-docs"],
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning",
+      "long-docs"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 42.52 },
-      { "q": "Q5_K_M", "fileSizeGB": 49.37 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 42.52
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 49.37
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Deepseek-r1 70B",
+    "family": "deepseek",
+    "params": 70,
+    "layers": 80,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "deepseek-r1:70b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 44.56
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 52.28
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 78.09
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   },
   {
     "name": "Qwen2.5 72B",
@@ -367,13 +1229,57 @@
     "hfRepo": "bartowski/Qwen2.5-72B-Instruct-GGUF",
     "ollamaTag": "qwen2.5:72b",
     "maxCtx": 131072,
-    "useCases": ["chat", "code", "reasoning", "multilingual", "long-docs"],
+    "useCases": [
+      "chat",
+      "code",
+      "reasoning",
+      "multilingual",
+      "long-docs"
+    ],
     "quality": "excellent",
     "verified": true,
     "quants": [
-      { "q": "Q4_K_M", "fileSizeGB": 43.59 },
-      { "q": "Q5_K_M", "fileSizeGB": 50.67 }
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 43.59
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 50.67
+      }
     ],
     "lastUpdated": "2025-05-01"
+  },
+  {
+    "name": "Command-r-plus 104B",
+    "family": "command",
+    "params": 104,
+    "layers": 80,
+    "numKVHeads": 8,
+    "headDim": 128,
+    "hfRepo": null,
+    "ollamaTag": "command-r-plus:104b",
+    "maxCtx": 4096,
+    "useCases": [
+      "chat"
+    ],
+    "quality": "excellent",
+    "verified": false,
+    "quants": [
+      {
+        "q": "Q4_K_M",
+        "fileSizeGB": 66.2
+      },
+      {
+        "q": "Q5_K_M",
+        "fileSizeGB": 77.67
+      },
+      {
+        "q": "Q8_0",
+        "fileSizeGB": 116.03
+      }
+    ],
+    "lastUpdated": "2026-05-19",
+    "source": "ollama"
   }
 ]
