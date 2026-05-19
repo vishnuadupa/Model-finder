@@ -35,17 +35,22 @@ const DEFAULT_HW = {
 function encodeToURL(hw) {
   if (typeof window === 'undefined') return '';
   const p = new URLSearchParams({
-    gpu:  hw.gpuLabel || '',
-    vram: hw.vram,
-    ram:  hw.ram,
-    cpu:  hw.cpuLabel || hw.cpuTier || 'mid',
-    ssd:  hw.ssd || 'nvme',
-    ctx:  hw.contextLength || 4096,
-    uni:  hw.unifiedMem ? '1' : '0',
-    gpus: hw.numGPUs || 1,
-    fa:   hw.flashAttn ? '1' : '0',
-    os:   hw.os || '',
-    bw:   hw.bandwidth || 0,
+    gpu:   hw.gpuLabel || '',
+    vram:  hw.vram,
+    ram:   hw.ram,
+    cpu:   hw.cpuLabel || '',
+    ctier: hw.cpuTier || 'mid',
+    ssd:   hw.ssd || 'nvme',
+    ctx:   hw.contextLength || 4096,
+    uni:   hw.unifiedMem ? '1' : '0',
+    gpus:  hw.numGPUs || 1,
+    fa:    hw.flashAttn ? '1' : '0',
+    os:    hw.os || '',
+    bw:    hw.bandwidth || 0,
+    ramt:  hw.ramTypeLabel || '',
+    rambw: hw.ramBandwidthGB || 51,
+    rambf: hw.ramBandwidthFactor || 0.65,
+    sp:    hw.speedPref || 'medium',
   });
   return `${window.location.origin}?${p}`;
 }
@@ -56,18 +61,22 @@ function decodeFromURL() {
   if (!p.get('vram') && !p.get('gpu')) return null;
   return {
     ...DEFAULT_HW,
-    gpuLabel:      p.get('gpu') || '',
-    vram:          Number(p.get('vram') || 0),
-    ram:           Number(p.get('ram') || 16),
-    cpuLabel:      p.get('cpu') || '',
-    cpuTier:       'mid',
-    ssd:           p.get('ssd') || 'nvme',
-    contextLength: Number(p.get('ctx') || 4096),
-    unifiedMem:    p.get('uni') === '1',
-    numGPUs:       Number(p.get('gpus') || 1),
-    flashAttn:     p.get('fa') === '1',
-    os:            p.get('os') || '',
-    bandwidth:     Number(p.get('bw') || 0),
+    gpuLabel:           p.get('gpu') || '',
+    vram:               Number(p.get('vram') || 0),
+    ram:                Number(p.get('ram') || 16),
+    cpuLabel:           p.get('cpu') || '',
+    cpuTier:            p.get('ctier') || 'mid',
+    ssd:                p.get('ssd') || 'nvme',
+    contextLength:      Number(p.get('ctx') || 4096),
+    unifiedMem:         p.get('uni') === '1',
+    numGPUs:            Number(p.get('gpus') || 1),
+    flashAttn:          p.get('fa') === '1',
+    os:                 p.get('os') || '',
+    bandwidth:          Number(p.get('bw') || 0),
+    ramTypeLabel:       p.get('ramt') || '',
+    ramBandwidthGB:     Number(p.get('rambw') || 51),
+    ramBandwidthFactor: Number(p.get('rambf') || 0.65),
+    speedPref:          p.get('sp') || 'medium',
   };
 }
 
