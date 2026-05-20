@@ -364,24 +364,6 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
           </div>
         </PanelSection>
 
-        {/* Min Speed */}
-        <PanelSection title="Min Speed">
-          <div className="flex gap-2">
-            {SPEED_OPTIONS.map(o => (
-              <button
-                key={o.value}
-                onClick={() => update({ speedPref: o.value })}
-                title={o.tip}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-colors
-                  ${hw.speedPref === o.value
-                    ? 'bg-emerald-600 border-emerald-500 text-white'
-                    : 'border-[#1E2B1E] text-[#7EAF7E] hover:border-emerald-700'}`}
-              >
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </PanelSection>
 
         {/* GPU count */}
         {hasDiscreteGPU && (
@@ -425,29 +407,6 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
           </PanelSection>
         </div>
       )}
-
-      {/* Use cases */}
-      <div className="pt-4 border-t border-[#1E2B1E]">
-        <PanelSection title="Use Cases (optional — boosts matching models in results)">
-          <div className="flex flex-wrap gap-2">
-            {USE_CASES.map(uc => (
-              <button
-                key={uc}
-                onClick={() => {
-                  const cur = hw.useCases || [];
-                  update({ useCases: cur.includes(uc) ? cur.filter(c => c !== uc) : [...cur, uc] });
-                }}
-                className={`chip border transition-colors
-                  ${(hw.useCases || []).includes(uc)
-                    ? 'bg-sky-900/50 border-emerald-600 text-sky-300'
-                    : 'border-[#1E2B1E] text-[#4A654A] hover:border-[#2A3D2A]'}`}
-              >
-                {uc}
-              </button>
-            ))}
-          </div>
-        </PanelSection>
-      </div>
 
       {/* VRAM override + GPU tech details */}
       {hasDiscreteGPU && (
@@ -555,9 +514,17 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
   const advBadge = [
     hw.flashAttn && 'FA',
     hw.ssd !== 'nvme' && hw.ssd?.toUpperCase(),
-    hw.speedPref !== 'slow' && (hw.speedPref === 'fast' ? '30+' : '10+'),
-    (hw.useCases?.length > 0) && `${hw.useCases.length} UC`,
   ].filter(Boolean);
+
+  const USE_CASE_ICONS = {
+    'Chat': '💬', 'Code': '💻', 'Reasoning': '🧠',
+    'Long Docs': '📄', 'Multilingual': '🌍', 'Vision': '👁️',
+  };
+
+  function toggleUseCase(uc) {
+    const cur = hw.useCases || [];
+    update({ useCases: cur.includes(uc) ? cur.filter(c => c !== uc) : [...cur, uc] });
+  }
 
   return (
     <div ref={ref} className="sticky top-[57px] z-30 bg-[#0A0F0A]/98 backdrop-blur-md border-b border-[#1E2B1E]">
@@ -638,6 +605,66 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
               )}
             </button>
 
+          </div>
+        </div>
+      </div>
+
+      {/* ── Row 2: Use cases + Speed — always visible ──────── */}
+      <div className="border-t border-[#1E2B1E]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div
+            className="overflow-x-auto py-2"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            <div className="flex items-center gap-1.5 w-max min-w-full">
+
+              {/* Use case label */}
+              <span className="text-[10px] text-[#354835] uppercase tracking-widest font-semibold shrink-0 mr-1">
+                Use
+              </span>
+
+              {/* Use case chips */}
+              {USE_CASES.map(uc => {
+                const active = (hw.useCases || []).includes(uc);
+                return (
+                  <button
+                    key={uc}
+                    onClick={() => toggleUseCase(uc)}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-medium transition-all shrink-0
+                      ${active
+                        ? 'border-emerald-600/70 bg-emerald-950/50 text-emerald-300'
+                        : 'border-[#1E2B1E] text-[#4A654A] hover:border-[#2A3D2A] hover:text-[#7EAF7E]'}`}
+                  >
+                    <span>{USE_CASE_ICONS[uc]}</span>
+                    <span>{uc}</span>
+                  </button>
+                );
+              })}
+
+              {/* Divider */}
+              <div className="w-px h-4 bg-[#1E2B1E] mx-2 shrink-0" />
+
+              {/* Speed label */}
+              <span className="text-[10px] text-[#354835] uppercase tracking-widest font-semibold shrink-0 mr-1">
+                Speed
+              </span>
+
+              {/* Speed chips */}
+              {SPEED_OPTIONS.map(o => (
+                <button
+                  key={o.value}
+                  onClick={() => update({ speedPref: o.value })}
+                  title={o.tip}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-mono border transition-all shrink-0
+                    ${hw.speedPref === o.value
+                      ? 'border-emerald-600/70 bg-emerald-950/50 text-emerald-300'
+                      : 'border-[#1E2B1E] text-[#4A654A] hover:border-[#2A3D2A] hover:text-[#7EAF7E]'}`}
+                >
+                  {o.label}
+                </button>
+              ))}
+
+            </div>
           </div>
         </div>
       </div>
