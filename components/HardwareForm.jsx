@@ -61,12 +61,14 @@ function getGPUsForVendor(vendor) {
 
 function groupNvidiaGPUs(gpus) {
   const groups = [
-    { label: 'Blackwell (50 series)', prefix: 'RTX 5' },
+    { label: 'Blackwell (50 series)',    prefix: 'RTX 5' },
     { label: 'Ada Lovelace (40 series)', prefix: 'RTX 4' },
-    { label: 'Workstation', match: g => g.label.startsWith('RTX 6000') || g.label.startsWith('RTX A') || g.label.startsWith('RTX 2000') || g.label.startsWith('RTX 4000 Ada') },
-    { label: 'Ampere (30 series)', prefix: 'RTX 3' },
-    { label: 'Turing (20 series)', prefix: 'RTX 2' },
-    { label: 'Pascal / older', match: g => g.label.startsWith('GTX') },
+    { label: 'Workstation',              match: g => g.label.startsWith('RTX 6000') || g.label.startsWith('RTX A') || g.label.startsWith('RTX 2000') || g.label.startsWith('RTX 4000 Ada') },
+    { label: 'Ampere (30 series)',       prefix: 'RTX 3' },
+    { label: 'Turing (20 series)',       prefix: 'RTX 2' },
+    { label: 'GTX 16 series',            match: g => g.label.startsWith('GTX 16') },
+    { label: 'Laptop (Ada / Ampere)',    match: g => g.label.includes('Laptop') },
+    { label: 'Pascal (10 series)',       match: g => g.label.startsWith('GTX 1') && !g.label.startsWith('GTX 16') && !g.label.includes('Laptop') },
   ];
   return groups.map(g => ({
     label: g.label,
@@ -97,6 +99,92 @@ function SegBtn({ options, value, onChange }) {
 
 function HelpText({ children }) {
   return <p className="text-xs text-slate-600 mt-0.5 leading-snug">{children}</p>;
+}
+
+// ── CPU Selector — card-list style matching GPU wizard step 3 ──────────────
+const CPU_TIER_LABELS = {
+  ultra: 'Ultra / Workstation',
+  high:  'High-end',
+  mid:   'Mid-range',
+  low:   'Budget / Older',
+};
+
+function CPUSelector({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const selected = CPU_PRESETS.find(c => c.label === value);
+
+  if (selected && !open) {
+    return (
+      <div className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-[#1E2D45] bg-[#080B12]">
+        <div className="min-w-0">
+          <div className="text-sm text-slate-200 truncate">{selected.label}</div>
+          <div className="text-xs text-[#3D5270] font-mono mt-0.5">
+            {CPU_TIER_LABELS[selected.tier]} · {selected.cores}-core
+          </div>
+        </div>
+        <button
+          onClick={() => { onChange(''); setOpen(false); }}
+          className="text-slate-600 hover:text-slate-400 transition-colors shrink-0 ml-2"
+          title="Change CPU"
+        >
+          <X size={14} />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-[#1E2D45] hover:border-sky-700 hover:bg-sky-950/20 transition-all text-left text-sm text-slate-500"
+        >
+          <span>— Select your CPU —</span>
+          <ChevronDown size={14} className="text-slate-600" />
+        </button>
+      )}
+      {open && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-slate-500">Select your CPU</span>
+            <button onClick={() => setOpen(false)} className="text-xs text-slate-600 hover:text-sky-400 transition-colors">
+              ✕ close
+            </button>
+          </div>
+          <div className="max-h-52 overflow-y-auto space-y-2.5 pr-1">
+            {['ultra', 'high', 'mid', 'low'].map(tier => {
+              const cpus = CPU_PRESETS.filter(c => c.tier === tier && !c.apple);
+              if (!cpus.length) return null;
+              return (
+                <div key={tier}>
+                  <div className="text-xs text-slate-600 uppercase tracking-wider mb-1 px-1">
+                    {CPU_TIER_LABELS[tier]}
+                  </div>
+                  <div className="space-y-1">
+                    {cpus.map(c => (
+                      <button
+                        key={c.label}
+                        onClick={() => { onChange(c.label); setOpen(false); }}
+                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg border transition-all text-left ${
+                          value === c.label
+                            ? 'border-sky-600 bg-sky-950/30'
+                            : 'border-[#1E2D45] hover:border-sky-700 hover:bg-sky-950/20'
+                        }`}
+                      >
+                        <span className="text-sm text-slate-200">{c.label}</span>
+                        <span className="text-xs text-slate-600 font-mono shrink-0 ml-2">{c.cores}c</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ── GPU Wizard (3-step) ────────────────────────────────────────────────────
@@ -418,26 +506,9 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
                 ? 'Your CPU handles all inference — pick the closest match'
                 : 'Used to estimate CPU offload speed when VRAM is tight'}
             </HelpText>
-            <select
-              className="mt-1.5 w-full bg-[#080B12] border border-[#1E2D45] rounded-lg px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-sky-600"
-              value={hw.cpuLabel || ''}
-              onChange={e => onCPUChange(e.target.value)}
-            >
-              <option value="">— Select your CPU —</option>
-              {['ultra', 'high', 'mid', 'low'].map(tier => {
-                const label = tier === 'ultra' ? 'Ultra / Workstation'
-                            : tier === 'high'  ? 'High-end Desktop / Laptop'
-                            : tier === 'mid'   ? 'Mid-range Desktop / Laptop'
-                            : 'Budget / Older';
-                return (
-                  <optgroup key={tier} label={label}>
-                    {CPU_PRESETS.filter(c => c.tier === tier && !c.apple).map(c => (
-                      <option key={c.label} value={c.label}>{c.label} ({c.cores}-core)</option>
-                    ))}
-                  </optgroup>
-                );
-              })}
-            </select>
+            <div className="mt-1.5">
+              <CPUSelector value={hw.cpuLabel || ''} onChange={onCPUChange} />
+            </div>
           </div>
         )}
 
