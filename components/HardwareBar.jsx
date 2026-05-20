@@ -514,6 +514,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
   const advBadge = [
     hw.flashAttn && 'FA',
     hw.ssd !== 'nvme' && hw.ssd?.toUpperCase(),
+    hw.numGPUs > 1 && `${hw.numGPUs}×`,
   ].filter(Boolean);
 
   const USE_CASE_ICONS = {

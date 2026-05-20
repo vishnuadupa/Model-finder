@@ -70,7 +70,8 @@ function encodeToURL(hw) {
     ramt:  hw.ramTypeLabel || '',
     rambw: hw.ramBandwidthGB || 51,
     rambf: hw.ramBandwidthFactor || 0.65,
-    sp:    hw.speedPref || 'medium',
+    sp:    hw.speedPref || 'slow',
+    uc:    (hw.useCases || []).join(','),
   });
   return `${window.location.origin}?${p}`;
 }
@@ -95,6 +96,7 @@ function decodeFromURL() {
     ramBandwidthGB:     Number(p.get('rambw') || 51),
     ramBandwidthFactor: Number(p.get('rambf') || 0.65),
     speedPref:          p.get('sp')     || 'slow',
+    useCases:           p.get('uc') ? p.get('uc').split(',').filter(Boolean) : [],
   };
 }
 
