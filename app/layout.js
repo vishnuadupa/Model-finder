@@ -3,17 +3,19 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
+// 600 never used — drop it to save ~10 KB
 const ibmPlex = IBM_Plex_Mono({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500'],
   variable: '--font-mono',
   display: 'swap',
   preload: true,
 });
 
+// Only used for headings (logo + hero h1) — 400/600 not needed
 const syne = Syne({
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
+  weight: ['700', '800'],
   variable: '--font-syne',
   display: 'swap',
   preload: true,

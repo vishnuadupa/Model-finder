@@ -126,19 +126,24 @@ Return ONLY valid JSON:
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+  const TIMEOUT_MS = 8_000;
   let text;
   let lastErr;
   for (const modelId of MODELS) {
     try {
       const m = genAI.getGenerativeModel({ model: modelId });
-      const result = await m.generateContent(prompt);
+      // Race against a hard timeout so we never hang the serverless function
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(Object.assign(new Error('timeout'), { status: 503 })), TIMEOUT_MS)
+      );
+      const result = await Promise.race([m.generateContent(prompt), timeoutPromise]);
       text = result.response.text().replace(/```json\n?/g, '').replace(/\n?```/g, '').trim();
       lastErr = null;
       break;
     } catch (err) {
       lastErr = err;
       const status = err?.status ?? 0;
-      // 429 = quota, 404 = model not found, 503 = overloaded — all: try next
+      // 429 = quota, 404 = model not found, 503 = overloaded/timeout — all: try next
       if (status === 429 || status === 404 || status === 503) continue;
       throw err;
     }

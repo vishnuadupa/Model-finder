@@ -94,12 +94,16 @@ Direct and specific. No markdown. Under 120 words.`;
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+  const TIMEOUT_MS = 8_000;
   let summary;
   let lastErr;
   for (const modelId of MODELS) {
     try {
       const m = genAI.getGenerativeModel({ model: modelId });
-      const result = await m.generateContent(prompt);
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(Object.assign(new Error('timeout'), { status: 503 })), TIMEOUT_MS)
+      );
+      const result = await Promise.race([m.generateContent(prompt), timeoutPromise]);
       summary = result.response.text().trim().slice(0, 1000);
       lastErr = null;
       break;

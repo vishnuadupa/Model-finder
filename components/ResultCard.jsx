@@ -40,7 +40,7 @@ function Stars({ count }) {
   return (
     <span className="font-mono text-[11px] tracking-tight">
       {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} className={i < count ? 'text-amber-400' : 'text-[#1E2E42]'}>★</span>
+        <span key={i} className={i < count ? 'text-amber-400' : 'text-[#2A3E55]'}>★</span>
       ))}
     </span>
   );
