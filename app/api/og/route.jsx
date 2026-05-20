@@ -1,6 +1,4 @@
-import { ImageResponse } from '@vercel/og';
-
-export const runtime = 'edge';
+import { ImageResponse } from 'next/og';
 
 export function GET(req) {
   const { searchParams } = new URL(req.url);
