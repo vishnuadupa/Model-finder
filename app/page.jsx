@@ -268,7 +268,7 @@ export default function Home() {
         </div>
 
         {/* Two-panel grid — flex-1 + min-h-0 lets both columns overflow independently on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start lg:flex-1 lg:min-h-0">
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 lg:flex-1 lg:min-h-0">
           {/* Left column — on desktop: independent scroll; on mobile: tab-controlled */}
           <div className={`space-y-4 lg:block lg:overflow-y-auto lg:h-full lg:pb-6 lg:pr-1 ${
             hasHardware && mobileTab !== 'hardware' ? 'hidden' : ''
@@ -293,6 +293,7 @@ export default function Home() {
 
           {/* Right column — on desktop: independent scroll; on mobile: tab-controlled */}
           <div className={`lg:overflow-y-auto lg:h-full lg:pb-6 ${hasHardware && mobileTab !== 'results' ? 'hidden lg:block' : ''}`}>
+          <div className="space-y-4">
             {/* Gemini AI inline advisor — reactive to hw + top model */}
             {geminiEnabled && hasHardware && selectedModel && (
               <GeminiAdvisor
@@ -356,7 +357,8 @@ export default function Home() {
                 selectedModelName={selectedModel?.name}
               />
             )}
-          </div>
+          </div>{/* end space-y-4 */}
+          </div>{/* end right column */}
         </div>
       </main>
 

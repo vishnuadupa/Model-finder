@@ -115,17 +115,21 @@ function CPUSelector({ value, onChange }) {
 
   if (selected && !open) {
     return (
-      <div className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-[#1E2D45] bg-[#080B12]">
+      <div
+        className="flex items-center justify-between px-3 py-2.5 rounded-lg border border-[#1E2D45] bg-[#080B12] hover:border-sky-700/60 cursor-pointer transition-colors"
+        onClick={() => setOpen(true)}
+        title="Click to change CPU"
+      >
         <div className="min-w-0">
           <div className="text-sm text-slate-200 truncate">{selected.label}</div>
           <div className="text-xs text-[#3D5270] font-mono mt-0.5">
-            {CPU_TIER_LABELS[selected.tier]} · {selected.cores}-core
+            {CPU_TIER_LABELS[selected.tier]} · {selected.cores}-core · <span className="text-sky-700/70">click to change</span>
           </div>
         </div>
         <button
-          onClick={() => { onChange(''); setOpen(false); }}
+          onClick={e => { e.stopPropagation(); onChange(''); setOpen(false); }}
           className="text-slate-600 hover:text-slate-400 transition-colors shrink-0 ml-2"
-          title="Change CPU"
+          title="Clear CPU"
         >
           <X size={14} />
         </button>
