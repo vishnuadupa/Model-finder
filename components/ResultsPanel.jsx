@@ -33,12 +33,12 @@ const RUNPOD_URL = 'https://runpod.io?ref=YOURCODE';
 
 function CloudCTA({ modelName }) {
   return (
-    <div className="card p-4 border-dashed border-[#1B2A40] flex items-center justify-between gap-4">
+    <div className="card p-4 border-dashed border-zinc-700/50 flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <Server size={16} className="text-[#3D5270] shrink-0" />
+        <Server size={16} className="text-zinc-600 shrink-0" />
         <div>
-          <div className="text-sm text-[#C8D8EA]">Can&apos;t run {modelName} locally?</div>
-          <div className="text-xs text-[#3D5270]">Rent a cloud GPU instead</div>
+          <div className="text-sm text-zinc-200">Can&apos;t run {modelName} locally?</div>
+          <div className="text-xs text-zinc-600">Rent a cloud GPU instead</div>
         </div>
       </div>
       <a
@@ -65,7 +65,7 @@ function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName, 
           <span className={`w-1.5 h-1.5 rounded-full ${meta.dot} shadow-[0_0_6px_currentColor]`} />
           {meta.icon}
           <span className={`font-semibold text-sm ${meta.accent}`}>{meta.label}</span>
-          <span className="text-xs text-[#3D5270] font-mono bg-[#080C1A] px-1.5 py-0.5 rounded-md border border-[#141F30]">
+          <span className="text-xs text-zinc-600 font-mono bg-zinc-950 px-1.5 py-0.5 rounded-md border border-zinc-800/60">
             {results.length}
           </span>
         </div>
@@ -103,8 +103,8 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
     return (
       <div className="card p-10 text-center space-y-3">
         <div className="text-3xl">😅</div>
-        <div className="text-[#C8D8EA] font-semibold">No compatible models found</div>
-        <div className="text-sm text-[#4A6280] leading-relaxed">
+        <div className="text-zinc-200 font-semibold">No compatible models found</div>
+        <div className="text-sm text-zinc-500 leading-relaxed">
           Try reducing context length, enabling Flash Attention, or adding more RAM.
         </div>
         <CloudCTA modelName="any local model" />
@@ -115,7 +115,7 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-1">
-        <p className="text-sm text-[#7A94B0]">
+        <p className="text-sm text-zinc-400">
           <span className="text-white font-semibold font-mono">{totalCount}</span> models fit your hardware
         </p>
         <div className="flex gap-2 text-[11px] font-mono">

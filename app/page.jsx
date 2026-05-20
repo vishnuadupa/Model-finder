@@ -1,14 +1,13 @@
 'use client';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import HardwareForm from '@/components/HardwareForm';
-import ResultsPanel from '@/components/ResultsPanel';
+import HardwareBar   from '@/components/HardwareBar';
+import ResultsPanel  from '@/components/ResultsPanel';
 import GeminiAdvisor from '@/components/GeminiAdvisor';
 import { analyzeHardware } from '@/lib/scoring';
-import { GPU_PRESETS } from '@/lib/gpuPresets';
-import { Share2, BookOpen, Cpu, Settings, LayoutList } from 'lucide-react';
+import { GPU_PRESETS }      from '@/lib/gpuPresets';
+import { Share2, BookOpen, Cpu } from 'lucide-react';
 
-// Re-derive all GPU-preset-derived fields from a label — used on URL/localStorage load
-// so fields like maxRam, bandwidth, flashAttn stay consistent with preset data
+/* ── GPU preset field re-derivation (used on URL/localStorage load) ── */
 function gpuFieldsFromLabel(label) {
   if (!label) return {};
   const preset = GPU_PRESETS.find(g => g.label === label);
@@ -40,14 +39,14 @@ const DEFAULT_HW = {
   cpuTier:            'mid',
   cpuCores:           null,
   cpuVendor:          null,
-  cpuRamFactor:       0.7,   // CPU memory-controller efficiency (from CPU preset)
-  ramBandwidthFactor: 0.65,  // RAM type speed factor (from RAM type preset) — separate from cpuRamFactor
+  cpuRamFactor:       0.7,
+  ramBandwidthFactor: 0.65,
   ramBandwidthGB:     51,
   ramTypeLabel:       '',
   contextLength:      4096,
   os:                 '',
   useCases:           [],
-  speedPref:          'slow', // default: show all speeds; user opts in to filtering
+  speedPref:          'slow',
   ssd:                'nvme',
   flashAttn:          false,
   gpuBuyUrl:          null,
@@ -83,34 +82,34 @@ function decodeFromURL() {
   const gpuLabel = p.get('gpu') || '';
   return {
     ...DEFAULT_HW,
-    ...gpuFieldsFromLabel(gpuLabel), // re-derive vram/bandwidth/flashAttn/maxRam from preset
+    ...gpuFieldsFromLabel(gpuLabel),
     gpuLabel,
-    ram:                Number(p.get('ram') || 16),
-    cpuLabel:           p.get('cpu') || '',
-    cpuTier:            p.get('ctier') || 'mid',
-    ssd:                p.get('ssd') || 'nvme',
-    contextLength:      Number(p.get('ctx') || 4096),
-    numGPUs:            Number(p.get('gpus') || 1),
-    os:                 p.get('os') || '',
-    ramTypeLabel:       p.get('ramt') || '',
+    ram:                Number(p.get('ram')   || 16),
+    cpuLabel:           p.get('cpu')    || '',
+    cpuTier:            p.get('ctier')  || 'mid',
+    ssd:                p.get('ssd')    || 'nvme',
+    contextLength:      Number(p.get('ctx')   || 4096),
+    numGPUs:            Number(p.get('gpus')  || 1),
+    os:                 p.get('os')     || '',
+    ramTypeLabel:       p.get('ramt')   || '',
     ramBandwidthGB:     Number(p.get('rambw') || 51),
     ramBandwidthFactor: Number(p.get('rambf') || 0.65),
-    speedPref:          p.get('sp') || 'slow',
+    speedPref:          p.get('sp')     || 'slow',
   };
 }
 
 export default function Home() {
-  const [hw, setHw] = useState(DEFAULT_HW);
-  const [models, setModels] = useState([]);
+  const [hw, setHw]                   = useState(DEFAULT_HW);
+  const [models, setModels]           = useState([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [selectedModel, setSelectedModel] = useState(null);
   const [geminiEnabled, setGeminiEnabled] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [summary, setSummary] = useState(null);
+  const [copied, setCopied]           = useState(false);
+  const [summary, setSummary]         = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
-  const [mobileTab, setMobileTab] = useState('hardware'); // 'hardware' | 'results'
   const lsDebounce = useRef(null);
 
+  /* Load models */
   useEffect(() => {
     fetch('/models.json')
       .then(r => r.json())
@@ -118,6 +117,7 @@ export default function Home() {
       .catch(() => setModelsLoading(false));
   }, []);
 
+  /* Restore from URL or localStorage */
   useEffect(() => {
     const fromURL = decodeFromURL();
     if (fromURL) { setHw(fromURL); return; }
@@ -125,18 +125,14 @@ export default function Home() {
       const saved = localStorage.getItem('llm_matcher_hw_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        const ALLOWED_KEYS = Object.keys(DEFAULT_HW);
-        const safe = Object.fromEntries(
-          ALLOWED_KEYS.map(k => [k, parsed[k]]).filter(([, v]) => v !== undefined)
-        );
-        // Re-derive GPU preset fields so maxRam/bandwidth/flashAttn stay in sync with preset data
-        const gpuDerived = gpuFieldsFromLabel(safe.gpuLabel || '');
-        setHw({ ...DEFAULT_HW, ...safe, ...gpuDerived });
+        const ALLOWED = Object.keys(DEFAULT_HW);
+        const safe    = Object.fromEntries(ALLOWED.map(k => [k, parsed[k]]).filter(([, v]) => v !== undefined));
+        setHw({ ...DEFAULT_HW, ...safe, ...gpuFieldsFromLabel(safe.gpuLabel || '') });
       }
     } catch {}
   }, []);
 
-  // Debounce localStorage writes — don't hammer storage on every keystroke
+  /* Debounce localStorage writes */
   useEffect(() => {
     clearTimeout(lsDebounce.current);
     lsDebounce.current = setTimeout(() => {
@@ -145,6 +141,7 @@ export default function Home() {
     return () => clearTimeout(lsDebounce.current);
   }, [hw]);
 
+  /* Score models */
   const results = useMemo(() => {
     const hasCPUOnly = hw.gpuLabel === 'No GPU (CPU only)';
     if (!hw.ram || (!hw.vram && !hw.unifiedMem && !hasCPUOnly) || !models.length) {
@@ -153,12 +150,10 @@ export default function Home() {
     return analyzeHardware(hw, hw.contextLength || 4096, hw.flashAttn, models, hw.os);
   }, [hw, models]);
 
+  /* Auto-select top result */
   useEffect(() => {
     const first = results.recommended?.[0] || results.comfortable?.[0] || results.stretch?.[0];
-    if (first) {
-      setSelectedModel(first.model);
-      setMobileTab('results'); // auto-switch to results on mobile when they appear
-    }
+    if (first) setSelectedModel(first.model);
   }, [results]);
 
   const shareURL = useCallback(() => {
@@ -173,7 +168,7 @@ export default function Home() {
     setSummaryLoading(true);
     setSummary(null);
     try {
-      const res = await fetch('/api/summarize', {
+      const res  = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ hw, topModels, useCase: hw.useCases?.[0] }),
@@ -192,8 +187,10 @@ export default function Home() {
   const hasHardware = hw.ram && (hw.vram > 0 || hw.unifiedMem || hw.gpuLabel === 'No GPU (CPU only)');
 
   return (
-    <div className="min-h-screen bg-[#080B12]">
-      <header className="border-b border-[#1B2A40] px-6 py-4 bg-[#070B14]/95 sticky top-0 z-40 backdrop-blur-md">
+    <div className="min-h-screen bg-[#09090B]">
+
+      {/* ── Header ──────────────────────────────────────────── */}
+      <header className="border-b border-zinc-800 px-6 py-4 bg-[#09090B]/95 sticky top-0 z-40 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-7 h-7 bg-sky-500/90 rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(14,165,233,0.4)]">
@@ -202,6 +199,9 @@ export default function Home() {
             <span className="font-bold text-white tracking-tight" style={{ fontFamily: 'var(--font-syne)' }}>
               Local LLM Matcher
             </span>
+            <span className="hidden sm:inline text-xs text-zinc-600 font-normal ml-1">
+              — which AI models can your hardware run?
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <a href="/gpu/rtx-4090-24gb" className="btn-ghost text-xs hidden sm:flex items-center gap-1.5">
@@ -209,165 +209,100 @@ export default function Home() {
             </a>
             {hasHardware && (
               <button onClick={shareURL} className="btn-ghost text-xs flex items-center gap-1.5">
-                <Share2 size={12} /> {copied ? 'Copied!' : 'Share Rig'}
+                <Share2 size={12} /> {copied ? 'Copied!' : 'Share'}
               </button>
             )}
           </div>
         </div>
       </header>
 
-      {/* ── Mobile tab bar — sits below sticky header ── */}
-      {hasHardware && (
-        <div className="lg:hidden sticky top-[57px] z-30 bg-[#070B14]/95 backdrop-blur-md border-b border-[#1B2A40]">
-          <div className="flex">
-            <button
-              onClick={() => { setMobileTab('hardware'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
-                mobileTab === 'hardware'
-                  ? 'border-sky-500 text-sky-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-300'
-              }`}
-            >
-              <Settings size={14} /> Hardware
-            </button>
-            <button
-              onClick={() => { setMobileTab('results'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
-                mobileTab === 'results'
-                  ? 'border-sky-500 text-sky-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-300'
-              }`}
-            >
-              <LayoutList size={14} />
-              Results
-              {totalResults > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-sky-900 text-sky-300 font-mono">
-                  {totalResults}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
-      )}
+      {/* ── Hardware Bar ────────────────────────────────────── */}
+      <HardwareBar
+        value={hw}
+        onChange={setHw}
+        geminiEnabled={geminiEnabled}
+        onGeminiToggle={() => setGeminiEnabled(e => !e)}
+      />
 
-      {/* ── main: on desktop fills viewport height for two-panel independent scroll ── */}
-      <main className="max-w-7xl mx-auto px-4 lg:h-[calc(100vh-57px)] lg:flex lg:flex-col">
-        {/* Hero — shrinks on desktop, normal on mobile */}
-        <div className="relative text-center pt-6 pb-8 lg:pt-4 lg:pb-6 lg:shrink-0">
-          <div className="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
-            <div className="w-[480px] h-[120px] bg-sky-500/[0.06] rounded-full blur-3xl" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 tracking-tight" style={{ fontFamily: 'var(--font-syne)' }}>
-            Which AI models can your{' '}
-            <span className="text-sky-400" style={{ textShadow: '0 0 32px rgba(56,189,248,0.35)' }}>hardware</span>{' '}
-            run?
-          </h1>
-          <p className="text-[#7A94B0] text-sm max-w-md mx-auto leading-relaxed">
-            Pick your GPU or Apple Silicon chip, set your RAM, and we&apos;ll show every model that fits — ranked by speed.
-          </p>
-        </div>
+      {/* ── Main content ────────────────────────────────────── */}
+      <main className="max-w-7xl mx-auto px-4 pt-6 pb-20">
 
-        {/* Two-panel grid — flex-1 + min-h-0 lets both columns overflow independently on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 lg:flex-1 lg:min-h-0">
-          {/* Left column — on desktop: independent scroll; on mobile: tab-controlled */}
-          <div className={`space-y-4 lg:block lg:overflow-y-auto lg:h-full lg:pb-6 lg:pr-1 ${
-            hasHardware && mobileTab !== 'hardware' ? 'hidden' : ''
-          }`}>
-            <HardwareForm
-              value={hw}
-              onChange={v => { setHw(v); setMobileTab('hardware'); }}
-              geminiEnabled={geminiEnabled}
-              onGeminiToggle={() => setGeminiEnabled(e => !e)}
+        {/* Gemini AI inline advisor */}
+        {geminiEnabled && hasHardware && selectedModel && (
+          <div className="mb-4">
+            <GeminiAdvisor
+              hw={hw}
+              currentModel={selectedModel}
+              allModels={models}
+              enabled={geminiEnabled}
             />
+          </div>
+        )}
 
-            {/* Mobile: nudge to results after form is filled */}
-            {hasHardware && mobileTab === 'hardware' && totalResults > 0 && (
-              <button
-                onClick={() => setMobileTab('results')}
-                className="lg:hidden w-full btn-primary flex items-center justify-center gap-2"
-              >
-                <LayoutList size={14} /> View {totalResults} results →
-              </button>
+        {/* Gemini text summary */}
+        {geminiEnabled && hasHardware && totalResults > 0 && (
+          <div className="card p-4 space-y-3 mb-4">
+            <button
+              onClick={fetchSummary}
+              disabled={summaryLoading}
+              className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {summaryLoading ? 'Generating…' : '✨ Gemini AI Summary'}
+            </button>
+            {summary && (
+              <p className="text-sm text-zinc-300 leading-relaxed">{summary}</p>
             )}
           </div>
+        )}
 
-          {/* Right column — on desktop: independent scroll; on mobile: tab-controlled */}
-          <div className={`lg:overflow-y-auto lg:h-full lg:pb-6 ${hasHardware && mobileTab !== 'results' ? 'hidden lg:block' : ''}`}>
-          <div className="space-y-4">
-            {/* Gemini AI inline advisor — reactive to hw + top model */}
-            {geminiEnabled && hasHardware && selectedModel && (
-              <GeminiAdvisor
-                hw={hw}
-                currentModel={selectedModel}
-                allModels={models}
-                enabled={geminiEnabled}
-              />
-            )}
-
-            {/* Gemini text summary */}
-            {geminiEnabled && hasHardware && totalResults > 0 && (
-              <div className="card p-4 space-y-3">
-                <button
-                  onClick={fetchSummary}
-                  disabled={summaryLoading}
-                  className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  {summaryLoading ? 'Generating...' : '✨ Gemini AI Summary'}
-                </button>
-                {summary && (
-                  <p className="text-sm text-slate-300 leading-relaxed">{summary}</p>
-                )}
+        {/* Empty / loading / results */}
+        {!hasHardware ? (
+          <div className="card p-12 text-center space-y-4 mt-4">
+            <div className="text-4xl">🖥️</div>
+            <div className="text-zinc-300 font-semibold">Configure your hardware above to see results</div>
+            <div className="text-zinc-600 text-sm max-w-sm mx-auto space-y-3">
+              <p>Use the bar at the top to pick your GPU (or Apple Silicon chip) and set your RAM.</p>
+              <div className="text-left inline-block space-y-1.5 text-xs text-zinc-700">
+                <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Works for NVIDIA, AMD, Intel Arc, Apple Silicon, and CPU-only</span></div>
+                <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Shows exactly how much VRAM / unified memory each model needs</span></div>
+                <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Estimates tokens per second for your specific hardware</span></div>
+                <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Explains what each quantization level means in plain English</span></div>
               </div>
-            )}
-
-            {!hasHardware ? (
-              <div className="card p-12 text-center space-y-4">
-                <div className="text-4xl">🖥️</div>
-                <div className="text-slate-400 font-semibold">Select your hardware to see results</div>
-                <div className="text-slate-600 text-sm max-w-sm mx-auto space-y-3">
-                  <p>Use the <span className="hidden lg:inline">form on the left</span><span className="lg:hidden">Hardware tab above</span> to pick your GPU (or Apple Silicon chip) and RAM.</p>
-                  <div className="text-left inline-block space-y-1.5 text-xs text-slate-700">
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Works for NVIDIA, AMD, Intel Arc, Apple Silicon, and CPU-only</span></div>
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Shows exactly how much VRAM / unified memory each model needs</span></div>
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Estimates tokens per second for your specific hardware</span></div>
-                    <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Explains what each quantization level means in plain English</span></div>
-                  </div>
+            </div>
+          </div>
+        ) : modelsLoading ? (
+          <div className="space-y-3 animate-pulse mt-2">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="card p-4 space-y-3">
+                <div className="h-4 bg-zinc-800 rounded w-1/3" />
+                <div className="grid grid-cols-3 gap-3">
+                  {[...Array(3)].map((_, j) => (
+                    <div key={j} className="h-20 bg-zinc-800 rounded-lg" />
+                  ))}
                 </div>
+                <div className="h-3 bg-zinc-800 rounded w-2/3" />
               </div>
-            ) : modelsLoading ? (
-              <div className="space-y-3 animate-pulse">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="card p-4 space-y-3">
-                    <div className="h-4 bg-slate-800 rounded w-1/3" />
-                    <div className="grid grid-cols-3 gap-3">
-                      {[...Array(3)].map((_, j) => (
-                        <div key={j} className="h-20 bg-slate-800 rounded-lg" />
-                      ))}
-                    </div>
-                    <div className="h-3 bg-slate-800 rounded w-2/3" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <ResultsPanel
-                results={results}
-                hw={hw}
-                geminiEnabled={geminiEnabled}
-                onSelectModel={model => setSelectedModel(model)}
-                selectedModelName={selectedModel?.name}
-              />
-            )}
-          </div>{/* end space-y-4 */}
-          </div>{/* end right column */}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <ResultsPanel
+            results={results}
+            hw={hw}
+            geminiEnabled={geminiEnabled}
+            onSelectModel={model => setSelectedModel(model)}
+            selectedModelName={selectedModel?.name}
+          />
+        )}
       </main>
 
-      <footer className="border-t border-[#1E2D45] mt-16 px-6 py-8 text-center text-xs text-slate-700">
+      {/* ── Footer ──────────────────────────────────────────── */}
+      <footer className="border-t border-zinc-800 px-6 py-8 text-center text-xs text-zinc-700">
         <div className="max-w-7xl mx-auto space-y-1">
           <div>Speed estimates based on memory bandwidth formula (tok/s ≈ bandwidth / model_size × backend_efficiency). Actual performance varies.</div>
           <div>Affiliate links help keep this free.</div>
         </div>
       </footer>
+
     </div>
   );
 }
