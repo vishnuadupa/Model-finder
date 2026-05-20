@@ -12,12 +12,12 @@ const TIER_META = {
     bar:    'bg-emerald-500/20 border-emerald-900/30',
   },
   comfortable: {
-    icon:   <Zap size={13} className="text-sky-400" />,
+    icon:   <Zap size={13} className="text-teal-400" />,
     label:  'Comfortable',
     desc:   'Fits well — slightly less headroom',
-    accent: 'text-sky-400',
-    dot:    'bg-sky-400',
-    bar:    'bg-sky-500/10 border-sky-900/30',
+    accent: 'text-teal-400',
+    dot:    'bg-teal-400',
+    bar:    'bg-teal-500/10 border-teal-900/30',
   },
   stretch: {
     icon:   <AlertTriangle size={13} className="text-amber-400" />,
@@ -35,10 +35,10 @@ function CloudCTA({ modelName }) {
   return (
     <div className="card p-4 border-dashed border-zinc-700/50 flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <Server size={16} className="text-zinc-600 shrink-0" />
+        <Server size={16} className="text-[#354835] shrink-0" />
         <div>
-          <div className="text-sm text-zinc-200">Can&apos;t run {modelName} locally?</div>
-          <div className="text-xs text-zinc-600">Rent a cloud GPU instead</div>
+          <div className="text-sm text-[#C8E0C8]">Can&apos;t run {modelName} locally?</div>
+          <div className="text-xs text-[#354835]">Rent a cloud GPU instead</div>
         </div>
       </div>
       <a
@@ -65,7 +65,7 @@ function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName, 
           <span className={`w-1.5 h-1.5 rounded-full ${meta.dot} shadow-[0_0_6px_currentColor]`} />
           {meta.icon}
           <span className={`font-semibold text-sm ${meta.accent}`}>{meta.label}</span>
-          <span className="text-xs text-zinc-600 font-mono bg-zinc-950 px-1.5 py-0.5 rounded-md border border-zinc-800/60">
+          <span className="text-xs text-[#354835] font-mono bg-[#0C110C] px-1.5 py-0.5 rounded-md border border-[#1E2B1E]/60">
             {results.length}
           </span>
         </div>
@@ -103,7 +103,7 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
     return (
       <div className="card p-10 text-center space-y-3">
         <div className="text-3xl">😅</div>
-        <div className="text-zinc-200 font-semibold">No compatible models found</div>
+        <div className="text-[#C8E0C8] font-semibold">No compatible models found</div>
         <div className="text-sm text-zinc-500 leading-relaxed">
           Try reducing context length, enabling Flash Attention, or adding more RAM.
         </div>
@@ -115,7 +115,7 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-1">
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-[#7EAF7E]">
           <span className="text-white font-semibold font-mono">{totalCount}</span> models fit your hardware
         </p>
         <div className="flex gap-2 text-[11px] font-mono">
@@ -125,7 +125,7 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
             </span>
           )}
           {results.comfortable?.length > 0 && (
-            <span className="text-sky-500/80 bg-sky-950/30 px-2 py-0.5 rounded-full border border-sky-900/30 hidden sm:inline">
+            <span className="text-teal-500/80 bg-teal-950/30 px-2 py-0.5 rounded-full border border-teal-900/30 hidden sm:inline">
               {results.comfortable.length} comfortable
             </span>
           )}

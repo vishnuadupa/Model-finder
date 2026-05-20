@@ -3,17 +3,16 @@
 @tailwind utilities;
 
 /* ── Design tokens ──────────────────────────────────────────
-   bg:       #09090B  page background       (zinc-950)
-   surface:  #18181B  card surface          (zinc-900)
-   inset:    #0E0E10  deep inset / inputs
-   border:   #27272A  default border        (zinc-800)
-   b-hi:     #3F3F46  border hover/active   (zinc-700)
-   b-focus:  #0EA5E9  border on focus       (sky-500)
-   txt-1:    #F4F4F5  primary text          (zinc-100)
-   txt-2:    #A1A1AA  secondary text        (zinc-400)
-   txt-3:    #71717A  muted / placeholder   (zinc-500)
-   txt-dim:  #52525B  dim text              (zinc-600)
-   accent:   #38BDF8  sky-400 (unchanged)
+   bg:       #0A0F0A  page background    (near-black, green tint)
+   surface:  #111811  card surface       (dark slate-green)
+   inset:    #0C110C  deep inset/inputs
+   border:   #1E2B1E  default border     (green-tinted)
+   b-hi:     #2A3D2A  border hover/focus
+   txt-1:    #E2F0E2  primary text       (slight green tint)
+   txt-2:    #7EAF7E  secondary text
+   txt-3:    #4A654A  muted / placeholder
+   txt-dim:  #354835  dim text
+   accent:   #10B981  emerald-500
    ──────────────────────────────────────────────────────── */
 
 :root {
@@ -21,8 +20,8 @@
 }
 
 body {
-  background: #09090B;
-  color: #F4F4F5;
+  background: #0A0F0A;
+  color: #E2F0E2;
   font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
   line-height: 1.6;
@@ -30,7 +29,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Monospace only where it counts */
 .font-mono,
 code, pre,
 input[type="number"],
@@ -41,22 +39,22 @@ input[type="number"],
 @layer utilities {
   /* ── Cards ───────────────────────────────── */
   .card {
-    @apply bg-zinc-900 border border-zinc-800 rounded-2xl;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    @apply bg-[#111811] border border-[#1E2B1E] rounded-2xl;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.025);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
 
   /* ── Buttons ─────────────────────────────── */
   .btn-primary {
-    @apply bg-sky-500 hover:bg-sky-400 active:scale-[0.98] text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 text-sm;
-    box-shadow: 0 1px 10px rgba(14, 165, 233, 0.3);
+    @apply bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 text-sm;
+    box-shadow: 0 1px 10px rgba(16, 185, 129, 0.3);
   }
   .btn-primary:hover {
-    box-shadow: 0 2px 14px rgba(14, 165, 233, 0.45);
+    box-shadow: 0 2px 14px rgba(16, 185, 129, 0.45);
   }
 
   .btn-ghost {
-    @apply border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-sky-400 px-3 py-2 rounded-xl transition-all duration-150 text-sm;
+    @apply border border-[#1E2B1E] hover:border-[#2A3D2A] text-[#7EAF7E] hover:text-emerald-400 px-3 py-2 rounded-xl transition-all duration-150 text-sm;
   }
 
   /* ── Chips / tags ────────────────────────── */
@@ -66,7 +64,7 @@ input[type="number"],
 
   /* ── Form labels ─────────────────────────── */
   .label {
-    @apply text-xs text-zinc-500 uppercase tracking-[0.07em] mb-1.5 block font-semibold;
+    @apply text-xs text-[#4A654A] uppercase tracking-[0.07em] mb-1.5 block font-semibold;
   }
 }
 
@@ -82,20 +80,20 @@ select:focus,
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: #0EA5E9 !important;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.10) !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12) !important;
 }
 
 /* ── Scrollbar ────────────────────────────────────────────── */
 ::-webkit-scrollbar          { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track    { background: transparent; }
-::-webkit-scrollbar-thumb    { background: #27272A; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #3F3F46; }
+::-webkit-scrollbar-thumb    { background: #1E2B1E; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #2A3D2A; }
 
 /* ── Text selection ───────────────────────────────────────── */
 ::selection {
-  background: rgba(56, 189, 248, 0.18);
-  color: #F4F4F5;
+  background: rgba(16, 185, 129, 0.18);
+  color: #E2F0E2;
 }
 
 /* ── Smooth transitions ───────────────────────────────────── */

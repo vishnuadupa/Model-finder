@@ -5,7 +5,7 @@ import ResultsPanel  from '@/components/ResultsPanel';
 import GeminiAdvisor from '@/components/GeminiAdvisor';
 import { analyzeHardware } from '@/lib/scoring';
 import { GPU_PRESETS }      from '@/lib/gpuPresets';
-import { Share2, BookOpen, Cpu } from 'lucide-react';
+import { Share2, Cpu } from 'lucide-react';
 
 /* ── GPU preset field re-derivation (used on URL/localStorage load) ── */
 function gpuFieldsFromLabel(label) {
@@ -187,26 +187,23 @@ export default function Home() {
   const hasHardware = hw.ram && (hw.vram > 0 || hw.unifiedMem || hw.gpuLabel === 'No GPU (CPU only)');
 
   return (
-    <div className="min-h-screen bg-[#09090B]">
+    <div className="min-h-screen bg-[#0A0F0A]">
 
       {/* ── Header ──────────────────────────────────────────── */}
-      <header className="border-b border-zinc-800 px-6 py-4 bg-[#09090B]/95 sticky top-0 z-40 backdrop-blur-md">
+      <header className="border-b border-[#1E2B1E] px-6 py-4 bg-[#0A0F0A]/95 sticky top-0 z-40 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 bg-sky-500/90 rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(14,165,233,0.4)]">
+            <div className="w-7 h-7 bg-emerald-600/90 rounded-lg flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.4)]">
               <Cpu size={14} className="text-white" />
             </div>
             <span className="font-bold text-white tracking-tight" style={{ fontFamily: 'var(--font-syne)' }}>
               Local LLM Matcher
             </span>
-            <span className="hidden sm:inline text-xs text-zinc-600 font-normal ml-1">
+            <span className="hidden sm:inline text-xs text-[#354835] font-normal ml-1">
               — which AI models can your hardware run?
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <a href="/gpu/rtx-4090-24gb" className="btn-ghost text-xs hidden sm:flex items-center gap-1.5">
-              <BookOpen size={12} /> GPU Index
-            </a>
             {hasHardware && (
               <button onClick={shareURL} className="btn-ghost text-xs flex items-center gap-1.5">
                 <Share2 size={12} /> {copied ? 'Copied!' : 'Share'}
@@ -225,7 +222,7 @@ export default function Home() {
       />
 
       {/* ── Main content ────────────────────────────────────── */}
-      <main className="max-w-7xl mx-auto px-4 pt-6 pb-20">
+      <main className="max-w-7xl mx-auto px-4 pt-6 pb-20 text-[#E2F0E2]">
 
         {/* Gemini AI inline advisor */}
         {geminiEnabled && hasHardware && selectedModel && (
@@ -274,13 +271,13 @@ export default function Home() {
           <div className="space-y-3 animate-pulse mt-2">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="card p-4 space-y-3">
-                <div className="h-4 bg-zinc-800 rounded w-1/3" />
+                <div className="h-4 bg-[#1E2B1E] rounded w-1/3" />
                 <div className="grid grid-cols-3 gap-3">
                   {[...Array(3)].map((_, j) => (
-                    <div key={j} className="h-20 bg-zinc-800 rounded-lg" />
+                    <div key={j} className="h-20 bg-[#1E2B1E] rounded-lg" />
                   ))}
                 </div>
-                <div className="h-3 bg-zinc-800 rounded w-2/3" />
+                <div className="h-3 bg-[#1E2B1E] rounded w-2/3" />
               </div>
             ))}
           </div>
@@ -296,7 +293,7 @@ export default function Home() {
       </main>
 
       {/* ── Footer ──────────────────────────────────────────── */}
-      <footer className="border-t border-zinc-800 px-6 py-8 text-center text-xs text-zinc-700">
+      <footer className="border-t border-[#1E2B1E] px-6 py-8 text-center text-xs text-[#354835]">
         <div className="max-w-7xl mx-auto space-y-1">
           <div>Speed estimates based on memory bandwidth formula (tok/s ≈ bandwidth / model_size × backend_efficiency). Actual performance varies.</div>
           <div>Affiliate links help keep this free.</div>
