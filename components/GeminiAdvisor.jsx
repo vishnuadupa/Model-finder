@@ -67,16 +67,16 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
     <div className="card p-4 space-y-3 border-yellow-900/40">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Zap size={14} className="text-yellow-400" />
-          <span className="text-sm font-semibold text-yellow-400">AI Speed Advisor</span>
-          <span className="chip bg-yellow-950/40 text-yellow-600 text-xs border border-yellow-900/40">Gemini</span>
+        <div className="flex items-center gap-2 min-w-0">
+          <Zap size={14} className="text-yellow-400 shrink-0" />
+          <span className="text-sm font-semibold text-yellow-400 shrink-0">AI Speed Advisor</span>
+          <span className="chip bg-yellow-950/40 text-yellow-600 text-xs border border-yellow-900/40 shrink-0">Gemini</span>
+          <span className="text-xs text-[#3D5270] font-mono truncate hidden sm:block">· {currentModel.name}</span>
         </div>
-        {loading && <Loader2 size={13} className="text-slate-500 animate-spin" />}
-      </div>
-
-      <div className="text-xs text-slate-600 font-mono truncate">
-        {hw.gpuLabel} · {hw.bandwidth > 0 ? `${hw.bandwidth} GB/s · ` : ''}{currentModel.name}
+        {loading
+          ? <Loader2 size={13} className="text-slate-500 animate-spin shrink-0" />
+          : <span className="text-[10px] text-[#2A3E57] shrink-0 hidden sm:block">click card to switch</span>
+        }
       </div>
 
       {error && (() => {

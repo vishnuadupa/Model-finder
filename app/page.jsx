@@ -104,7 +104,7 @@ export default function Home() {
   const [models, setModels] = useState([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [selectedModel, setSelectedModel] = useState(null);
-  const [geminiEnabled, setGeminiEnabled] = useState(false);
+  const [geminiEnabled, setGeminiEnabled] = useState(true);
   const [copied, setCopied] = useState(false);
   const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -280,7 +280,22 @@ export default function Home() {
               onGeminiToggle={() => setGeminiEnabled(e => !e)}
             />
 
-            {geminiEnabled && hasHardware && (
+            {/* Mobile: nudge to results after form is filled */}
+            {hasHardware && mobileTab === 'hardware' && totalResults > 0 && (
+              <button
+                onClick={() => setMobileTab('results')}
+                className="lg:hidden w-full btn-primary flex items-center justify-center gap-2"
+              >
+                <LayoutList size={14} /> View {totalResults} results →
+              </button>
+            )}
+          </div>
+
+          {/* Right column — results
+              On mobile: hidden when hardware tab is active (and hardware is selected) */}
+          <div className={`lg:block ${hasHardware && mobileTab !== 'results' ? 'hidden' : ''}`}>
+            {/* Gemini AI inline advisor — reactive to hw + top model */}
+            {geminiEnabled && hasHardware && selectedModel && (
               <GeminiAdvisor
                 hw={hw}
                 currentModel={selectedModel}
@@ -289,6 +304,7 @@ export default function Home() {
               />
             )}
 
+            {/* Gemini text summary */}
             {geminiEnabled && hasHardware && totalResults > 0 && (
               <div className="card p-4 space-y-3">
                 <button
@@ -304,20 +320,6 @@ export default function Home() {
               </div>
             )}
 
-            {/* Mobile: nudge to results after form is filled */}
-            {hasHardware && mobileTab === 'hardware' && totalResults > 0 && (
-              <button
-                onClick={() => setMobileTab('results')}
-                className="lg:hidden w-full btn-primary flex items-center justify-center gap-2"
-              >
-                <LayoutList size={14} /> View {totalResults} results →
-              </button>
-            )}
-          </div>
-
-          {/* Right column — results
-              On mobile: hidden when hardware tab is active (and hardware is selected) */}
-          <div className={`lg:block ${hasHardware && mobileTab !== 'results' ? 'hidden' : ''}`}>
             {!hasHardware ? (
               <div className="card p-12 text-center space-y-4">
                 <div className="text-4xl">🖥️</div>
@@ -347,7 +349,12 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <ResultsPanel results={results} hw={hw} />
+              <ResultsPanel
+                results={results}
+                hw={hw}
+                onSelectModel={model => setSelectedModel(model)}
+                selectedModelName={selectedModel?.name}
+              />
             )}
           </div>
         </div>

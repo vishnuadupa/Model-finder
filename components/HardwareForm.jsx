@@ -606,23 +606,21 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
         )}
       </div>
 
-      {/* ── Gemini AI Advisor Toggle ───────────────────────────── */}
-      <div className="card p-4 flex items-center justify-between gap-3">
-        <div>
-          <div className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-            <span className="text-yellow-400">⚡</span>
-            Gemini AI Advisor
-          </div>
-          <div className="text-xs text-slate-600 mt-0.5">
-            {geminiEnabled
-              ? 'AI-powered speed estimates and next/previous model suggestions'
-              : 'Enable for AI-powered speed tips and model comparisons'}
-          </div>
+      {/* ── Gemini AI Advisor Toggle — compact ───────────────── */}
+      <div className="flex items-center justify-between px-1">
+        <div className="flex items-center gap-1.5 text-xs text-[#4A6280]">
+          <span className="text-yellow-500/70">⚡</span>
+          <span>Gemini AI Advisor</span>
+          <span className="chip bg-yellow-950/30 text-yellow-700 border border-yellow-900/30 text-[10px]">beta</span>
         </div>
-        <button onClick={onGeminiToggle} title={geminiEnabled ? 'Disable Gemini AI' : 'Enable Gemini AI'}>
+        <button
+          onClick={onGeminiToggle}
+          title={geminiEnabled ? 'Disable Gemini AI' : 'Enable Gemini AI'}
+          className="flex items-center gap-1 text-xs transition-colors"
+        >
           {geminiEnabled
-            ? <ToggleRight size={32} className="text-yellow-400" />
-            : <ToggleLeft  size={32} className="text-slate-600" />}
+            ? <ToggleRight size={22} className="text-yellow-400" />
+            : <ToggleLeft  size={22} className="text-[#2A3E57]" />}
         </button>
       </div>
     </div>

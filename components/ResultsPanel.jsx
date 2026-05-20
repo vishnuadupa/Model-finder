@@ -53,7 +53,7 @@ function CloudCTA({ modelName }) {
   );
 }
 
-function TierSection({ tier, results, hwVram }) {
+function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName }) {
   const meta = TIER_META[tier];
   if (!results.length) return null;
 
@@ -75,14 +75,21 @@ function TierSection({ tier, results, hwVram }) {
       {/* Cards grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
         {results.map((r, i) => (
-          <ResultCard key={`${r.model.name}_${r.quant}`} result={r} hwVram={hwVram} rank={i + 1} />
+          <ResultCard
+            key={`${r.model.name}_${r.quant}`}
+            result={r}
+            hwVram={hwVram}
+            rank={i + 1}
+            onSelect={onSelectModel}
+            isSelected={selectedModelName === r.model.name}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-export default function ResultsPanel({ results, hw }) {
+export default function ResultsPanel({ results, hw, onSelectModel, selectedModelName }) {
   const totalCount = (results.recommended?.length || 0)
     + (results.comfortable?.length || 0)
     + (results.stretch?.length || 0);
@@ -124,9 +131,9 @@ export default function ResultsPanel({ results, hw }) {
         </div>
       </div>
 
-      <TierSection tier="recommended" results={results.recommended || []} hwVram={hwVram} />
-      <TierSection tier="comfortable" results={results.comfortable || []} hwVram={hwVram} />
-      <TierSection tier="stretch" results={results.stretch || []} hwVram={hwVram} />
+      <TierSection tier="recommended" results={results.recommended || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} />
+      <TierSection tier="comfortable" results={results.comfortable || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} />
+      <TierSection tier="stretch" results={results.stretch || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} />
 
       {/* Cloud CTA when stretch is non-empty */}
       {(results.stretch?.length > 0) && (

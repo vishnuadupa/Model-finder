@@ -89,7 +89,7 @@ function VRAMBar({ used, total, cpuOnly }) {
   );
 }
 
-export default function ResultCard({ result, hwVram, rank }) {
+export default function ResultCard({ result, hwVram, rank, onSelect, isSelected }) {
   const {
     model, quant, tier, tokPerSec, vramRequired, vramFree,
     ramRequired, downloadSizeGB, cpuOffloadNeeded, cpuOnly,
@@ -101,8 +101,12 @@ export default function ResultCard({ result, hwVram, rank }) {
   const tierBorder = TIER_LEFT[tier] || 'border-l-slate-600';
 
   return (
-    <div className={`card border-l-[3px] ${tierBorder} p-5 space-y-4 hover:border-t-[#263D5C] transition-all duration-200`}
-         style={{ '--tw-shadow': '0 4px 20px rgba(0,0,0,0.45)' }}>
+    <div
+      className={`card border-l-[3px] ${tierBorder} p-5 space-y-4 transition-all duration-200 cursor-pointer
+        ${isSelected ? 'ring-1 ring-yellow-500/40 border-t-[#263D5C]' : 'hover:border-t-[#263D5C]'}`}
+      style={{ '--tw-shadow': '0 4px 20px rgba(0,0,0,0.45)' }}
+      onClick={() => onSelect?.(result.model)}
+    >
 
       {/* ── Header ── */}
       <div className="flex items-start justify-between gap-3">
@@ -135,6 +139,11 @@ export default function ResultCard({ result, hwVram, rank }) {
 
         {/* Quality + verified */}
         <div className="flex flex-col items-end gap-1.5 shrink-0">
+          {isSelected && (
+            <span className="chip bg-yellow-950/30 text-yellow-500/80 border border-yellow-900/30 text-[10px] font-mono">
+              ⚡ AI insights
+            </span>
+          )}
           <span className={`chip border text-[11px] ${QUALITY_COLORS[model.quality] || QUALITY_COLORS.good}`}>
             {model.quality}
           </span>
