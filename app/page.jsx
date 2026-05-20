@@ -104,7 +104,7 @@ export default function Home() {
   const [models, setModels] = useState([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [selectedModel, setSelectedModel] = useState(null);
-  const [geminiEnabled, setGeminiEnabled] = useState(true);
+  const [geminiEnabled, setGeminiEnabled] = useState(false);
   const [copied, setCopied] = useState(false);
   const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
