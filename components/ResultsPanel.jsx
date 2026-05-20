@@ -53,7 +53,7 @@ function CloudCTA({ modelName }) {
   );
 }
 
-function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName }) {
+function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName, geminiEnabled }) {
   const meta = TIER_META[tier];
   if (!results.length) return null;
 
@@ -82,6 +82,7 @@ function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName }
             rank={i + 1}
             onSelect={onSelectModel}
             isSelected={selectedModelName === r.model.name}
+            geminiEnabled={geminiEnabled}
           />
         ))}
       </div>
@@ -89,7 +90,7 @@ function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName }
   );
 }
 
-export default function ResultsPanel({ results, hw, onSelectModel, selectedModelName }) {
+export default function ResultsPanel({ results, hw, onSelectModel, selectedModelName, geminiEnabled }) {
   const totalCount = (results.recommended?.length || 0)
     + (results.comfortable?.length || 0)
     + (results.stretch?.length || 0);
@@ -131,9 +132,9 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
         </div>
       </div>
 
-      <TierSection tier="recommended" results={results.recommended || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} />
-      <TierSection tier="comfortable" results={results.comfortable || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} />
-      <TierSection tier="stretch" results={results.stretch || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} />
+      <TierSection tier="recommended" results={results.recommended || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
+      <TierSection tier="comfortable" results={results.comfortable || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
+      <TierSection tier="stretch" results={results.stretch || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
 
       {/* Cloud CTA when stretch is non-empty */}
       {(results.stretch?.length > 0) && (

@@ -89,7 +89,7 @@ function VRAMBar({ used, total, cpuOnly }) {
   );
 }
 
-export default function ResultCard({ result, hwVram, rank, onSelect, isSelected }) {
+export default function ResultCard({ result, hwVram, rank, onSelect, isSelected, geminiEnabled }) {
   const {
     model, quant, tier, tokPerSec, vramRequired, vramFree,
     ramRequired, downloadSizeGB, cpuOffloadNeeded, cpuOnly,
@@ -102,8 +102,8 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected 
 
   return (
     <div
-      className={`card border-l-[3px] ${tierBorder} p-5 space-y-4 transition-all duration-200 cursor-pointer
-        ${isSelected ? 'ring-1 ring-yellow-500/40 border-t-[#263D5C]' : 'hover:border-t-[#263D5C]'}`}
+      className={`card border-l-[3px] ${tierBorder} p-5 flex flex-col gap-3 transition-all duration-200 cursor-pointer
+        ${isSelected && geminiEnabled ? 'ring-1 ring-yellow-500/40 border-t-[#263D5C]' : 'hover:border-t-[#263D5C]'}`}
       style={{ '--tw-shadow': '0 4px 20px rgba(0,0,0,0.45)' }}
       onClick={() => onSelect?.(result.model)}
     >
@@ -139,7 +139,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected 
 
         {/* Quality + verified */}
         <div className="flex flex-col items-end gap-1.5 shrink-0">
-          {isSelected && (
+          {isSelected && geminiEnabled && (
             <span className="chip bg-yellow-950/30 text-yellow-500/80 border border-yellow-900/30 text-[10px] font-mono">
               ⚡ AI insights
             </span>
@@ -162,30 +162,30 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected 
 
       {/* ── VRAM bar ── */}
       <VRAMBar used={vramRequired} total={effectiveVram} cpuOnly={cpuOnly} />
-      <div className="flex gap-3 text-[11px] text-[#3D5270] font-mono -mt-2">
-        <span>Weights {weightsGB} GB</span>
+      <div className="flex gap-2 text-[11px] text-[#3D5270] font-mono -mt-1 overflow-hidden">
+        <span className="whitespace-nowrap">Weights {weightsGB} GB</span>
         <span>·</span>
-        <span>KV cache {kvCacheGB} GB</span>
+        <span className="whitespace-nowrap">KV {kvCacheGB} GB</span>
       </div>
 
       {/* ── Stats ── */}
       <div className="grid grid-cols-3 gap-2">
-        {/* tok/s — hero metric */}
-        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30] col-span-1">
-          <div className="text-sky-400 font-bold font-mono text-base leading-none">{tokPerSec}</div>
+        {/* tok/s — each box fixed height so all cards align */}
+        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30] h-[58px] flex flex-col justify-center">
+          <div className="text-sky-400 font-bold font-mono text-sm leading-none whitespace-nowrap">{tokPerSec}</div>
           <div className="text-[10px] text-[#3D5270] mt-1 uppercase tracking-wider">tok/s</div>
         </div>
-        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30]">
-          <div className="text-[#C8D8EA] font-bold font-mono text-sm leading-none">{ramRequired} GB</div>
+        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30] h-[58px] flex flex-col justify-center">
+          <div className="text-[#C8D8EA] font-bold font-mono text-sm leading-none whitespace-nowrap">{ramRequired} GB</div>
           <div className="text-[10px] text-[#3D5270] mt-1 uppercase tracking-wider">min RAM</div>
         </div>
-        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30]">
-          <div className="text-[#C8D8EA] font-bold font-mono text-sm leading-none">{downloadSizeGB} GB</div>
+        <div className="bg-[#080C1A] rounded-xl p-3 text-center border border-[#141F30] h-[58px] flex flex-col justify-center">
+          <div className="text-[#C8D8EA] font-bold font-mono text-sm leading-none whitespace-nowrap">{downloadSizeGB} GB</div>
           <div className="text-[10px] text-[#3D5270] mt-1 uppercase tracking-wider">download</div>
         </div>
       </div>
 
-      {/* ── Warnings ── */}
+      {/* ── Warnings — fixed min-height so cards without warnings stay aligned ── */}
       {cpuOnly ? (
         <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/20 border border-amber-800/30 rounded-lg">
           <AlertTriangle size={11} className="text-amber-400 shrink-0" />
@@ -196,21 +196,19 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected 
           <AlertTriangle size={11} className="text-amber-400 shrink-0" />
           <span className="text-[11px] text-amber-300/80">Needs CPU offload — VRAM too small, slower</span>
         </div>
-      ) : null}
+      ) : <div />}
 
-      {/* ── Use cases ── */}
-      {model.useCases?.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {model.useCases.map(uc => (
-            <span key={uc} className="chip bg-[#0A1220] text-[#4A6280] border border-[#141F30] text-[11px]">
-              {USE_CASE_ICONS[uc] || '·'} {uc}
-            </span>
-          ))}
-        </div>
-      )}
+      {/* ── Use cases — flex-1 pushes actions to bottom ── */}
+      <div className="flex flex-wrap gap-1.5 flex-1">
+        {model.useCases?.map(uc => (
+          <span key={uc} className="chip bg-[#0A1220] text-[#4A6280] border border-[#141F30] text-[11px] self-start">
+            {USE_CASE_ICONS[uc] || '·'} {uc}
+          </span>
+        ))}
+      </div>
 
-      {/* ── Actions ── */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-[#131E2F]">
+      {/* ── Actions — mt-auto pins to bottom of every card ── */}
+      <div className="flex flex-wrap gap-2 pt-1 border-t border-[#131E2F] mt-auto">
         {model.ollamaTag && <CopyButton text={`ollama run ${model.ollamaTag}`} />}
         {model.ollamaTag && (
           <a

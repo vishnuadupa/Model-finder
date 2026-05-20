@@ -250,10 +250,10 @@ export default function Home() {
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Hero */}
-        <div className="relative text-center mb-12 pt-2">
-          {/* Atmospheric glow */}
+      {/* ── main: on desktop fills viewport height for two-panel independent scroll ── */}
+      <main className="max-w-7xl mx-auto px-4 lg:h-[calc(100vh-57px)] lg:flex lg:flex-col">
+        {/* Hero — shrinks on desktop, normal on mobile */}
+        <div className="relative text-center pt-6 pb-8 lg:pt-4 lg:pb-6 lg:shrink-0">
           <div className="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
             <div className="w-[480px] h-[120px] bg-sky-500/[0.06] rounded-full blur-3xl" />
           </div>
@@ -267,10 +267,10 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
-          {/* Left column — hardware form
-              On mobile: hidden when results tab is active (and hardware is selected) */}
-          <div className={`space-y-4 lg:block lg:sticky lg:top-6 lg:self-start ${
+        {/* Two-panel grid — flex-1 + min-h-0 lets both columns overflow independently on desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start lg:flex-1 lg:min-h-0">
+          {/* Left column — on desktop: independent scroll; on mobile: tab-controlled */}
+          <div className={`space-y-4 lg:block lg:overflow-y-auto lg:h-full lg:pb-6 lg:pr-1 ${
             hasHardware && mobileTab !== 'hardware' ? 'hidden' : ''
           }`}>
             <HardwareForm
@@ -291,9 +291,8 @@ export default function Home() {
             )}
           </div>
 
-          {/* Right column — results
-              On mobile: hidden when hardware tab is active (and hardware is selected) */}
-          <div className={`lg:block ${hasHardware && mobileTab !== 'results' ? 'hidden' : ''}`}>
+          {/* Right column — on desktop: independent scroll; on mobile: tab-controlled */}
+          <div className={`lg:overflow-y-auto lg:h-full lg:pb-6 ${hasHardware && mobileTab !== 'results' ? 'hidden lg:block' : ''}`}>
             {/* Gemini AI inline advisor — reactive to hw + top model */}
             {geminiEnabled && hasHardware && selectedModel && (
               <GeminiAdvisor
@@ -352,6 +351,7 @@ export default function Home() {
               <ResultsPanel
                 results={results}
                 hw={hw}
+                geminiEnabled={geminiEnabled}
                 onSelectModel={model => setSelectedModel(model)}
                 selectedModelName={selectedModel?.name}
               />
