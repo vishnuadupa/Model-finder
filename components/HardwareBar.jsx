@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   ChevronDown, ChevronRight, X, Settings2,
-  ToggleLeft, ToggleRight,
+  ToggleLeft, ToggleRight, ArrowLeft,
 } from 'lucide-react';
 import { GPU_PRESETS } from '@/lib/gpuPresets';
 import { CPU_PRESETS, RAM_TYPES } from '@/lib/cpuPresets';
@@ -84,9 +84,9 @@ function groupNvidiaGPUs(gpus) {
 }
 
 /* ── BarChip ────────────────────────────────────────────────── */
-function BarChip({ label, isSet, active, onClick, onClear }) {
+function BarChip({ label, isSet, active, onClick, onClear, title }) {
   return (
-    <div className={`flex items-center rounded-lg border transition-all shrink-0 overflow-hidden text-xs font-medium
+    <div title={title} className={`flex items-center rounded-lg border transition-all shrink-0 overflow-hidden text-xs font-medium
       ${active
         ? 'border-white/20 bg-white/5'
         : isSet
@@ -140,9 +140,11 @@ function PanelSection({ title, children }) {
 }
 
 /* ── GPUWizard panel ────────────────────────────────────────── */
-function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
-  const [vendor, setVendor] = useState(null);
-  const [osConfirmed, setOsConfirmed] = useState(() => !!os);
+function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose, wizardState, onWizardState }) {
+  const vendor      = wizardState.vendor;
+  const osConfirmed = wizardState.osConfirmed;
+  const setVendor      = (v) => onWizardState(s => ({ ...s, vendor: v }));
+  const setOsConfirmed = (b) => onWizardState(s => ({ ...s, osConfirmed: b }));
 
   useEffect(() => {
     if (!hw.gpuLabel) { setVendor(null); return; }
@@ -151,11 +153,11 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
     else if (hw.gpuLabel.startsWith('Arc'))  setVendor('intel');
     else if (hw.gpuLabel.startsWith('Apple')) setVendor('apple');
     else if (hw.gpuLabel === 'No GPU (CPU only)') setVendor('none');
-  }, [hw.gpuLabel]);
+  }, [hw.gpuLabel]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (hw.gpuLabel && os) setOsConfirmed(true);
-  }, [hw.gpuLabel, os]);
+  }, [hw.gpuLabel, os]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const vendors      = OS_VENDORS[os] || OS_VENDORS.Windows;
   const filteredGPUs = useMemo(() => vendor ? getGPUsForVendor(vendor) : [], [vendor]);
@@ -183,10 +185,10 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
           </div>
         </div>
         <button
-          onClick={() => { onSelect(null); setVendor(null); setOsConfirmed(false); }}
-          className="text-xs text-[#8E919A] hover:text-white transition-colors whitespace-nowrap"
+          onClick={() => { onSelect(null); onWizardState({ vendor: null, osConfirmed: false }); }}
+          className="btn-ghost flex items-center gap-1.5 text-xs"
         >
-          ← Change GPU
+          <ArrowLeft size={12} /> Change GPU
         </button>
       </div>
     );
@@ -441,15 +443,23 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
 ══════════════════════════════════════════════════════════════ */
 export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGeminiToggle }) {
   const [openPanel, setOpenPanel] = useState(null);
+  const [gpuWizardState, setGpuWizardState] = useState({ vendor: null, osConfirmed: false });
   const ref = useRef(null);
 
-  /* Click-outside to close */
+  /* Click-outside + Escape to close */
   useEffect(() => {
-    function handler(e) {
+    function mouseHandler(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpenPanel(null);
     }
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    function keyHandler(e) {
+      if (e.key === 'Escape') setOpenPanel(null);
+    }
+    document.addEventListener('mousedown', mouseHandler);
+    document.addEventListener('keydown', keyHandler);
+    return () => {
+      document.removeEventListener('mousedown', mouseHandler);
+      document.removeEventListener('keydown', keyHandler);
+    };
   }, []);
 
   /* Auto-detect OS once */
@@ -470,6 +480,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
     if (!preset) {
       update({ gpuLabel: '', vram: 0, arch: null, unifiedMem: false, flashAttn: false,
                bandwidth: 0, memType: null, pcie: null, gpuBuyUrl: null, maxRam: null });
+      setGpuWizardState({ vendor: null, osConfirmed: false });
       return;
     }
     const fields = {
@@ -532,6 +543,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
     <div ref={ref} className="sticky top-[57px] z-30 bg-[#0D0D11]/85 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-[#08080B]/50">
       {/* ── Chips row ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4">
+        <div className="chip-row-wrap">
         <div
           className="overflow-x-auto py-2.5"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -550,7 +562,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
             {/* RAM */}
             <BarChip
               label={hw.ram ? `${hw.ram} GB ${isApple ? 'unified' : 'RAM'}` : 'RAM'}
-              isSet={!!hw.ram}
+              isSet={!!hw.ramSet}
               active={openPanel === 'ram'}
               onClick={() => toggle('ram')}
               onClear={undefined}
@@ -570,10 +582,11 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
             {/* Context length */}
             <BarChip
               label={`${ctxLabel} ctx`}
-              isSet={true}
+              isSet={hw.contextLength !== 4096}
               active={openPanel === 'ctx'}
               onClick={() => toggle('ctx')}
               onClear={undefined}
+              title="How many tokens of text the model sees at once (4k = normal chat, 32k+ = long docs)"
             />
 
             {/* Divider */}
@@ -609,11 +622,13 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
 
           </div>
         </div>
+        </div>{/* chip-row-wrap */}
       </div>
 
       {/* ── Row 2: Use cases + Speed — always visible ──────── */}
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4">
+          <div className="chip-row-wrap">
           <div
             className="overflow-x-auto py-2"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -668,12 +683,23 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
 
             </div>
           </div>
+          </div>{/* chip-row-wrap */}
         </div>
       </div>
 
       {/* ── Dropdown panel area ─────────────────────────────── */}
       {openPanel && (
-        <div className="absolute left-0 right-0 top-full bg-[#15151A]/85 backdrop-blur-xl border-b border-white/5 shadow-2xl z-50">
+        <>
+          {/* Backdrop scrim */}
+          <div
+            className="fixed inset-0 z-40 bg-black/20"
+            style={{ top: 'var(--bar-offset, 0px)' }}
+            onClick={() => setOpenPanel(null)}
+          />
+        <div className={`absolute left-0 right-0 top-full backdrop-blur-xl border-b border-white/5 shadow-2xl z-50
+          ${openPanel === 'adv'
+            ? 'bg-[#12121A]/95 border-t-2 border-t-[#84E1BC]/20'
+            : 'bg-[#15151A]/85'}`}>
           <div className="max-w-7xl mx-auto px-4 py-4">
 
             {openPanel === 'gpu' && (
@@ -683,6 +709,8 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
                 onSelect={g => { onGPUSelect(g); if (g) closePanel(); }}
                 onOSChange={os => update({ os, gpuLabel: '', vram: 0, unifiedMem: false, bandwidth: 0 })}
                 onClose={closePanel}
+                wizardState={gpuWizardState}
+                onWizardState={setGpuWizardState}
               />
             )}
 
@@ -695,7 +723,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
                       .map(r => (
                         <button
                           key={r}
-                          onClick={() => { update({ ram: r }); closePanel(); }}
+                          onClick={() => { update({ ram: r, ramSet: true }); closePanel(); }}
                           className={`px-4 py-2 rounded-lg text-sm font-mono border transition-colors
                             ${hw.ram === r
                               ? 'bg-[#84E1BC] border-transparent text-[#0D0D11]'
@@ -743,6 +771,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
 
           </div>
         </div>
+        </>
       )}
     </div>
   );

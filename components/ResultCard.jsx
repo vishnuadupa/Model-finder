@@ -1,11 +1,11 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Copy, Check, ExternalLink, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
 
 const QUALITY_COLORS = {
   good:      'text-[#8E919A] bg-white/[0.01] border-white/5',
   great:     'text-[#84E1BC] bg-[#84E1BC]/5 border-[#84E1BC]/10',
-  excellent: 'text-purple-300 bg-purple-500/5 border-purple-500/10',
+  excellent: 'text-[#84E1BC] bg-[#84E1BC]/10 border-[#84E1BC]/20',
 };
 
 const USE_CASE_ICONS = {
@@ -30,11 +30,39 @@ const QUANT_INFO = {
   F32:     { label: 'Full 32-bit',   stars: 5, note: 'Max precision, 8× VRAM of Q4_K_M' },
 };
 
-const TIER_LEFT = {
-  recommended: 'border-l-[#84E1BC]',
-  comfortable: 'border-l-zinc-500',
-  stretch:     'border-l-amber-500/60',
+/* Tier accent colours — top rule only, no side-stripe */
+const TIER_ACCENT_COLOR = {
+  recommended: '#84E1BC',
+  comfortable: '#71717a',  /* zinc-500 */
+  stretch:     'rgba(245,158,11,0.5)',  /* amber-500/50 */
 };
+
+/* ── useCountUp — animates a number from 0 → target on mount ── */
+function useCountUp(target, duration = 750) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef(null);
+  useEffect(() => {
+    const start = performance.now();
+    function tick(now) {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased    = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setValue(Math.round(target * eased));
+      if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+    }
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target, duration]);
+  return value;
+}
+
+/* Qualitative speed label */
+function tokSpeedLabel(tps) {
+  if (tps >= 40) return { label: 'Real-time',     color: 'text-[#84E1BC]' };
+  if (tps >= 20) return { label: 'Fast',          color: 'text-[#84E1BC]/70' };
+  if (tps >= 8)  return { label: 'Conversational', color: 'text-amber-400/80' };
+  return                { label: 'Very slow',     color: 'text-zinc-500' };
+}
 
 function Stars({ count }) {
   return (
@@ -57,7 +85,7 @@ function CopyButton({ text }) {
     <button
       onClick={copy}
       title={text}
-      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all font-mono min-w-0"
+      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-colors font-mono min-w-0"
     >
       {copied
         ? <Check size={11} className="text-[#84E1BC] shrink-0" />
@@ -67,13 +95,23 @@ function CopyButton({ text }) {
   );
 }
 
-function VRAMBar({ used, total, cpuOnly, cpuOffloadNeeded }) {
-  const pct = total > 0 ? Math.min((used / total) * 100, 100) : 0;
-  const color = cpuOnly 
-    ? 'bg-zinc-500/80'
-    : cpuOffloadNeeded 
-      ? 'bg-amber-500/60' 
-      : 'bg-[#84E1BC]';
+/* ── VRAM bar with mount-fill animation + hybrid GPU/RAM split ── */
+function VRAMBar({ used, total, cpuOnly, cpuOffloadNeeded, gpuOnlyVram }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  const solidPct  = total > 0 ? Math.min((used / total) * 100, 100) : 0;
+  const gpuPct    = total > 0 && gpuOnlyVram ? Math.min((gpuOnlyVram / total) * 100, 100) : solidPct;
+  const ramPct    = total > 0 && cpuOffloadNeeded && gpuOnlyVram && used > gpuOnlyVram
+    ? Math.min(((used - gpuOnlyVram) / total) * 100, 100 - gpuPct)
+    : 0;
+
+  const showSplit = cpuOffloadNeeded && !cpuOnly && gpuOnlyVram && ramPct > 0;
+  const singleColor = cpuOnly ? 'bg-zinc-500/80' : 'bg-[#84E1BC]';
+
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
@@ -82,11 +120,34 @@ function VRAMBar({ used, total, cpuOnly, cpuOffloadNeeded }) {
         </span>
         <span className="font-mono text-[#8E919A]">{used} / {total} GB</span>
       </div>
-      <div className="h-2 bg-black/40 rounded-full overflow-hidden border border-white/5">
-        <div
-          className={`h-full ${color} rounded-full transition-all duration-300`}
-          style={{ width: `${pct}%` }}
-        />
+      <div className="h-2 bg-black/40 rounded-full overflow-hidden border border-white/5 relative">
+        {showSplit ? (
+          <>
+            <div
+              className="absolute top-0 left-0 h-full bg-[#84E1BC] rounded-l-full"
+              style={{
+                width: mounted ? `${gpuPct}%` : '0%',
+                transition: 'width 0.7s cubic-bezier(0.16,1,0.3,1)',
+              }}
+            />
+            <div
+              className="absolute top-0 h-full bg-amber-500/60"
+              style={{
+                left: `${gpuPct}%`,
+                width: mounted ? `${ramPct}%` : '0%',
+                transition: 'width 0.7s cubic-bezier(0.16,1,0.3,1) 0.05s',
+              }}
+            />
+          </>
+        ) : (
+          <div
+            className={`h-full ${singleColor} rounded-full`}
+            style={{
+              width: mounted ? `${solidPct}%` : '0%',
+              transition: 'width 0.7s cubic-bezier(0.16,1,0.3,1)',
+            }}
+          />
+        )}
       </div>
     </div>
   );
@@ -101,21 +162,33 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
 
   const effectiveVram = hwVram || (vramRequired + (vramFree > 0 ? vramFree : 0));
   const qi = QUANT_INFO[quant];
-  const tierBorder = TIER_LEFT[tier] || 'border-l-slate-600';
+  const accentColor = TIER_ACCENT_COLOR[tier] || '#71717a';
+
+  const animatedTok = useCountUp(tokPerSec || 0);
+  const speedInfo   = tokSpeedLabel(tokPerSec || 0);
 
   return (
     <div
-      className={`card border-l-[3px] ${tierBorder} p-5 flex flex-col gap-3 transition-all duration-200 cursor-pointer
-        ${isSelected && geminiEnabled ? 'ring-1 ring-amber-500/20 border-t-zinc-700' : 'hover:border-t-zinc-700'}`}
+      className={`card p-5 flex flex-col gap-3 overflow-hidden
+        ${geminiEnabled ? 'cursor-pointer' : ''}
+        ${isSelected && geminiEnabled ? 'ring-1 ring-amber-500/20' : ''}`}
       style={{ '--tw-shadow': '0 4px 20px rgba(0,0,0,0.45)' }}
-      onClick={() => onSelect?.(result.model)}
+      onClick={geminiEnabled ? () => onSelect?.(result.model) : undefined}
     >
+      {/* Tier accent top rule */}
+      <div
+        className="-mx-5 -mt-5 h-[2px] mb-0 rounded-t-xl"
+        style={{ background: accentColor }}
+      />
 
       {/* ── Header ── */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-2.5 min-w-0">
           {rank && (
-            <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-black/40 text-[#8E919A] text-[10px] font-mono font-bold border border-white/5">
+            <span
+              title="Ranked by VRAM headroom + speed score"
+              className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-black/40 text-[#8E919A] text-[10px] font-mono font-bold border border-white/5 cursor-help"
+            >
               {rank}
             </span>
           )}
@@ -164,7 +237,13 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
       )}
 
       {/* ── VRAM bar ── */}
-      <VRAMBar used={vramRequired} total={effectiveVram} cpuOnly={cpuOnly} cpuOffloadNeeded={cpuOffloadNeeded} />
+      <VRAMBar
+        used={vramRequired}
+        total={effectiveVram}
+        cpuOnly={cpuOnly}
+        cpuOffloadNeeded={cpuOffloadNeeded}
+        gpuOnlyVram={hwVram}
+      />
       <div className="flex gap-2 text-[11px] text-zinc-600 font-mono -mt-1 overflow-hidden">
         <span className="whitespace-nowrap">Weights {weightsGB} GB</span>
         <span>·</span>
@@ -173,10 +252,10 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
 
       {/* ── Stats ── */}
       <div className="grid grid-cols-3 gap-2">
-        {/* tok/s — each box fixed height so all cards align */}
+        {/* tok/s with count-up + speed label */}
         <div className="bg-[#15151A] rounded-lg p-3 text-center border border-white/5 h-[58px] flex flex-col justify-center">
-          <div className="text-[#84E1BC] font-semibold font-mono text-sm leading-none whitespace-nowrap">{tokPerSec}</div>
-          <div className="text-[10px] text-zinc-600 mt-1 uppercase tracking-wider">tok/s</div>
+          <div className="text-[#84E1BC] font-semibold font-mono text-sm leading-none whitespace-nowrap">{animatedTok}</div>
+          <div className={`text-[9px] mt-1 uppercase tracking-wider ${speedInfo.color}`}>{speedInfo.label}</div>
         </div>
         <div className="bg-[#15151A] rounded-lg p-3 text-center border border-white/5 h-[58px] flex flex-col justify-center">
           <div className="text-[#F3F3F5] font-semibold font-mono text-sm leading-none whitespace-nowrap">{ramRequired} GB</div>
@@ -188,7 +267,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
         </div>
       </div>
 
-      {/* ── Warnings — fixed min-height so cards without warnings stay aligned ── */}
+      {/* ── Warnings ── */}
       {cpuOnly ? (
         <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/5 border border-amber-500/10 rounded-lg">
           <AlertTriangle size={11} className="text-amber-400 shrink-0" />
@@ -201,7 +280,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
         </div>
       ) : <div />}
 
-      {/* ── Use cases — flex-1 pushes actions to bottom ── */}
+      {/* ── Use cases ── */}
       <div className="flex flex-wrap gap-1.5 flex-1">
         {model.useCases?.map(uc => (
           <span key={uc} className="chip bg-black/20 text-[#8E919A] border border-white/5 text-[11px] self-start">
@@ -210,34 +289,34 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
         ))}
       </div>
 
-      {/* ── Actions — mt-auto pins to bottom of every card ── */}
+      {/* ── Actions ── */}
       <div className="flex flex-wrap gap-2 pt-1 border-t border-white/5 mt-auto">
         {model.ollamaTag && <CopyButton text={`ollama run ${model.ollamaTag}`} />}
         {model.ollamaTag && (
           <a
             href={`https://ollama.com/library/${model.ollamaTag.split(':')[0]}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-colors whitespace-nowrap"
           >
-            <ExternalLink size={11} /> Ollama
+            <ExternalLink size={11} aria-hidden="true" /> Ollama
           </a>
         )}
         {model.hfRepo && (
           <a
             href={`https://huggingface.co/${model.hfRepo}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-colors whitespace-nowrap"
           >
-            <ExternalLink size={11} /> HuggingFace
+            <ExternalLink size={11} aria-hidden="true" /> HuggingFace
           </a>
         )}
         {model.hfRepo && (
           <a
             href={`https://huggingface.co/${model.hfRepo}/tree/main`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-colors whitespace-nowrap"
           >
-            <ExternalLink size={11} /> Download GGUF
+            <ExternalLink size={11} aria-hidden="true" /> Download GGUF
           </a>
         )}
       </div>

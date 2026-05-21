@@ -47,6 +47,7 @@ const DEFAULT_HW = {
   vram:               0,
   unifiedMem:         false,
   ram:                16,
+  ramSet:             false,
   numGPUs:            1,
   bandwidth:          0,
   memType:            null,
@@ -185,8 +186,12 @@ export default function Home() {
   const shareURL = useCallback(() => {
     navigator.clipboard.writeText(encodeToURL(hw));
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 3000);
   }, [hw]);
+
+  const onClearUseCases = useCallback(() => {
+    setHw(h => ({ ...h, useCases: [] }));
+  }, []);
 
   async function fetchSummary() {
     const topModels = [...(results.recommended || []), ...(results.comfortable || [])].slice(0, 5);
@@ -334,6 +339,7 @@ export default function Home() {
             geminiEnabled={geminiEnabled}
             onSelectModel={model => setSelectedModel(model)}
             selectedModelName={selectedModel?.name}
+            onClearUseCases={onClearUseCases}
           />
         )}
       </main>
