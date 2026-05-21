@@ -34,6 +34,8 @@ export default function GPUPage({ params }) {
     ssd:         'nvme',
     flashAttn:   gpu.flashAttn,
     contextLength: 4096,
+    bandwidth:   gpu.bandwidth || 0,
+    ramBandwidthGB: gpu.unified ? (gpu.bandwidth || 51) : 51,
   };
 
   const results = analyzeHardware(hw, 4096, gpu.flashAttn, models);

@@ -20,13 +20,14 @@
 }
 
 body {
-  background: #0A0F0A;
+  background: radial-gradient(circle at 50% 0%, #0d160d 0%, #050705 100%);
   color: #E2F0E2;
   font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 .font-mono,
@@ -39,9 +40,13 @@ input[type="number"],
 @layer utilities {
   /* ── Cards ───────────────────────────────── */
   .card {
-    @apply bg-[#111811] border border-[#1E2B1E] rounded-2xl;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.025);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    @apply bg-[#111811]/90 backdrop-blur-md border border-[#1E2B1E] rounded-2xl;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card:hover {
+    border-color: #2e442e;
+    box-shadow: 0 10px 45px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(16, 185, 129, 0.08);
   }
 
   /* ── Buttons ─────────────────────────────── */

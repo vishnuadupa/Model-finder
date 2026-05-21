@@ -67,22 +67,30 @@ function CopyButton({ text }) {
   );
 }
 
-function VRAMBar({ used, total, cpuOnly }) {
+function VRAMBar({ used, total, cpuOnly, cpuOffloadNeeded }) {
   const pct = total > 0 ? Math.min((used / total) * 100, 100) : 0;
-  const color = pct > 92 ? 'bg-rose-500' : pct > 75 ? 'bg-amber-500' : 'bg-sky-500';
-  const glowColor = pct > 92 ? 'rgba(239,68,68,0.3)' : pct > 75 ? 'rgba(245,158,11,0.3)' : 'rgba(14,165,233,0.3)';
+  const color = cpuOnly 
+    ? 'bg-sky-500/80'
+    : cpuOffloadNeeded 
+      ? 'bg-amber-500/80' 
+      : 'bg-emerald-500';
+  const glowColor = cpuOnly 
+    ? 'rgba(14,165,233,0.3)'
+    : cpuOffloadNeeded 
+      ? 'rgba(245,158,11,0.3)' 
+      : 'rgba(16,185,129,0.35)';
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
         <span className="text-zinc-500 uppercase tracking-wider text-[10px] font-semibold">
-          {cpuOnly ? 'RAM Usage' : 'VRAM Usage'}
+          {cpuOnly ? 'RAM Usage' : cpuOffloadNeeded ? 'Hybrid VRAM/RAM' : 'VRAM Usage'}
         </span>
         <span className="font-mono text-zinc-400">{used} / {total} GB</span>
       </div>
       <div className="h-2 bg-[#0C110C] rounded-full overflow-hidden border border-[#1E2B1E]/60">
         <div
-          className={`h-full ${color} rounded-full transition-all`}
-          style={{ width: `${pct}%`, boxShadow: `0 0 6px ${glowColor}` }}
+          className={`h-full ${color} rounded-full transition-all duration-300`}
+          style={{ width: `${pct}%`, boxShadow: `0 0 8px ${glowColor}` }}
         />
       </div>
     </div>
@@ -161,7 +169,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
       )}
 
       {/* ── VRAM bar ── */}
-      <VRAMBar used={vramRequired} total={effectiveVram} cpuOnly={cpuOnly} />
+      <VRAMBar used={vramRequired} total={effectiveVram} cpuOnly={cpuOnly} cpuOffloadNeeded={cpuOffloadNeeded} />
       <div className="flex gap-2 text-[11px] text-zinc-600 font-mono -mt-1 overflow-hidden">
         <span className="whitespace-nowrap">Weights {weightsGB} GB</span>
         <span>·</span>

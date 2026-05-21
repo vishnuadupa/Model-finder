@@ -14,6 +14,22 @@ async function getKV() {
 const VALID_USE_CASES = new Set(['chat', 'code', 'reasoning', 'long-docs', 'multilingual', 'vision', 'general chat', '']);
 
 export async function POST(req) {
+  // Strict origin header checking to prevent cross-origin quota theft
+  const origin = req.headers.get('origin');
+  if (process.env.NODE_ENV === 'production' && !origin) {
+    return Response.json({ error: 'Origin header required' }, { status: 403 });
+  }
+  if (origin) {
+    let isAllowed = false;
+    try {
+      const parsed = new URL(origin);
+      isAllowed = ['llmmatcher.app', 'localhost', '127.0.0.1'].includes(parsed.hostname) || parsed.hostname.endsWith('.vercel.app');
+    } catch {}
+    if (!isAllowed) {
+      return Response.json({ error: 'Unauthorized origin' }, { status: 403 });
+    }
+  }
+
   const ip = req.headers.get('x-vercel-forwarded-for')
           ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
           ?? 'unknown';
@@ -57,10 +73,12 @@ export async function POST(req) {
   const ramType   = String(hw.ramTypeLabel || 'DDR4').slice(0, 30);
   const cpuLabel  = String(hw.cpuLabel  || hw.cpuTier || 'mid-end').slice(0, 100);
   const osLabel   = String(hw.os        || 'Windows').slice(0, 20);
-  const backend   = gpuLabel.startsWith('Apple') ? 'Metal'
-                  : gpuLabel.startsWith('RX ') && osLabel === 'Linux' ? 'ROCm'
-                  : gpuLabel === 'No GPU (CPU only)' ? 'CPU only'
-                  : 'CUDA';
+  const backend = gpuLabel.startsWith('Apple') ? 'Metal'
+                : (gpuLabel.startsWith('RX ') || gpuLabel.startsWith('Radeon') || gpuLabel.startsWith('HD ')) && osLabel === 'Linux' ? 'ROCm'
+                : (gpuLabel.startsWith('RX ') || gpuLabel.startsWith('Radeon') || gpuLabel.startsWith('HD ')) ? 'Vulkan'
+                : (gpuLabel.startsWith('Arc') || gpuLabel.startsWith('Intel Arc')) ? 'Vulkan/SYCL'
+                : gpuLabel === 'No GPU (CPU only)' || !gpuLabel ? 'CPU only'
+                : 'CUDA';
 
   const cacheKey = 'summary_v3_' + crypto
     .createHash('md5')

@@ -414,6 +414,7 @@ export default function HardwareForm({ value, onChange, geminiEnabled, onGeminiT
       fields.cpuTier = tier;
       fields.cpuRamFactor = cpuRamFactor;
       fields.ramBandwidthFactor = 1.0;
+      fields.ramBandwidthGB   = preset.bandwidth || 51;
     }
 
     update(fields);

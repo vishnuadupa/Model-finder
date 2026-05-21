@@ -5,7 +5,7 @@ import ResultsPanel  from '@/components/ResultsPanel';
 import GeminiAdvisor from '@/components/GeminiAdvisor';
 import { analyzeHardware } from '@/lib/scoring';
 import { GPU_PRESETS }      from '@/lib/gpuPresets';
-import { Share2, Cpu } from 'lucide-react';
+import { Share2, Cpu, X } from 'lucide-react';
 
 /* ── GPU preset field re-derivation (used on URL/localStorage load) ── */
 function gpuFieldsFromLabel(label) {
@@ -107,6 +107,8 @@ export default function Home() {
   const [selectedModel, setSelectedModel] = useState(null);
   const [geminiEnabled, setGeminiEnabled] = useState(false);
   const [copied, setCopied]           = useState(false);
+  const [copiedCmd, setCopiedCmd]     = useState(null);
+  const [showDetectModal, setShowDetectModal] = useState(false);
   const [summary, setSummary]         = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const lsDebounce = useRef(null);
@@ -206,6 +208,12 @@ export default function Home() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowDetectModal(true)}
+              className="btn-ghost text-xs flex items-center gap-1.5 text-emerald-400 border border-emerald-950 hover:bg-emerald-950/20 font-semibold"
+            >
+              <span>🔌</span> Auto-Detect Specs
+            </button>
             {hasHardware && (
               <button onClick={shareURL} className="btn-ghost text-xs flex items-center gap-1.5">
                 <Share2 size={12} /> {copied ? 'Copied!' : 'Share'}
@@ -261,7 +269,19 @@ export default function Home() {
             <div className="text-zinc-300 font-semibold">Configure your hardware above to see results</div>
             <div className="text-zinc-600 text-sm max-w-sm mx-auto space-y-3">
               <p>Use the bar at the top to pick your GPU (or Apple Silicon chip) and set your RAM.</p>
-              <div className="text-left inline-block space-y-1.5 text-xs text-zinc-700">
+              
+              {/* Premium Auto-Detect Callout */}
+              <div className="p-4 bg-emerald-950/20 border border-emerald-900/30 rounded-xl space-y-2.5 my-4">
+                <p className="text-xs text-[#E2F0E2] font-semibold">🔌 Too lazy to select specs manually?</p>
+                <button
+                  onClick={() => setShowDetectModal(true)}
+                  className="btn-primary text-xs py-1.5 px-4 inline-flex items-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.2)] font-semibold"
+                >
+                  Auto-Detect My Hardware
+                </button>
+              </div>
+
+              <div className="text-left inline-block space-y-1.5 text-xs text-zinc-700 mt-2">
                 <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Works for NVIDIA, AMD, Intel Arc, Apple Silicon, and CPU-only</span></div>
                 <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Shows exactly how much VRAM / unified memory each model needs</span></div>
                 <div className="flex items-start gap-2"><span className="text-green-500 shrink-0">✓</span><span>Estimates tokens per second for your specific hardware</span></div>
@@ -287,6 +307,8 @@ export default function Home() {
           <ResultsPanel
             results={results}
             hw={hw}
+            models={models}
+            onApplyHardware={setHw}
             geminiEnabled={geminiEnabled}
             onSelectModel={model => setSelectedModel(model)}
             selectedModelName={selectedModel?.name}
@@ -301,6 +323,102 @@ export default function Home() {
           <div>Affiliate links help keep this free.</div>
         </div>
       </footer>
+
+      {/* ── Auto-Detect Specs Modal ─────────────────────────── */}
+      {showDetectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="relative w-full max-w-lg rounded-2xl border border-[#2A3D2A] bg-[#0E150E] p-6 shadow-[0_10px_50px_rgba(0,0,0,0.9)] space-y-5">
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setShowDetectModal(false)}
+              className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-950/50 border border-emerald-800/40 flex items-center justify-center text-emerald-400">
+                <span>🔌</span>
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">
+                  Hardware Auto-Detection
+                </h3>
+                <p className="text-[11px] text-[#4A654A] mt-0.5">
+                  Auto-populate the LLM Matcher with your exact local specs.
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Paste this one-line command into your terminal. It will scan your CPU cores, RAM bandwidth, GPU VRAM, OS, and drive type, then reload this page with the parameters pre-filled.
+            </p>
+
+            {/* Terminal Command Boxes */}
+            <div className="space-y-4">
+              
+              {/* Windows Tab */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-[10px] text-[#4A654A] uppercase tracking-widest font-mono font-bold">
+                  <span>🪟 Windows (PowerShell)</span>
+                  <button
+                    onClick={() => {
+                      const cmd = `powershell -c "irm ${window.location.origin}/detect-specs.ps1 | iex"`;
+                      navigator.clipboard.writeText(cmd);
+                      setCopiedCmd('win');
+                      setTimeout(() => setCopiedCmd(null), 2000);
+                    }}
+                    className="text-[10px] text-emerald-400 hover:text-emerald-300 transition-colors uppercase font-sans font-semibold"
+                  >
+                    {copiedCmd === 'win' ? '✓ Copied!' : 'Copy Command'}
+                  </button>
+                </div>
+                <div className="relative rounded-lg bg-black border border-[#1E2B1E] p-3 text-xs font-mono text-zinc-300 select-all overflow-x-auto whitespace-nowrap">
+                  powershell -c &quot;irm {typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/detect-specs.ps1 | iex&quot;
+                </div>
+              </div>
+
+              {/* macOS / Linux Tab */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-[10px] text-[#4A654A] uppercase tracking-widest font-mono font-bold">
+                  <span>🍎 macOS / 🐧 Linux (Bash)</span>
+                  <button
+                    onClick={() => {
+                      const cmd = `curl -s ${window.location.origin}/detect-specs.sh | bash`;
+                      navigator.clipboard.writeText(cmd);
+                      setCopiedCmd('unix');
+                      setTimeout(() => setCopiedCmd(null), 2000);
+                    }}
+                    className="text-[10px] text-emerald-400 hover:text-emerald-300 transition-colors uppercase font-sans font-semibold"
+                  >
+                    {copiedCmd === 'unix' ? '✓ Copied!' : 'Copy Command'}
+                  </button>
+                </div>
+                <div className="relative rounded-lg bg-black border border-[#1E2B1E] p-3 text-xs font-mono text-zinc-300 select-all overflow-x-auto whitespace-nowrap">
+                  curl -s {typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/detect-specs.sh | bash
+                </div>
+              </div>
+
+            </div>
+
+            {/* Note & Security Disclaimer */}
+            <div className="rounded-xl border border-emerald-950/60 bg-emerald-950/10 p-3.5 text-[10px] text-zinc-500 leading-relaxed font-sans">
+              🔒 <strong className="text-white">Privacy &amp; Security:</strong> The script is completely open-source and runs strictly on your machine. No telemetry or hardware statistics are uploaded or saved to any server—they are simply encoded into the local URL query parameters.
+            </div>
+
+            {/* Done button */}
+            <button
+              onClick={() => setShowDetectModal(false)}
+              className="btn-ghost w-full py-2 text-xs text-[#7EAF7E] hover:text-white"
+            >
+              Done / Close
+            </button>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

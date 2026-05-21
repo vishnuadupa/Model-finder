@@ -492,6 +492,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
       fields.cpuTier          = tier;
       fields.cpuRamFactor     = tier === 'ultra' ? 1.0 : tier === 'high' ? 0.9 : 0.75;
       fields.ramBandwidthFactor = 1.0;
+      fields.ramBandwidthGB   = preset.bandwidth || 51;
     }
     update(fields);
   }

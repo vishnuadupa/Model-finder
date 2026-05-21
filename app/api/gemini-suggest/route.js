@@ -47,6 +47,22 @@ function sanitizeNeighbour(m) {
 }
 
 export async function POST(req) {
+  // Strict origin header checking to prevent cross-origin quota theft
+  const origin = req.headers.get('origin');
+  if (process.env.NODE_ENV === 'production' && !origin) {
+    return Response.json({ error: 'Origin header required' }, { status: 403 });
+  }
+  if (origin) {
+    let isAllowed = false;
+    try {
+      const parsed = new URL(origin);
+      isAllowed = ['llmmatcher.app', 'localhost', '127.0.0.1'].includes(parsed.hostname) || parsed.hostname.endsWith('.vercel.app');
+    } catch {}
+    if (!isAllowed) {
+      return Response.json({ error: 'Unauthorized origin' }, { status: 403 });
+    }
+  }
+
   // Rate limit: 10 req / 60s per IP
   const ip = req.headers.get('x-vercel-forwarded-for')
           ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()

@@ -1,5 +1,6 @@
 'use client';
 import ResultCard from './ResultCard';
+import UpgradePlanner from './UpgradePlanner';
 import { Sparkles, Zap, AlertTriangle, Server } from 'lucide-react';
 
 const TIER_META = {
@@ -90,7 +91,7 @@ function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName, 
   );
 }
 
-export default function ResultsPanel({ results, hw, onSelectModel, selectedModelName, geminiEnabled }) {
+export default function ResultsPanel({ results, hw, models, onApplyHardware, onSelectModel, selectedModelName, geminiEnabled }) {
   const totalCount = (results.recommended?.length || 0)
     + (results.comfortable?.length || 0)
     + (results.stretch?.length || 0);
@@ -101,13 +102,16 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
 
   if (totalCount === 0) {
     return (
-      <div className="card p-10 text-center space-y-3">
-        <div className="text-3xl">😅</div>
-        <div className="text-[#C8E0C8] font-semibold">No compatible models found</div>
-        <div className="text-sm text-zinc-500 leading-relaxed">
-          Try reducing context length, enabling Flash Attention, or adding more RAM.
+      <div className="space-y-4">
+        <div className="card p-10 text-center space-y-3">
+          <div className="text-3xl">😅</div>
+          <div className="text-[#C8E0C8] font-semibold">No compatible models found</div>
+          <div className="text-sm text-zinc-500 leading-relaxed">
+            Try reducing context length, enabling Flash Attention, or adding more RAM.
+          </div>
+          <CloudCTA modelName="any local model" />
         </div>
-        <CloudCTA modelName="any local model" />
+        <UpgradePlanner hw={hw} models={models} onApplyHardware={onApplyHardware} />
       </div>
     );
   }
@@ -120,12 +124,12 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
         </p>
         <div className="flex gap-2 text-[11px] font-mono">
           {results.recommended?.length > 0 && (
-            <span className="text-emerald-500/80 bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-900/30">
+            <span className="text-emerald-500/80 bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-900/30 font-semibold shadow-sm">
               {results.recommended.length} recommended
             </span>
           )}
           {results.comfortable?.length > 0 && (
-            <span className="text-teal-500/80 bg-teal-950/30 px-2 py-0.5 rounded-full border border-teal-900/30 hidden sm:inline">
+            <span className="text-teal-500/80 bg-teal-950/30 px-2 py-0.5 rounded-full border border-teal-900/30 hidden sm:inline font-semibold shadow-sm">
               {results.comfortable.length} comfortable
             </span>
           )}
@@ -134,6 +138,10 @@ export default function ResultsPanel({ results, hw, onSelectModel, selectedModel
 
       <TierSection tier="recommended" results={results.recommended || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
       <TierSection tier="comfortable" results={results.comfortable || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
+      
+      {/* What-If / Hardware Upgrade Planner simulator */}
+      <UpgradePlanner hw={hw} models={models} onApplyHardware={onApplyHardware} />
+
       <TierSection tier="stretch" results={results.stretch || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
 
       {/* Cloud CTA when stretch is non-empty */}
