@@ -10,17 +10,35 @@ import { Share2, Cpu, X } from 'lucide-react';
 /* ── GPU preset field re-derivation (used on URL/localStorage load) ── */
 function gpuFieldsFromLabel(label) {
   if (!label) return {};
-  const preset = GPU_PRESETS.find(g => g.label === label);
+
+  // 1. Exact match
+  let preset = GPU_PRESETS.find(g => g.label === label);
+
+  // 2. Fuzzy match — scripts (WMI / nvidia-smi) return vendor-prefixed names
+  //    e.g. "NVIDIA GeForce RTX 3080" → strip prefix → "RTX 3080" → matches "RTX 3080 10GB"
+  //         "AMD Radeon RX 6700 XT"   → strip prefix → "RX 6700 XT" → matches "RX 6700 XT 12GB"
+  //         "Apple M2 Pro"            → matches "Apple M2 Pro 12c"
+  if (!preset) {
+    const cleaned = label
+      .replace(/^NVIDIA\s+GeForce\s+/i, '')
+      .replace(/^AMD\s+Radeon\s+/i, '')
+      .replace(/^Intel\s+Arc\s+/i, 'Arc ')
+      .replace(/^Intel\s+/i, '')
+      .trim();
+    preset = GPU_PRESETS.find(g => g.label.startsWith(cleaned));
+  }
+
   if (!preset) return {};
   return {
+    gpuLabel:   preset.label,   // normalise to our canonical label
     vram:       preset.vram,
-    arch:       preset.arch || null,
+    arch:       preset.arch   || null,
     unifiedMem: !!preset.unified,
     flashAttn:  preset.flashAttn,
     bandwidth:  preset.bandwidth || 0,
-    memType:    preset.memType || null,
-    pcie:       preset.pcie || null,
-    maxRam:     preset.maxRam || null,
+    memType:    preset.memType   || null,
+    pcie:       preset.pcie      || null,
+    maxRam:     preset.maxRam    || null,
   };
 }
 
@@ -80,11 +98,15 @@ function decodeFromURL() {
   if (typeof window === 'undefined') return null;
   const p = new URLSearchParams(window.location.search);
   if (!p.get('vram') && !p.get('gpu')) return null;
-  const gpuLabel = p.get('gpu') || '';
+  const rawLabel = p.get('gpu') || '';
+  const fields   = gpuFieldsFromLabel(rawLabel);           // fuzzy-matched preset fields
   return {
     ...DEFAULT_HW,
-    ...gpuFieldsFromLabel(gpuLabel),
-    gpuLabel,
+    ...fields,
+    // use normalized label if preset matched, else raw label from URL
+    gpuLabel:           fields.gpuLabel || rawLabel,
+    // use preset VRAM if matched, else fall back to explicit URL param
+    vram:               fields.vram != null ? fields.vram : Number(p.get('vram') || 0),
     ram:                Number(p.get('ram')   || 16),
     cpuLabel:           p.get('cpu')    || '',
     cpuTier:            p.get('ctier')  || 'mid',
