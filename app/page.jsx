@@ -216,7 +216,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#0D0D11] text-[#F3F3F5]">
 
       {/* ── Header ──────────────────────────────────────────── */}
-      <header className="border-b border-white/5 px-6 py-4 bg-[#0D0D11]/95 sticky top-0 z-40 backdrop-blur-md">
+      <header className="border-b border-white/5 px-6 py-4 bg-[#0D0D11]/85 sticky top-0 z-40 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-7 h-7 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center">

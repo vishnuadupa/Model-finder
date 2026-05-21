@@ -529,7 +529,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
   }
 
   return (
-    <div ref={ref} className="sticky top-[57px] z-30 bg-[#0D0D11]/98 backdrop-blur-md border-b border-white/5">
+    <div ref={ref} className="sticky top-[57px] z-30 bg-[#0D0D11]/85 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-[#08080B]/50">
       {/* ── Chips row ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4">
         <div
