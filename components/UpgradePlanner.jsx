@@ -245,7 +245,7 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
   const currentOption = upgradeOptions.find(opt => opt.id === selectedUpgrade);
 
   return (
-    <div className="card p-6 border-white/5 bg-[#15151A] relative overflow-hidden my-6">
+    <div className="card p-6 relative overflow-hidden my-6">
 
       {/* Title */}
       <div className="flex items-center gap-3 mb-5 border-b border-white/5 pb-4">

@@ -34,7 +34,7 @@ const RUNPOD_URL = 'https://runpod.io?ref=YOURCODE';
 
 function CloudCTA({ modelName }) {
   return (
-    <div className="card p-4 border-dashed border-white/5 bg-white/[0.01] flex items-center justify-between gap-4">
+    <div className="card p-4 border-dashed flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
         <Server size={16} className="text-[#8E919A] shrink-0" />
         <div>

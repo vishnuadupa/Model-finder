@@ -349,7 +349,7 @@ export default function Home() {
       {/* ── Auto-Detect Specs Modal ─────────────────────────── */}
       {showDetectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#15151A] p-6 shadow-2xl space-y-5">
+          <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#15151A]/85 backdrop-blur-xl p-6 shadow-2xl space-y-5">
             
             {/* Close Button */}
             <button

@@ -64,7 +64,7 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
   if (!enabled || !currentModel) return null;
 
   return (
-    <div className="card p-4 space-y-3 border-white/5 bg-[#15151A]">
+    <div className="card p-4 space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0">

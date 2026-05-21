@@ -673,7 +673,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
 
       {/* ── Dropdown panel area ─────────────────────────────── */}
       {openPanel && (
-        <div className="absolute left-0 right-0 top-full bg-[#15151A] border-b border-white/5 shadow-2xl z-50">
+        <div className="absolute left-0 right-0 top-full bg-[#15151A]/85 backdrop-blur-xl border-b border-white/5 shadow-2xl z-50">
           <div className="max-w-7xl mx-auto px-4 py-4">
 
             {openPanel === 'gpu' && (
