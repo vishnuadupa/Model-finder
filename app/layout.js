@@ -30,7 +30,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://llmmatcher.app'),
+  metadataBase: new URL('https://llm-matcher.vercel.app'),
   title: 'Local LLM Matcher — Find Models Your GPU Can Run',
   description: 'Instantly match your GPU, VRAM, and RAM to compatible local LLMs. Find the best quantization level and estimated tokens/sec for your hardware.',
   keywords: 'local LLM, GPU, VRAM, llama.cpp, ollama, quantization, gguf',

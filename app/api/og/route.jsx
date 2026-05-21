@@ -34,7 +34,7 @@ export function GET(req) {
             </div>
           ))}
         </div>
-        <div style={{ color: '#334155', marginTop: 'auto', fontSize: 18 }}>llmmatcher.app</div>
+        <div style={{ color: '#334155', marginTop: 'auto', fontSize: 18 }}>llm-matcher.vercel.app</div>
       </div>
     ),
     { width: 1200, height: 630 }

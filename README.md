@@ -4,7 +4,7 @@
 
 Paste in your GPU, RAM, and CPU — get a ranked list of every local LLM that fits, with VRAM usage, estimated tokens/sec, quantization recommendations, and Ollama/HuggingFace download links.
 
-🌐 **Live:** [llmmatcher.app](https://llmmatcher.app)
+🌐 **Live:** [llm-matcher.vercel.app](https://llm-matcher.vercel.app)
 
 ---
 

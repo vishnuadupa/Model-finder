@@ -30,11 +30,11 @@ const CPU_TIER_LABELS = {
   low:   'Budget / Older',
 };
 const BACKEND_LABELS = {
-  cuda:   { label: 'CUDA (NVIDIA)',    color: 'text-green-400',  bg: 'bg-green-950/30 border-green-800/50'   },
-  metal:  { label: 'Metal (Apple)',    color: 'text-purple-400', bg: 'bg-purple-950/30 border-purple-800/50' },
-  rocm:   { label: 'ROCm (AMD Linux)', color: 'text-red-400',    bg: 'bg-red-950/30 border-red-800/50'       },
-  vulkan: { label: 'Vulkan (AMD/Arc)', color: 'text-amber-400',  bg: 'bg-amber-950/30 border-amber-800/50'   },
-  cpu:    { label: 'CPU only',         color: 'text-[#7EAF7E]',   bg: 'bg-[#111811]/50 border-[#2A3D2A]'        },
+  cuda:   { label: 'CUDA (NVIDIA)',    color: 'text-emerald-400',  bg: 'bg-white/[0.02] border-white/5'   },
+  metal:  { label: 'Metal (Apple)',    color: 'text-purple-400',   bg: 'bg-white/[0.02] border-white/5' },
+  rocm:   { label: 'ROCm (AMD Linux)', color: 'text-rose-400',     bg: 'bg-white/[0.02] border-white/5'       },
+  vulkan: { label: 'Vulkan (AMD/Arc)', color: 'text-amber-400',   bg: 'bg-white/[0.02] border-white/5'   },
+  cpu:    { label: 'CPU only',         color: 'text-zinc-400',     bg: 'bg-white/[0.02] border-white/5'        },
 };
 const OS_VENDORS = {
   Windows: [
@@ -88,29 +88,29 @@ function BarChip({ label, isSet, active, onClick, onClear }) {
   return (
     <div className={`flex items-center rounded-lg border transition-all shrink-0 overflow-hidden text-xs font-medium
       ${active
-        ? 'border-emerald-600 bg-emerald-950/30'
+        ? 'border-white/20 bg-white/5'
         : isSet
-          ? 'border-[#2A3D2A] bg-[#111811] hover:border-zinc-500'
-          : 'border-[#1E2B1E] bg-[#111811] hover:border-[#2A3D2A]'
+          ? 'border-white/10 bg-white/[0.02] hover:border-white/20'
+          : 'border-white/5 bg-white/[0.01] hover:border-white/10'
       }`}
     >
       <button
         onClick={onClick}
         className={`flex items-center gap-1.5 px-3 py-1.5 whitespace-nowrap transition-none
-          ${active ? 'text-sky-300' : isSet ? 'text-[#E2F0E2]' : 'text-[#4A654A]'}`}
+          ${active ? 'text-[#84E1BC]' : isSet ? 'text-[#F3F3F5]' : 'text-[#8E919A]'}`}
       >
         <span>{label}</span>
         {!isSet && (
           <ChevronDown
             size={10}
-            className={`text-[#354835] transition-transform ${active ? 'rotate-180' : ''}`}
+            className={`text-[#8E919A] transition-transform ${active ? 'rotate-180' : ''}`}
           />
         )}
       </button>
       {isSet && onClear && (
         <button
           onClick={e => { e.stopPropagation(); onClear(); }}
-          className="px-2 py-1.5 text-[#354835] hover:text-[#C8E0C8] border-l border-[#1E2B1E] transition-colors"
+          className="px-2 py-1.5 text-zinc-500 hover:text-white border-l border-white/5 transition-colors"
         >
           <X size={10} />
         </button>
@@ -118,7 +118,7 @@ function BarChip({ label, isSet, active, onClick, onClear }) {
       {isSet && !onClear && (
         <button
           onClick={onClick}
-          className={`px-2 py-1.5 transition-colors ${active ? 'text-emerald-400' : 'text-[#354835] hover:text-[#7EAF7E]'}`}
+          className={`px-2 py-1.5 transition-colors ${active ? 'text-[#84E1BC]' : 'text-zinc-500 hover:text-zinc-300'}`}
         >
           <ChevronDown size={10} className={`transition-transform ${active ? 'rotate-180' : ''}`} />
         </button>
@@ -132,7 +132,7 @@ function PanelSection({ title, children }) {
   return (
     <div className="space-y-2.5">
       {title && (
-        <div className="text-[10px] text-[#4A654A] uppercase tracking-widest font-semibold">{title}</div>
+        <div className="text-[10px] text-[#8E919A] uppercase tracking-widest font-semibold">{title}</div>
       )}
       {children}
     </div>
@@ -171,20 +171,20 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
     const bMeta = BACKEND_LABELS[backend];
     return (
       <div className="flex items-center gap-4 flex-wrap">
-        <div className={`rounded-lg border px-4 py-2.5 ${bMeta.bg} flex items-center gap-4`}>
+        <div className={`rounded-lg border px-4 py-2.5 bg-white/[0.02] border-white/5 flex items-center gap-4`}>
           <div>
             <div className="text-sm font-semibold text-white">{hw.gpuLabel}</div>
             <div className="flex gap-3 mt-0.5 text-xs flex-wrap">
               <span className={bMeta.color}>{bMeta.label}</span>
-              {hw.bandwidth > 0 && <span className="text-[#4A654A]">{hw.bandwidth} GB/s</span>}
-              {hw.memType && !hw.unifiedMem && <span className="text-[#354835]">{hw.memType}</span>}
-              {hw.unifiedMem && hw.vram > 0 && <span className="text-[#4A654A]">{hw.vram} GB unified</span>}
+              {hw.bandwidth > 0 && <span className="text-[#8E919A]">{hw.bandwidth} GB/s</span>}
+              {hw.memType && !hw.unifiedMem && <span className="text-zinc-500">{hw.memType}</span>}
+              {hw.unifiedMem && hw.vram > 0 && <span className="text-[#8E919A]">{hw.vram} GB unified</span>}
             </div>
           </div>
         </div>
         <button
           onClick={() => { onSelect(null); setVendor(null); setOsConfirmed(false); }}
-          className="text-xs text-[#4A654A] hover:text-emerald-400 transition-colors whitespace-nowrap"
+          className="text-xs text-[#8E919A] hover:text-white transition-colors whitespace-nowrap"
         >
           ← Change GPU
         </button>
@@ -202,11 +202,11 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
               key={o}
               onClick={() => { onOSChange(o); setOsConfirmed(true); }}
               className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border transition-all text-sm
-                ${os === o ? 'border-emerald-600 bg-emerald-950/30 text-[#E2F0E2]' : 'border-[#1E2B1E] hover:border-emerald-700 hover:bg-emerald-950/20 text-[#7EAF7E]'}`}
+                ${os === o ? 'border-white/20 bg-white/5 text-[#F3F3F5]' : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02] text-[#8E919A]'}`}
             >
               <span>{o === 'Windows' ? '🪟' : o === 'Linux' ? '🐧' : '🍎'}</span>
               <span>{o}</span>
-              {os === o && <span className="text-[10px] text-emerald-500">auto</span>}
+              {os === o && <span className="text-[10px] text-[#84E1BC]">auto</span>}
             </button>
           ))}
         </div>
@@ -219,10 +219,10 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
     return (
       <PanelSection>
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] text-[#4A654A] uppercase tracking-widest font-semibold">Step 2 of 3 — GPU brand</span>
+          <span className="text-[10px] text-[#8E919A] uppercase tracking-widest font-semibold">Step 2 of 3 — GPU brand</span>
           <button
             onClick={() => { onOSChange(''); setOsConfirmed(false); }}
-            className="text-xs text-[#354835] hover:text-emerald-400 transition-colors"
+            className="text-xs text-[#8E919A] hover:text-[#84E1BC] transition-colors"
           >
             ← {os}
           </button>
@@ -239,11 +239,11 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
                   setVendor(v.id);
                 }
               }}
-              className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-lg border border-[#1E2B1E] hover:border-emerald-700 hover:bg-emerald-950/20 transition-all text-center"
+              className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-lg border border-white/5 hover:border-white/10 hover:bg-white/[0.02] transition-all text-center"
             >
               <span className="text-xl">{v.icon}</span>
-              <span className="text-xs text-[#C8E0C8] font-medium">{v.label}</span>
-              <span className="text-[10px] text-[#354835] leading-snug">{v.desc}</span>
+              <span className="text-xs text-white font-medium">{v.label}</span>
+              <span className="text-[10px] text-[#8E919A] leading-snug">{v.desc}</span>
             </button>
           ))}
         </div>
@@ -256,24 +256,24 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose }) {
   return (
     <PanelSection>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[10px] text-[#4A654A] uppercase tracking-widest font-semibold">Step 3 of 3 — Select your GPU</span>
-        <button onClick={() => setVendor(null)} className="text-xs text-[#354835] hover:text-emerald-400 transition-colors">← Back</button>
+        <span className="text-[10px] text-[#8E919A] uppercase tracking-widest font-semibold">Step 3 of 3 — Select your GPU</span>
+        <button onClick={() => setVendor(null)} className="text-xs text-[#8E919A] hover:text-[#84E1BC] transition-colors">← Back</button>
       </div>
       <div className="max-h-72 overflow-y-auto space-y-3 pr-1">
         {groups.map((group, gi) => (
           <div key={gi}>
             {group.label && (
-              <div className="text-[10px] text-[#354835] uppercase tracking-wider mb-1.5 px-1">{group.label}</div>
+              <div className="text-[10px] text-[#8E919A] uppercase tracking-wider mb-1.5 px-1">{group.label}</div>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1">
               {group.gpus.map(g => (
                 <button
-                  key={g.label}
-                  onClick={() => { onSelect(g); onClose?.(); }}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg border border-[#1E2B1E] hover:border-emerald-700 hover:bg-emerald-950/20 transition-all text-left"
+                   key={g.label}
+                   onClick={() => { onSelect(g); onClose?.(); }}
+                   className="flex items-center justify-between px-3 py-2 rounded-lg border border-white/5 hover:border-white/10 hover:bg-white/[0.02] transition-all text-left"
                 >
-                  <span className="text-sm text-[#C8E0C8]">{g.label}</span>
-                  <span className="text-xs text-[#354835] font-mono shrink-0 ml-2">
+                  <span className="text-sm text-zinc-300">{g.label}</span>
+                  <span className="text-xs text-zinc-500 font-mono shrink-0 ml-2">
                     {g.vram > 0 ? `${g.vram}GB` : ''}
                   </span>
                 </button>
@@ -296,7 +296,7 @@ function CPUListPanel({ value, onChange, onClose }) {
           if (!cpus.length) return null;
           return (
             <div key={tier}>
-              <div className="text-[10px] text-[#354835] uppercase tracking-wider mb-1 px-1">
+              <div className="text-[10px] text-[#8E919A] uppercase tracking-wider mb-1 px-1">
                 {CPU_TIER_LABELS[tier]}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
@@ -306,11 +306,11 @@ function CPUListPanel({ value, onChange, onClose }) {
                     onClick={() => { onChange(c.label); onClose?.(); }}
                     className={`flex items-center justify-between px-3 py-2 rounded-lg border transition-all text-left
                       ${value === c.label
-                        ? 'border-emerald-600 bg-emerald-950/30'
-                        : 'border-[#1E2B1E] hover:border-emerald-700 hover:bg-emerald-950/20'}`}
+                        ? 'border-[#84E1BC]/30 bg-[#84E1BC]/5'
+                        : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02]'}`}
                   >
-                    <span className="text-sm text-[#C8E0C8]">{c.label}</span>
-                    <span className="text-xs text-[#354835] font-mono shrink-0 ml-2">{c.cores}c</span>
+                    <span className="text-sm text-zinc-300">{c.label}</span>
+                    <span className="text-xs text-zinc-500 font-mono shrink-0 ml-2">{c.cores}c</span>
                   </button>
                 ))}
               </div>
@@ -334,10 +334,10 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
         {/* Flash Attention */}
         <PanelSection title="Flash Attention">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs text-[#7EAF7E] leading-snug">Reduces KV cache VRAM ~30% at long contexts</span>
+            <span className="text-xs text-[#8E919A] leading-snug">Reduces KV cache VRAM ~30% at long contexts</span>
             <button
               onClick={() => update({ flashAttn: !hw.flashAttn })}
-              className={`relative shrink-0 w-10 h-5 rounded-full transition-colors ${hw.flashAttn ? 'bg-emerald-600' : 'bg-zinc-700'}`}
+              className={`relative shrink-0 w-10 h-5 rounded-full transition-colors ${hw.flashAttn ? 'bg-[#84E1BC]' : 'bg-zinc-800'}`}
               title={hw.flashAttn ? 'Flash Attention on' : 'Flash Attention off'}
             >
               <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all shadow ${hw.flashAttn ? 'left-5' : 'left-0.5'}`} />
@@ -355,8 +355,8 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
                 title={o.value === 'nvme' ? 'Fastest model loading' : o.value === 'sata' ? 'Medium speed' : 'Slowest — expect long load times'}
                 className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-colors
                   ${hw.ssd === o.value
-                    ? 'bg-emerald-600 border-emerald-500 text-white'
-                    : 'border-[#1E2B1E] text-[#7EAF7E] hover:border-emerald-700'}`}
+                    ? 'bg-[#84E1BC] border-transparent text-[#0D0D11]'
+                    : 'border-white/5 text-[#8E919A] hover:border-white/10 hover:bg-white/[0.02]'}`}
               >
                 {o.label}
               </button>
@@ -375,8 +375,8 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
                   onClick={() => update({ numGPUs: n })}
                   className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-colors
                     ${hw.numGPUs === n
-                      ? 'bg-emerald-600 border-emerald-500 text-white'
-                      : 'border-[#1E2B1E] text-[#7EAF7E] hover:border-emerald-700'}`}
+                      ? 'bg-[#84E1BC] border-transparent text-[#0D0D11]'
+                      : 'border-white/5 text-[#8E919A] hover:border-white/10 hover:bg-white/[0.02]'}`}
                 >
                   {n}×
                 </button>
@@ -388,7 +388,7 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
 
       {/* RAM type — only for non-Apple */}
       {!isApple && (
-        <div className="pt-4 border-t border-[#1E2B1E]">
+        <div className="pt-4 border-t border-white/5">
           <PanelSection title="RAM Type (affects CPU offload speed)">
             <div className="flex flex-wrap gap-2">
               {RAM_TYPES.map(r => (
@@ -397,8 +397,8 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
                   onClick={() => onRAMTypeChange(r.label)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-colors
                     ${hw.ramTypeLabel === r.label
-                      ? 'bg-emerald-600 border-emerald-500 text-white'
-                      : 'border-[#1E2B1E] text-[#7EAF7E] hover:border-emerald-700'}`}
+                      ? 'bg-[#84E1BC] border-transparent text-[#0D0D11]'
+                      : 'border-white/5 text-[#8E919A] hover:border-white/10 hover:bg-white/[0.02]'}`}
                 >
                   {r.label}
                 </button>
@@ -410,23 +410,23 @@ function AdvancedPanel({ hw, update, onRAMTypeChange }) {
 
       {/* VRAM override + GPU tech details */}
       {hasDiscreteGPU && (
-        <div className="pt-4 border-t border-[#1E2B1E] flex flex-wrap items-center gap-6">
+        <div className="pt-4 border-t border-white/5 flex flex-wrap items-center gap-6">
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[#354835]">Override VRAM:</span>
+            <span className="text-xs text-zinc-500">Override VRAM:</span>
             <input
               type="number" min={1} max={256}
-              className="w-20 bg-[#0C110C] border border-[#1E2B1E] rounded-lg px-2.5 py-1.5 text-xs text-[#C8E0C8] font-mono focus:border-emerald-600 focus:outline-none"
+              className="w-20 bg-black/40 border border-white/5 rounded-lg px-2.5 py-1.5 text-xs text-[#F3F3F5] font-mono focus:border-white/10 focus:outline-none"
               value={hw.vram || ''}
               onChange={e => { const v = Number(e.target.value); if (v >= 1) update({ vram: v }); }}
             />
-            <span className="text-xs text-[#354835]">GB</span>
+            <span className="text-xs text-zinc-500">GB</span>
           </div>
           {[['Arch', hw.arch], ['VRAM type', hw.memType], ['PCIe', hw.pcie ? `Gen ${hw.pcie}` : null], ['Bandwidth', hw.bandwidth > 0 ? `${hw.bandwidth} GB/s` : null]]
             .filter(([, v]) => v)
             .map(([k, v]) => (
               <div key={k} className="text-xs">
-                <span className="text-[#354835]">{k}: </span>
-                <span className="text-[#7EAF7E] font-mono">{v}</span>
+                <span className="text-zinc-500">{k}: </span>
+                <span className="text-[#8E919A] font-mono">{v}</span>
               </div>
             ))
           }
@@ -529,7 +529,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
   }
 
   return (
-    <div ref={ref} className="sticky top-[57px] z-30 bg-[#0A0F0A]/98 backdrop-blur-md border-b border-[#1E2B1E]">
+    <div ref={ref} className="sticky top-[57px] z-30 bg-[#0D0D11]/98 backdrop-blur-md border-b border-white/5">
       {/* ── Chips row ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4">
         <div
@@ -584,8 +584,8 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
               onClick={onGeminiToggle}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all shrink-0
                 ${geminiEnabled
-                  ? 'border-yellow-700/60 bg-yellow-950/30 text-yellow-400'
-                  : 'border-[#1E2B1E] bg-[#111811] text-[#354835] hover:border-[#2A3D2A] hover:text-[#7EAF7E]'}`}
+                  ? 'border-amber-500/20 bg-amber-500/5 text-amber-300'
+                  : 'border-white/5 bg-white/[0.01] text-[#8E919A] hover:border-white/10 hover:text-white'}`}
             >
               ⚡ Gemini
             </button>
@@ -595,13 +595,13 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
               onClick={() => toggle('adv')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all shrink-0
                 ${openPanel === 'adv'
-                  ? 'border-emerald-600 bg-emerald-950/30 text-sky-300'
-                  : 'border-[#1E2B1E] bg-[#111811] text-[#4A654A] hover:border-[#2A3D2A] hover:text-[#C8E0C8]'}`}
+                  ? 'border-white/20 bg-white/5 text-white'
+                  : 'border-white/5 bg-white/[0.01] text-[#8E919A] hover:border-white/10 hover:text-[#F3F3F5]'}`}
             >
               <Settings2 size={12} />
               <span>Settings</span>
               {advBadge.length > 0 && (
-                <span className="px-1.5 py-0.5 rounded-full bg-sky-900/60 text-emerald-400 text-[10px] font-mono -mr-0.5">
+                <span className="px-1.5 py-0.5 rounded bg-white/5 text-[#84E1BC] text-[10px] font-mono -mr-0.5">
                   {advBadge.join(' · ')}
                 </span>
               )}
@@ -612,7 +612,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
       </div>
 
       {/* ── Row 2: Use cases + Speed — always visible ──────── */}
-      <div className="border-t border-[#1E2B1E]">
+      <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4">
           <div
             className="overflow-x-auto py-2"
@@ -621,7 +621,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
             <div className="flex items-center gap-1.5 w-max min-w-full">
 
               {/* Use case label */}
-              <span className="text-[10px] text-[#354835] uppercase tracking-widest font-semibold shrink-0 mr-1">
+              <span className="text-[10px] text-[#8E919A] uppercase tracking-widest font-semibold shrink-0 mr-1">
                 Use
               </span>
 
@@ -634,8 +634,8 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
                     onClick={() => toggleUseCase(uc)}
                     className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-medium transition-all shrink-0
                       ${active
-                        ? 'border-emerald-600/70 bg-emerald-950/50 text-emerald-300'
-                        : 'border-[#1E2B1E] text-[#4A654A] hover:border-[#2A3D2A] hover:text-[#7EAF7E]'}`}
+                        ? 'border-white/20 bg-white/5 text-white'
+                        : 'border-white/5 text-[#8E919A] hover:border-white/10 hover:text-[#F3F3F5]'}`}
                   >
                     <span>{USE_CASE_ICONS[uc]}</span>
                     <span>{uc}</span>
@@ -644,10 +644,10 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
               })}
 
               {/* Divider */}
-              <div className="w-px h-4 bg-[#1E2B1E] mx-2 shrink-0" />
+              <div className="w-px h-4 bg-white/5 mx-2 shrink-0" />
 
               {/* Speed label */}
-              <span className="text-[10px] text-[#354835] uppercase tracking-widest font-semibold shrink-0 mr-1">
+              <span className="text-[10px] text-[#8E919A] uppercase tracking-widest font-semibold shrink-0 mr-1">
                 Speed
               </span>
 
@@ -659,8 +659,8 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
                   title={o.tip}
                   className={`px-2.5 py-1 rounded-lg text-xs font-mono border transition-all shrink-0
                     ${hw.speedPref === o.value
-                      ? 'border-emerald-600/70 bg-emerald-950/50 text-emerald-300'
-                      : 'border-[#1E2B1E] text-[#4A654A] hover:border-[#2A3D2A] hover:text-[#7EAF7E]'}`}
+                      ? 'border-white/20 bg-white/5 text-white'
+                      : 'border-white/5 text-[#8E919A] hover:border-white/10 hover:text-[#F3F3F5]'}`}
                 >
                   {o.label}
                 </button>
@@ -673,7 +673,7 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
 
       {/* ── Dropdown panel area ─────────────────────────────── */}
       {openPanel && (
-        <div className="absolute left-0 right-0 top-full bg-[#0C110C] border-b border-[#1E2B1E] shadow-2xl z-50">
+        <div className="absolute left-0 right-0 top-full bg-[#15151A] border-b border-white/5 shadow-2xl z-50">
           <div className="max-w-7xl mx-auto px-4 py-4">
 
             {openPanel === 'gpu' && (
@@ -698,8 +698,8 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
                           onClick={() => { update({ ram: r }); closePanel(); }}
                           className={`px-4 py-2 rounded-lg text-sm font-mono border transition-colors
                             ${hw.ram === r
-                              ? 'bg-emerald-600 border-emerald-500 text-white'
-                              : 'border-[#1E2B1E] text-[#C8E0C8] hover:border-emerald-700 hover:bg-emerald-950/20'}`}
+                              ? 'bg-[#84E1BC] border-transparent text-[#0D0D11]'
+                              : 'border-white/5 text-[#8E919A] hover:border-white/10 hover:bg-white/[0.02]'}`}
                         >
                           {r} GB
                         </button>
@@ -726,14 +726,14 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
                       onClick={() => { update({ contextLength: o.value }); closePanel(); }}
                       className={`px-4 py-2 rounded-lg text-sm font-mono border transition-colors
                         ${hw.contextLength === o.value
-                          ? 'bg-emerald-600 border-emerald-500 text-white'
-                          : 'border-[#1E2B1E] text-[#C8E0C8] hover:border-emerald-700 hover:bg-emerald-950/20'}`}
+                          ? 'bg-[#84E1BC] border-transparent text-[#0D0D11]'
+                          : 'border-white/5 text-[#8E919A] hover:border-white/10 hover:bg-white/[0.02]'}`}
                     >
                       {o.label}
                     </button>
                   ))}
                 </div>
-                <p className="text-xs text-[#354835] mt-1">4k = normal chat · 32k+ = long documents</p>
+                <p className="text-xs text-[#8E919A] mt-1">4k = normal chat · 32k+ = long documents</p>
               </PanelSection>
             )}
 

@@ -245,22 +245,18 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
   const currentOption = upgradeOptions.find(opt => opt.id === selectedUpgrade);
 
   return (
-    <div className="card p-6 border-[#1E2B1E] bg-gradient-to-br from-[#0A100A] via-[#0C140C] to-[#0A0D0A] shadow-[0_4px_30px_rgba(0,0,0,0.8)] relative overflow-hidden my-6">
-      
-      {/* Background ambient lighting effects */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-sky-500/5 rounded-full blur-[80px] pointer-events-none" />
+    <div className="card p-6 border-white/5 bg-[#15151A] relative overflow-hidden my-6">
 
       {/* Title */}
-      <div className="flex items-center gap-3 mb-5 border-b border-[#1E2B1E]/60 pb-4">
-        <div className="w-8 h-8 rounded-lg bg-emerald-950/50 border border-emerald-800/40 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.15)] text-emerald-400">
+      <div className="flex items-center gap-3 mb-5 border-b border-white/5 pb-4">
+        <div className="w-8 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center text-[#84E1BC]">
           <Zap size={15} />
         </div>
         <div>
           <h3 className="text-sm font-semibold text-white font-mono tracking-tight">
             Hardware Bottleneck Analyser &amp; Planner
           </h3>
-          <p className="text-[11px] text-[#4A654A] mt-0.5">
+          <p className="text-[11px] text-[#8E919A] mt-0.5">
             Simulate system upgrades to see unlocked models and estimated token speeds.
           </p>
         </div>
@@ -268,18 +264,17 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
 
       {/* Active Bottleneck Diagnosis */}
       {bottleneck.severity !== 'none' && (
-        <div className="mb-6 rounded-xl border border-amber-950/40 bg-amber-950/10 p-4 flex gap-3">
+        <div className="mb-6 rounded-lg border border-amber-500/10 bg-amber-500/5 p-4 flex gap-3">
           <div className="text-lg select-none">⚠️</div>
           <div>
             <div className="text-xs font-semibold text-amber-400 flex items-center gap-1.5">
               <span>{bottleneck.type} Bottleneck Detected</span>
-              <span className={`w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping`} />
             </div>
-            <p className="text-[11px] text-zinc-400 mt-1 leading-relaxed">
+            <p className="text-[11px] text-[#8E919A] mt-1 leading-relaxed">
               {bottleneck.desc}
             </p>
-            <p className="text-[11px] text-[#A6C4A6] mt-2 font-medium">
-              💡 <span className="underline decoration-emerald-800 underline-offset-2">Recommendation:</span> {bottleneck.recommendation}
+            <p className="text-[11px] text-white mt-2 font-medium">
+              💡 Recommendation: <span className="text-[#8E919A] font-normal">{bottleneck.recommendation}</span>
             </p>
           </div>
         </div>
@@ -293,29 +288,29 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
             <button
               key={opt.id}
               onClick={() => setSelectedUpgrade(isActive ? null : opt.id)}
-              className={`text-left rounded-xl p-4 border transition-all duration-300 flex flex-col justify-between group relative overflow-hidden
+              className={`text-left rounded-lg p-4 border transition-all duration-300 flex flex-col justify-between group relative overflow-hidden
                 ${isActive
-                  ? 'border-emerald-500 bg-emerald-950/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
-                  : 'border-[#1E2B1E] bg-[#0E150E]/40 hover:border-emerald-800/80 hover:bg-emerald-950/5'
+                  ? 'border-[#84E1BC]/30 bg-[#84E1BC]/5'
+                  : 'border-white/5 bg-black/20 hover:border-white/10 hover:bg-white/[0.02]'
                 }`}
             >
               <div>
                 <div className="flex justify-between items-start gap-2">
-                  <span className="text-[9px] uppercase tracking-widest font-bold text-[#4A654A] font-mono group-hover:text-emerald-500 transition-colors">
+                  <span className="text-[9px] uppercase tracking-widest font-bold text-[#8E919A] font-mono group-hover:text-white transition-colors">
                     {opt.tag}
                   </span>
                   {isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#84E1BC]" />
                   )}
                 </div>
-                <h4 className="text-xs font-bold text-white mt-1 group-hover:text-emerald-400 transition-colors">
+                <h4 className="text-xs font-semibold text-white mt-1 group-hover:text-[#84E1BC] transition-colors">
                   {opt.name}
                 </h4>
-                <p className="text-[11px] text-zinc-500 mt-2 leading-relaxed">
+                <p className="text-[11px] text-[#8E919A] mt-2 leading-relaxed">
                   {opt.desc}
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-[10px] text-[#7EAF7E] font-mono mt-4 border-t border-[#1E2B1E]/40 pt-2.5 w-full">
+              <div className="flex items-center gap-1 text-[10px] text-[#8E919A] font-mono mt-4 border-t border-white/5 pt-2.5 w-full">
                 <span>Simulate Upgrade</span>
                 <ArrowRight size={10} className="transform group-hover:translate-x-0.5 transition-transform" />
               </div>
@@ -326,18 +321,18 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
 
       {/* Simulation Result Area */}
       {selectedUpgrade && currentOption && (
-        <div className="rounded-xl border border-emerald-900/30 bg-[#070D07]/60 p-5 space-y-4 animate-fadeIn">
+        <div className="rounded-lg border border-white/5 bg-black/20 p-5 space-y-4 animate-fadeIn">
           
-          <div className="flex justify-between items-center flex-wrap gap-3 pb-3 border-b border-[#1E2B1E]/40">
+          <div className="flex justify-between items-center flex-wrap gap-3 pb-3 border-b border-white/5">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-[#7EAF7E]">Active Simulation:</span>
-              <span className="text-xs font-bold text-white font-mono bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-900/60">
+              <span className="text-xs font-mono text-[#8E919A]">Active Simulation:</span>
+              <span className="text-xs font-medium text-white font-mono bg-white/5 px-2 py-0.5 rounded border border-white/5">
                 {currentOption.name}
               </span>
             </div>
             <button
               onClick={() => onApplyHardware(currentOption.simulatedHw)}
-              className="btn-primary text-[10px] py-1 px-3 flex items-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+              className="px-3 py-1 bg-[#84E1BC] hover:bg-[#84E1BC]/90 text-[#0D0D11] text-[10px] font-medium rounded flex items-center gap-1.5 transition-colors"
             >
               <RefreshCw size={10} /> Apply Specs to Calculator
             </button>
@@ -347,8 +342,8 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
             
             {/* Column 1: Unlocked Models */}
             <div className="space-y-3">
-              <h5 className="text-[10px] uppercase font-bold tracking-widest text-[#4A654A] flex items-center gap-1.5">
-                <Layers size={11} className="text-emerald-500" />
+              <h5 className="text-[10px] uppercase font-bold tracking-widest text-[#8E919A] flex items-center gap-1.5">
+                <Layers size={11} className="text-[#84E1BC]" />
                 <span>Unlocked Models ({comparison.unlockedTotalCount})</span>
               </h5>
               
@@ -359,18 +354,18 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
               ) : (
                 <div className="space-y-2">
                   {comparison.unlockedModels.map((m, idx) => (
-                    <div key={idx} className="flex justify-between items-center bg-[#0B100B]/80 p-2.5 rounded-lg border border-[#1E2B1E]/30 text-xs">
+                    <div key={idx} className="flex justify-between items-center bg-black/40 p-2.5 rounded-lg border border-white/5 text-xs">
                       <div>
                         <div className="font-semibold text-white">{m.name}</div>
                         <div className="text-[10px] text-zinc-500 font-mono mt-0.5">Quant: {m.quant} • Size: {m.vramRequired}GB</div>
                       </div>
-                      <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/30 border border-emerald-900/50 px-2 py-0.5 rounded-full font-mono">
+                      <span className="text-[10px] text-[#84E1BC] font-semibold bg-[#84E1BC]/5 border border-[#84E1BC]/10 px-2 py-0.5 rounded font-mono">
                         {m.tokPerSec} t/s
                       </span>
                     </div>
                   ))}
                   {comparison.unlockedTotalCount > 5 && (
-                    <div className="text-[10px] text-[#4A654A] font-mono text-center pt-1">
+                    <div className="text-[10px] text-[#8E919A] font-mono text-center pt-1">
                       + {comparison.unlockedTotalCount - 5} more quants unlocked
                     </div>
                   )}
@@ -380,7 +375,7 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
 
             {/* Column 2: Speedup Metrics */}
             <div className="space-y-3">
-              <h5 className="text-[10px] uppercase font-bold tracking-widest text-[#4A654A] flex items-center gap-1.5">
+              <h5 className="text-[10px] uppercase font-bold tracking-widest text-[#8E919A] flex items-center gap-1.5">
                 <TrendingUp size={11} className="text-[#38BDF8]" />
                 <span>Speed Gains &amp; Performance</span>
               </h5>
@@ -392,17 +387,17 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
               ) : (
                 <div className="space-y-2">
                   {comparison.speedups.map((s, idx) => (
-                    <div key={idx} className="bg-[#0B100B]/80 p-2.5 rounded-lg border border-[#1E2B1E]/30 text-xs space-y-1.5">
+                    <div key={idx} className="bg-black/40 p-2.5 rounded-lg border border-white/5 text-xs space-y-1.5">
                       <div className="flex justify-between items-center">
                         <span className="font-semibold text-white text-xs">{s.name} ({s.quant})</span>
-                        <span className="text-[10px] font-bold text-sky-400 bg-sky-950/30 border border-sky-900/50 px-1.5 py-0.2 rounded font-mono">
+                        <span className="text-[10px] font-semibold text-sky-300 bg-sky-500/5 border border-sky-500/10 px-1.5 py-0.5 rounded font-mono">
                           +{Math.round((s.factor - 1) * 100)}% Speed
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono">
                         <span>Current: {s.before} t/s</span>
                         <ArrowRight size={10} className="text-zinc-600" />
-                        <span className="text-emerald-400 font-bold">Upgraded: {s.after} t/s</span>
+                        <span className="text-[#84E1BC] font-semibold">Upgraded: {s.after} t/s</span>
                       </div>
                     </div>
                   ))}
@@ -410,7 +405,7 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
               )}
 
               {/* Bandwidth increase callout */}
-              <div className="rounded-lg bg-emerald-950/10 border border-emerald-950/60 p-3 text-[11px] text-zinc-400 leading-relaxed font-sans">
+              <div className="rounded bg-white/[0.01] border border-white/5 p-3 text-[11px] text-[#8E919A] leading-relaxed font-sans">
                 ⭐ <strong className="text-white">Bandwidth Leap:</strong> Upgrading memory speed or loading fully into VRAM bypasses the system RAM bus bottleneck, giving you consistent, lag-free streaming tokens.
               </div>
 

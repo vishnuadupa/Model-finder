@@ -46,15 +46,15 @@ export default function GPUPage({ params }) {
   ];
 
   return (
-    <main className="min-h-screen bg-[#0A0F0A] text-[#E2F0E2] p-6 max-w-4xl mx-auto">
-      <Link href="/" className="text-emerald-500 hover:text-emerald-400 text-sm mb-6 inline-block">
+    <main className="min-h-screen p-6 max-w-4xl mx-auto text-[#F3F3F5]">
+      <Link href="/" className="text-[#84E1BC] hover:text-[#a2ecd2] text-sm mb-6 inline-block font-medium transition-colors">
         ← Back to matcher
       </Link>
 
       <h1 className="font-bold text-2xl text-white mb-1">
-        What LLMs can <span className="text-emerald-400">{gpu.label}</span> run?
+        What LLMs can <span className="text-[#84E1BC]">{gpu.label}</span> run?
       </h1>
-      <p className="text-[#4A654A] text-sm mb-6">
+      <p className="text-[#8E919A] text-sm mb-6">
         {gpu.unified
           ? `Apple Silicon with up to ${gpu.maxRam}GB unified memory`
           : `${gpu.vram}GB VRAM · ${gpu.arch} architecture`}
@@ -67,19 +67,19 @@ export default function GPUPage({ params }) {
             <div>
               <div className="font-semibold text-white text-sm">
                 {r.model.name}
-                <span className="ml-2 text-emerald-400 text-xs font-mono">{r.quant}</span>
+                <span className="ml-2 text-[#84E1BC] text-xs font-mono">{r.quant}</span>
               </div>
-              <div className="text-xs text-[#4A654A] mt-0.5">
+              <div className="text-xs text-[#8E919A] mt-0.5 font-mono">
                 {r.vramRequired} GB VRAM · {r.tokPerSec} tok/s · {r.downloadSizeGB} GB download
               </div>
             </div>
-            <div className="flex flex-col items-end gap-1">
-              <span className={`chip text-xs ${
-                r.tier === 'recommended' ? 'bg-green-900/50 text-green-300' :
-                r.tier === 'comfortable' ? 'bg-teal-900/50 text-teal-300' :
-                'bg-amber-900/50 text-amber-300'
+            <div className="flex flex-col items-end gap-1 shrink-0">
+              <span className={`chip text-[11px] font-mono px-2 py-0.5 border rounded ${
+                r.tier === 'recommended' ? 'bg-[#84E1BC]/10 text-[#84E1BC] border-[#84E1BC]/20' :
+                r.tier === 'comfortable' ? 'bg-white/5 text-[#8E919A] border-white/5' :
+                'bg-amber-500/5 text-amber-300 border-amber-500/10'
               }`}>{r.tier}</span>
-              <span className="text-xs text-slate-600">{r.model.quality}</span>
+              <span className="text-xs text-[#565961] font-mono">{r.model.quality}</span>
             </div>
           </div>
         ))}
@@ -88,8 +88,8 @@ export default function GPUPage({ params }) {
       {gpu.buyUrl && (
         <div className="mt-8 card p-4 flex items-center justify-between">
           <div>
-            <div className="text-sm text-slate-300">Want a {gpu.label}?</div>
-            <div className="text-xs text-slate-600">Check current prices on Amazon</div>
+            <div className="text-sm text-[#8E919A]">Want a {gpu.label}?</div>
+            <div className="text-xs text-[#565961]">Check current prices on Amazon</div>
           </div>
           <a
             href={gpu.buyUrl}

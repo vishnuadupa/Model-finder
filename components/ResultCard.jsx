@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { Copy, Check, ExternalLink, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
 
 const QUALITY_COLORS = {
-  good:      'text-zinc-400   bg-zinc-800/60   border-zinc-700/50',
-  great:     'text-emerald-400    bg-emerald-900/40    border-sky-800/50',
-  excellent: 'text-purple-400 bg-purple-900/40 border-purple-800/50',
+  good:      'text-[#8E919A] bg-white/[0.01] border-white/5',
+  great:     'text-[#84E1BC] bg-[#84E1BC]/5 border-[#84E1BC]/10',
+  excellent: 'text-purple-300 bg-purple-500/5 border-purple-500/10',
 };
 
 const USE_CASE_ICONS = {
@@ -31,16 +31,16 @@ const QUANT_INFO = {
 };
 
 const TIER_LEFT = {
-  recommended: 'border-l-emerald-500',
-  comfortable: 'border-l-teal-500',
-  stretch:     'border-l-amber-500',
+  recommended: 'border-l-[#84E1BC]',
+  comfortable: 'border-l-zinc-500',
+  stretch:     'border-l-amber-500/60',
 };
 
 function Stars({ count }) {
   return (
     <span className="font-mono text-[11px] tracking-tight">
       {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} className={i < count ? 'text-amber-400' : 'text-zinc-700'}>★</span>
+        <span key={i} className={i < count ? 'text-amber-400/80' : 'text-zinc-700'}>★</span>
       ))}
     </span>
   );
@@ -57,10 +57,10 @@ function CopyButton({ text }) {
     <button
       onClick={copy}
       title={text}
-      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0C110C] border border-[#1E2B1E] hover:border-sky-700/60 rounded-lg text-xs text-zinc-400 hover:text-emerald-400 transition-all font-mono min-w-0"
+      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all font-mono min-w-0"
     >
       {copied
-        ? <Check size={11} className="text-emerald-400 shrink-0" />
+        ? <Check size={11} className="text-[#84E1BC] shrink-0" />
         : <Copy size={11} className="shrink-0" />}
       <span className="truncate max-w-[140px]">{copied ? 'Copied!' : text}</span>
     </button>
@@ -70,27 +70,22 @@ function CopyButton({ text }) {
 function VRAMBar({ used, total, cpuOnly, cpuOffloadNeeded }) {
   const pct = total > 0 ? Math.min((used / total) * 100, 100) : 0;
   const color = cpuOnly 
-    ? 'bg-sky-500/80'
+    ? 'bg-zinc-500/80'
     : cpuOffloadNeeded 
-      ? 'bg-amber-500/80' 
-      : 'bg-emerald-500';
-  const glowColor = cpuOnly 
-    ? 'rgba(14,165,233,0.3)'
-    : cpuOffloadNeeded 
-      ? 'rgba(245,158,11,0.3)' 
-      : 'rgba(16,185,129,0.35)';
+      ? 'bg-amber-500/60' 
+      : 'bg-[#84E1BC]';
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-zinc-500 uppercase tracking-wider text-[10px] font-semibold">
+        <span className="text-[#8E919A] uppercase tracking-wider text-[10px] font-semibold">
           {cpuOnly ? 'RAM Usage' : cpuOffloadNeeded ? 'Hybrid VRAM/RAM' : 'VRAM Usage'}
         </span>
-        <span className="font-mono text-zinc-400">{used} / {total} GB</span>
+        <span className="font-mono text-[#8E919A]">{used} / {total} GB</span>
       </div>
-      <div className="h-2 bg-[#0C110C] rounded-full overflow-hidden border border-[#1E2B1E]/60">
+      <div className="h-2 bg-black/40 rounded-full overflow-hidden border border-white/5">
         <div
           className={`h-full ${color} rounded-full transition-all duration-300`}
-          style={{ width: `${pct}%`, boxShadow: `0 0 8px ${glowColor}` }}
+          style={{ width: `${pct}%` }}
         />
       </div>
     </div>
@@ -111,7 +106,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
   return (
     <div
       className={`card border-l-[3px] ${tierBorder} p-5 flex flex-col gap-3 transition-all duration-200 cursor-pointer
-        ${isSelected && geminiEnabled ? 'ring-1 ring-yellow-500/40 border-t-zinc-700' : 'hover:border-t-zinc-700'}`}
+        ${isSelected && geminiEnabled ? 'ring-1 ring-amber-500/20 border-t-zinc-700' : 'hover:border-t-zinc-700'}`}
       style={{ '--tw-shadow': '0 4px 20px rgba(0,0,0,0.45)' }}
       onClick={() => onSelect?.(result.model)}
     >
@@ -120,7 +115,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-2.5 min-w-0">
           {rank && (
-            <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-[#0C110C] text-zinc-600 text-[10px] font-mono font-bold border border-[#1E2B1E]">
+            <span className="shrink-0 mt-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-black/40 text-[#8E919A] text-[10px] font-mono font-bold border border-white/5">
               {rank}
             </span>
           )}
@@ -128,11 +123,11 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
             <div className="font-semibold text-zinc-100 text-sm leading-snug truncate">{model.name}</div>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               {/* Quant badge */}
-              <span className="font-mono text-xs text-emerald-400 bg-emerald-950/40 border border-emerald-900/30 px-1.5 py-0.5 rounded-md">
+              <span className="font-mono text-xs text-[#84E1BC] bg-[#84E1BC]/5 border border-[#84E1BC]/10 px-1.5 py-0.5 rounded">
                 {quant}
               </span>
               {qi && <Stars count={qi.stars} />}
-              {qi && <span className="text-[11px] text-zinc-600">{qi.label}</span>}
+              {qi && <span className="text-[11px] text-[#8E919A]">{qi.label}</span>}
             </div>
             <div className="text-[11px] text-zinc-600 mt-0.5 font-mono">
               {model.params}B params
@@ -148,7 +143,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
         {/* Quality + verified */}
         <div className="flex flex-col items-end gap-1.5 shrink-0">
           {isSelected && geminiEnabled && (
-            <span className="chip bg-yellow-950/30 text-yellow-500/80 border border-yellow-900/30 text-[10px] font-mono">
+            <span className="chip bg-amber-500/5 text-amber-300 border border-amber-500/10 text-[10px] font-mono">
               ⚡ AI insights
             </span>
           )}
@@ -156,14 +151,14 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
             {model.quality}
           </span>
           {model.verified
-            ? <span className="flex items-center gap-1 text-[11px] text-emerald-500/80"><CheckCircle size={9} />verified</span>
+            ? <span className="flex items-center gap-1 text-[11px] text-[#84E1BC]/80"><CheckCircle size={9} />verified</span>
             : <span className="flex items-center gap-1 text-[11px] text-amber-500/60"><AlertCircle size={9} />unverified</span>}
         </div>
       </div>
 
       {/* ── Quant note ── */}
       {qi && (
-        <p className="text-[11px] text-zinc-600 bg-[#0C110C] rounded-lg px-3 py-1.5 border border-[#1E2B1E]/60 leading-relaxed">
+        <p className="text-[11px] text-[#8E919A] bg-black/20 rounded-lg px-3 py-1.5 border border-white/5 leading-relaxed">
           {qi.note}
         </p>
       )}
@@ -179,50 +174,50 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
       {/* ── Stats ── */}
       <div className="grid grid-cols-3 gap-2">
         {/* tok/s — each box fixed height so all cards align */}
-        <div className="bg-[#0C110C] rounded-xl p-3 text-center border border-[#1E2B1E]/60 h-[58px] flex flex-col justify-center">
-          <div className="text-emerald-400 font-bold font-mono text-sm leading-none whitespace-nowrap">{tokPerSec}</div>
+        <div className="bg-[#15151A] rounded-lg p-3 text-center border border-white/5 h-[58px] flex flex-col justify-center">
+          <div className="text-[#84E1BC] font-semibold font-mono text-sm leading-none whitespace-nowrap">{tokPerSec}</div>
           <div className="text-[10px] text-zinc-600 mt-1 uppercase tracking-wider">tok/s</div>
         </div>
-        <div className="bg-[#0C110C] rounded-xl p-3 text-center border border-[#1E2B1E]/60 h-[58px] flex flex-col justify-center">
-          <div className="text-zinc-200 font-bold font-mono text-sm leading-none whitespace-nowrap">{ramRequired} GB</div>
+        <div className="bg-[#15151A] rounded-lg p-3 text-center border border-white/5 h-[58px] flex flex-col justify-center">
+          <div className="text-[#F3F3F5] font-semibold font-mono text-sm leading-none whitespace-nowrap">{ramRequired} GB</div>
           <div className="text-[10px] text-zinc-600 mt-1 uppercase tracking-wider">min RAM</div>
         </div>
-        <div className="bg-[#0C110C] rounded-xl p-3 text-center border border-[#1E2B1E]/60 h-[58px] flex flex-col justify-center">
-          <div className="text-zinc-200 font-bold font-mono text-sm leading-none whitespace-nowrap">{downloadSizeGB} GB</div>
+        <div className="bg-[#15151A] rounded-lg p-3 text-center border border-white/5 h-[58px] flex flex-col justify-center">
+          <div className="text-[#F3F3F5] font-semibold font-mono text-sm leading-none whitespace-nowrap">{downloadSizeGB} GB</div>
           <div className="text-[10px] text-zinc-600 mt-1 uppercase tracking-wider">download</div>
         </div>
       </div>
 
       {/* ── Warnings — fixed min-height so cards without warnings stay aligned ── */}
       {cpuOnly ? (
-        <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/20 border border-amber-800/30 rounded-lg">
+        <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/5 border border-amber-500/10 rounded-lg">
           <AlertTriangle size={11} className="text-amber-400 shrink-0" />
-          <span className="text-[11px] text-amber-300/80">CPU-only inference — expect 2–8 tok/s</span>
+          <span className="text-[11px] text-amber-300">CPU-only inference — expect 2–8 tok/s</span>
         </div>
       ) : cpuOffloadNeeded ? (
-        <div className="flex items-center gap-2 px-3 py-2 bg-amber-950/20 border border-amber-800/30 rounded-lg">
+        <div className="flex items-center gap-2 px-3 py-2 bg-amber-500/5 border border-amber-500/10 rounded-lg">
           <AlertTriangle size={11} className="text-amber-400 shrink-0" />
-          <span className="text-[11px] text-amber-300/80">Needs CPU offload — VRAM too small, slower</span>
+          <span className="text-[11px] text-amber-300">Needs CPU offload — VRAM too small, slower</span>
         </div>
       ) : <div />}
 
       {/* ── Use cases — flex-1 pushes actions to bottom ── */}
       <div className="flex flex-wrap gap-1.5 flex-1">
         {model.useCases?.map(uc => (
-          <span key={uc} className="chip bg-[#0C110C] text-zinc-600 border border-[#1E2B1E]/60 text-[11px] self-start">
+          <span key={uc} className="chip bg-black/20 text-[#8E919A] border border-white/5 text-[11px] self-start">
             {USE_CASE_ICONS[uc] || '·'} {uc}
           </span>
         ))}
       </div>
 
       {/* ── Actions — mt-auto pins to bottom of every card ── */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-[#1E2B1E]/60 mt-auto">
+      <div className="flex flex-wrap gap-2 pt-1 border-t border-white/5 mt-auto">
         {model.ollamaTag && <CopyButton text={`ollama run ${model.ollamaTag}`} />}
         {model.ollamaTag && (
           <a
             href={`https://ollama.com/library/${model.ollamaTag.split(':')[0]}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0C110C] border border-[#1E2B1E] hover:border-sky-700/60 rounded-lg text-xs text-zinc-400 hover:text-emerald-400 transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all whitespace-nowrap"
           >
             <ExternalLink size={11} /> Ollama
           </a>
@@ -231,7 +226,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
           <a
             href={`https://huggingface.co/${model.hfRepo}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0C110C] border border-[#1E2B1E] hover:border-sky-700/60 rounded-lg text-xs text-zinc-400 hover:text-emerald-400 transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all whitespace-nowrap"
           >
             <ExternalLink size={11} /> HuggingFace
           </a>
@@ -240,7 +235,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
           <a
             href={`https://huggingface.co/${model.hfRepo}/tree/main`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0C110C] border border-emerald-900/40 hover:border-emerald-600/60 rounded-lg text-xs text-zinc-400 hover:text-emerald-400 transition-all whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#15151A] border border-white/5 hover:border-white/20 rounded-lg text-xs text-[#8E919A] hover:text-[#F3F3F5] transition-all whitespace-nowrap"
           >
             <ExternalLink size={11} /> Download GGUF
           </a>
