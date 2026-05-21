@@ -365,8 +365,7 @@ export default function Home() {
                   <span>🪟 Windows (PowerShell)</span>
                   <button
                     onClick={() => {
-                      const cmd = `powershell -c "irm ${window.location.origin}/detect-specs.ps1 | iex"`;
-                      navigator.clipboard.writeText(cmd);
+                      navigator.clipboard.writeText('powershell -c "irm https://llmmatcher.app/detect-specs.ps1 | iex"');
                       setCopiedCmd('win');
                       setTimeout(() => setCopiedCmd(null), 2000);
                     }}
@@ -376,7 +375,7 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="relative rounded-lg bg-black border border-[#1E2B1E] p-3 text-xs font-mono text-zinc-300 select-all overflow-x-auto whitespace-nowrap">
-                  powershell -c &quot;irm {typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/detect-specs.ps1 | iex&quot;
+                  powershell -c &quot;irm https://llmmatcher.app/detect-specs.ps1 | iex&quot;
                 </div>
               </div>
 
@@ -386,8 +385,7 @@ export default function Home() {
                   <span>🍎 macOS / 🐧 Linux (Bash)</span>
                   <button
                     onClick={() => {
-                      const cmd = `curl -s ${window.location.origin}/detect-specs.sh | bash`;
-                      navigator.clipboard.writeText(cmd);
+                      navigator.clipboard.writeText('curl -s https://llmmatcher.app/detect-specs.sh | bash');
                       setCopiedCmd('unix');
                       setTimeout(() => setCopiedCmd(null), 2000);
                     }}
@@ -397,7 +395,7 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="relative rounded-lg bg-black border border-[#1E2B1E] p-3 text-xs font-mono text-zinc-300 select-all overflow-x-auto whitespace-nowrap">
-                  curl -s {typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/detect-specs.sh | bash
+                  curl -s https://llmmatcher.app/detect-specs.sh | bash
                 </div>
               </div>
 
