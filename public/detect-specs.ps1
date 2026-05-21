@@ -1,5 +1,5 @@
 # Windows Specs Auto-Detection Script for Local LLM Matcher
-# Run with: powershell -c "irm http://localhost:3000/detect-specs.ps1 | iex"
+# Run with: powershell -c "irm https://llmmatcher.app/detect-specs.ps1 | iex"
 
 $ErrorActionPreference = "SilentlyContinue"
 Clear-Host
@@ -123,7 +123,7 @@ Write-Host "[✓] GPU:      $gpuLabel ($gpuVRAM GB VRAM)" -ForegroundColor Green
 Write-Host "[✓] Drive:    SSD ($ssdType type)" -ForegroundColor Green
 
 # 6. Open Web Application
-$baseUrl = "http://localhost:3000"
+$baseUrl = "https://llmmatcher.app"
 $params = @{
     gpu   = $gpuLabel
     vram  = $gpuVRAM

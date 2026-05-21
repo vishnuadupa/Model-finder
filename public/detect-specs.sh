@@ -1,6 +1,6 @@
 #!/bin/bash
 # macOS / Linux Specs Auto-Detection Script for Local LLM Matcher
-# Run with: curl -s http://localhost:3000/detect-specs.sh | bash
+# Run with: curl -s https://llmmatcher.app/detect-specs.sh | bash
 
 echo "==============================================="
 echo "    🖥️  LOCAL LLM MATCHER - HARDWARE DETECT    "
@@ -167,7 +167,7 @@ CTIER_ESC=$(urlencode "$CPU_TIER")
 RAMT_ESC=$(urlencode "$RAM_TYPE")
 OS_ESC=$(urlencode "$OS")
 
-BASE_URL="http://localhost:3000"
+BASE_URL="https://llmmatcher.app"
 FULL_URL="${BASE_URL}/?gpu=${GPU_ESC}&vram=${GPU_VRAM}&ram=${RAM_GB}&cpu=${CPU_ESC}&ctier=${CTIER_ESC}&ssd=${SSD_TYPE}&os=${OS_ESC}&uni=${IS_UNIFIED}&ramt=${RAMT_ESC}&rambw=${RAM_BW}"
 
 echo "🚀 Hardware specs scanned successfully!"
