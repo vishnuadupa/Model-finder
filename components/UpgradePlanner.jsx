@@ -45,7 +45,10 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
       };
     }
 
-    if (!hw.unifiedMem && hw.ram <= 16) {
+    // RAM offload only matters if VRAM is insufficient to hold large models entirely.
+    // With ≥24 GB VRAM, virtually all mainstream open-source models fit fully in VRAM
+    // and CPU offload is rarely needed — 16 GB system RAM is not a real bottleneck there.
+    if (!hw.unifiedMem && hw.ram <= 16 && totalVRAM < 24) {
       return {
         type: 'System RAM (Offload Buffer)',
         desc: `While your GPU has decent VRAM, your host system has only ${hw.ram}GB of RAM. This limits your ability to offload the remaining layers of larger 30B+ models that don't fit entirely on the GPU.`,
@@ -121,52 +124,64 @@ export default function UpgradePlanner({ hw, models, onApplyHardware }) {
         },
       ];
     } else {
-      // Windows/Linux PC presets
+      // Windows/Linux PC — only show GPU options that are strictly better than current
+      const currentVram = (hw.vram || 0) * (hw.numGPUs || 1);
+
+      const GPU_LADDER = [
+        { id: 'pc_gpu_entry', name: 'NVIDIA RTX 4060 Ti (16GB)', tag: 'Entry VRAM',    vram: 16, bw: 288,  label: 'NVIDIA GeForce RTX 4060 Ti 16GB' },
+        { id: 'pc_gpu_mid',   name: 'NVIDIA RTX 4070 Ti Super (16GB)', tag: 'Sweet Spot VRAM', vram: 16, bw: 672, label: 'NVIDIA GeForce RTX 4070 Ti Super' },
+        { id: 'pc_gpu_high',  name: 'NVIDIA RTX 4090 (24GB)',  tag: 'AI Titan',       vram: 24, bw: 1008, label: 'NVIDIA GeForce RTX 4090' },
+        { id: 'pc_gpu_ultra', name: 'NVIDIA RTX 5090 (32GB)',  tag: 'AI Powerhouse',  vram: 32, bw: 1792, label: 'NVIDIA GeForce RTX 5090' },
+        { id: 'pc_gpu_dual',  name: 'Dual RTX 4090 (2×24 GB)', tag: 'Multi-GPU',      vram: 48, bw: 1008, label: 'NVIDIA GeForce RTX 4090', numGPUs: 2 },
+      ];
+
+      // Only keep GPUs with strictly more VRAM than current setup
+      const validGpus = GPU_LADDER.filter(g => g.vram > currentVram);
+
+      // Pick: first valid = "sweet spot", last valid = "ultimate"
+      // De-duplicate (sweet spot ≠ ultimate), cap at 2 GPU options
+      let gpuOptions = [];
+      if (validGpus.length === 1) {
+        gpuOptions = [validGpus[0]];
+      } else if (validGpus.length >= 2) {
+        gpuOptions = [validGpus[0], validGpus[validGpus.length - 1]];
+      }
+
+      const gpuUpgradeCards = gpuOptions.map(g => ({
+        id: g.id,
+        name: g.name,
+        tag: g.tag,
+        desc: g.numGPUs
+          ? `Run two ${g.label.replace('NVIDIA GeForce ', '')} GPUs in NVLink — ${g.vram}GB combined VRAM at ${g.bw} GB/s each.`
+          : `Simulate ${g.vram}GB VRAM at ${g.bw} GB/s — a meaningful step up for larger models.`,
+        simulatedHw: {
+          ...hw,
+          gpuLabel: g.label,
+          vram: g.vram / (g.numGPUs || 1),
+          numGPUs: g.numGPUs || 1,
+          bandwidth: g.bw,
+          unifiedMem: false,
+          ram: Math.max(32, hw.ram),
+          ramBandwidthGB: Math.max(64, hw.ramBandwidthGB || 51),
+          flashAttn: true,
+        },
+      }));
+
+      // Always include RAM upgrade as first option (still useful even on high-VRAM rigs)
       return [
         {
           id: 'pc_ram',
-          name: '32GB RAM Upgrade',
+          name: `${Math.max(32, hw.ram * 2)}GB RAM Upgrade`,
           tag: 'System Upgrade',
-          desc: `Keep current GPU, but upgrade system RAM to 32GB (DDR5 6400).`,
+          desc: `Keep current GPU, upgrade system RAM to ${Math.max(32, hw.ram * 2)}GB (DDR5 6400) for faster CPU-offload on oversized models.`,
           simulatedHw: {
             ...hw,
-            ram: Math.max(32, hw.ram),
-            ramBandwidthGB: Math.max(64, hw.ramBandwidthGB || 51),
-            ramBandwidthFactor: 0.80, // High-speed DDR5
+            ram: Math.max(32, hw.ram * 2),
+            ramBandwidthGB: Math.max(96, (hw.ramBandwidthGB || 51) * 1.5),
+            ramBandwidthFactor: 0.80,
           },
         },
-        {
-          id: 'pc_gpu_mid',
-          name: 'NVIDIA RTX 4070 Ti Super (16GB)',
-          tag: 'Sweet Spot VRAM',
-          desc: 'Add a 16GB VRAM GPU with 672 GB/s bandwidth and high-speed CUDA cores.',
-          simulatedHw: {
-            ...hw,
-            gpuLabel: 'NVIDIA GeForce RTX 4070 Ti Super',
-            vram: 16,
-            bandwidth: 672,
-            unifiedMem: false,
-            ram: Math.max(32, hw.ram), // Assume standard 32GB RAM upgrade with it
-            ramBandwidthGB: Math.max(64, hw.ramBandwidthGB || 51),
-            flashAttn: true,
-          },
-        },
-        {
-          id: 'pc_gpu_high',
-          name: 'NVIDIA GeForce RTX 4090 (24GB)',
-          tag: 'Ultimate AI Titan',
-          desc: 'Simulate the absolute gold standard for local LLM inference: 24GB VRAM, 1008 GB/s bandwidth.',
-          simulatedHw: {
-            ...hw,
-            gpuLabel: 'NVIDIA GeForce RTX 4090',
-            vram: 24,
-            bandwidth: 1008,
-            unifiedMem: false,
-            ram: Math.max(32, hw.ram),
-            ramBandwidthGB: Math.max(64, hw.ramBandwidthGB || 51),
-            flashAttn: true,
-          },
-        },
+        ...gpuUpgradeCards,
       ];
     }
   }, [hw]);
