@@ -44,6 +44,23 @@ Paste in your GPU, RAM, and CPU — get a ranked list of every local LLM that fi
 - Both gated behind a toggle (off by default, opt-in)
 - Rate-limited with Vercel KV caching to prevent abuse
 
+### Suggestion Planner & Goal-Driven Upgrades
+- **Interactive Performance Status Banner:** Benchmarks your system against a reference **Llama 3 8B Q4_K_M** model (5.09GB size), rendering current throughput vs. target throughput, an active progress bar, and a gap indicator (e.g. `"need 8 more tok/s"`).
+- **Dynamic Goal-Based Card Labeling:** Hardware options are dynamically labeled according to target speed matching:
+  - **Meets Goal:** The most cost-effective GPU that bridges the performance gap to satisfy your speed preference.
+  - **Balanced / Maximum:** Advanced upgrades providing additional headroom.
+  - **Go Further:** Triggered if your current system already satisfies the target speed, presenting ultra-enthusiast paths.
+  - **Budget Option:** Cost-effective system RAM upgrades (e.g. doubling system memory or unified memory pool).
+- **Strict Non-Downgrade Filtering:** Candidates are hidden unless they strictly exceed your baseline VRAM capacity or memory bandwidth, ensuring you are never prompted to downgrade.
+- **Up-to-Date Consumer Ladders:**
+  - *macOS Path:* Double RAM Boost, MacBook Pro M4 Max (64GB), and Mac Studio M4 Ultra (128GB).
+  - *Windows/Linux Path:* System RAM Boost, RTX 4060 Ti 16GB, RTX 4070 Ti Super 16GB, RTX 4080 Super 16GB, RTX 5080 16GB, RTX 4090 24GB, RTX 5090 32GB, and Dual RTX 4090 (2x24GB).
+- **Peak Rig Congratulations UI:** If your system is already at the absolute limits of consumer hardware, the planner renders a premium congratulatory state acknowledging that no local consumer GPU upgrades can surpass your setup.
+
+### Robust Mathematical Validation Framework
+- **Two-Stage Multi-OS Testing Suite:** Features advanced testing scripts (`scripts/simulate-random.js` and `scripts/simulate-random-deep.js`) to generate and verify completely random hardware configurations.
+- **Strict Analytical Auditing:** Re-validates memory consumption bounds across 80+ randomized scenarios. It ensures that every playable model in the *Recommended* tier fits entirely within dedicated VRAM, and every *Comfortable/Stretch* model fits within the combined unified or offloaded memory budget.
+
 ### SEO & Sharing
 - **138 static pages** — one per GPU (`/gpu/rtx-4090-24gb`, `/gpu/apple-m3-max-40c`, etc.)
 - Dynamic OG image per GPU via `next/og` (no edge runtime required)
