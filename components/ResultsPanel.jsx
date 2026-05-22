@@ -54,7 +54,7 @@ function CloudCTA({ modelName }) {
   );
 }
 
-function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName, geminiEnabled }) {
+function TierSection({ tier, results, hw, onSelectModel, selectedModelName, geminiEnabled }) {
   const meta = TIER_META[tier];
   if (!results.length) return null;
 
@@ -83,7 +83,7 @@ function TierSection({ tier, results, hwVram, onSelectModel, selectedModelName, 
           >
             <ResultCard
               result={r}
-              hwVram={hwVram}
+              hw={hw}
               rank={i + 1}
               onSelect={onSelectModel}
               isSelected={selectedModelName === r.model.name}
@@ -170,9 +170,9 @@ export default function ResultsPanel({ results, hw, models, onApplyHardware, onS
       {/* What-If / Hardware Upgrade Planner simulator */}
       <UpgradePlanner hw={hw} models={models} onApplyHardware={onApplyHardware} />
 
-      <TierSection tier="recommended" results={results.recommended || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
-      <TierSection tier="comfortable" results={results.comfortable || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
-      <TierSection tier="stretch"     results={results.stretch     || []} hwVram={hwVram} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
+      <TierSection tier="recommended" results={results.recommended || []} hw={hw} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
+      <TierSection tier="comfortable" results={results.comfortable || []} hw={hw} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
+      <TierSection tier="stretch"     results={results.stretch     || []} hw={hw} onSelectModel={onSelectModel} selectedModelName={selectedModelName} geminiEnabled={geminiEnabled} />
 
       {/* Cloud CTA when stretch is non-empty */}
       {(results.stretch?.length > 0) && (

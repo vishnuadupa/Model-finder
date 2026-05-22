@@ -175,14 +175,35 @@ function VRAMBar({ used, total, cpuOnly, cpuOffloadNeeded, gpuOnlyVram }) {
   );
 }
 
-export default function ResultCard({ result, hwVram, rank, onSelect, isSelected, geminiEnabled }) {
+export default function ResultCard({ result, hw, rank, onSelect, isSelected, geminiEnabled }) {
   const {
     model, quant, tier, tokPerSec, vramRequired, vramFree,
     ramRequired, downloadSizeGB, cpuOffloadNeeded, cpuOnly,
     weightsGB, kvCacheGB,
   } = result;
 
-  const effectiveVram = hwVram || (vramRequired + (vramFree > 0 ? vramFree : 0));
+  // Compute exact gpuOnlyVram and totalMemPool
+  let gpuOnlyVram = 0;
+  let totalMemPool = 0;
+
+  if (hw) {
+    if (hw.unifiedMem) {
+      const usable = hw.maxRam ? Math.min(hw.ram, hw.maxRam) : hw.ram;
+      gpuOnlyVram = usable <= 8 ? usable * 0.66 : usable * 0.75;
+      totalMemPool = usable;
+    } else if (!hw.vram || hw.vram === 0) {
+      gpuOnlyVram = 0;
+      totalMemPool = hw.ram;
+    } else {
+      gpuOnlyVram = (hw.vram || 0) * (hw.numGPUs || 1);
+      totalMemPool = gpuOnlyVram + hw.ram;
+    }
+  } else {
+    gpuOnlyVram = result.cpuOnly ? 0 : (vramRequired + (vramFree > 0 ? vramFree : 0));
+    totalMemPool = gpuOnlyVram;
+  }
+
+  const effectiveVram = (cpuOffloadNeeded || cpuOnly) ? totalMemPool : gpuOnlyVram;
   const qi = QUANT_INFO[quant];
 
   const animatedTok = useCountUp(tokPerSec || 0);
@@ -261,7 +282,7 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
         total={effectiveVram}
         cpuOnly={cpuOnly}
         cpuOffloadNeeded={cpuOffloadNeeded}
-        gpuOnlyVram={hwVram}
+        gpuOnlyVram={gpuOnlyVram}
       />
       <div className="flex gap-2 text-[11px] text-zinc-600 font-mono -mt-1 overflow-hidden">
         <span className="whitespace-nowrap">Weights {weightsGB} GB</span>
