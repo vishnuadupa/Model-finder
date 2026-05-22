@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
-import { Zap, TrendingUp, TrendingDown, Loader2, AlertCircle } from 'lucide-react';
+import { Zap, TrendingUp, TrendingDown, Loader2, AlertCircle, X } from 'lucide-react';
 
-export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) {
+export default function GeminiAdvisor({ hw, currentModel, allModels, enabled, onClose }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -64,19 +64,30 @@ export default function GeminiAdvisor({ hw, currentModel, allModels, enabled }) 
   if (!enabled || !currentModel) return null;
 
   return (
-    <div className="card p-4 space-y-3">
+    <div className="card p-4 space-y-3 animate-fade-slide-up">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0">
           <Zap size={14} className="text-amber-300 shrink-0" />
-          <span className="text-sm font-semibold text-[#F3F3F5] shrink-0">AI Speed Advisor</span>
+          <span className="text-sm font-semibold text-[#F3F3F5] shrink-0 font-display">AI Speed Advisor</span>
           <span className="chip bg-amber-500/5 text-amber-300 text-xs border border-amber-500/10 shrink-0">Gemini</span>
           <span className="text-xs text-[#8E919A] font-mono truncate hidden sm:block">· {currentModel.name}</span>
         </div>
-        {loading
-          ? <Loader2 size={13} className="text-slate-500 animate-spin shrink-0" />
-          : <span className="text-[10px] text-[#8E919A] shrink-0 hidden sm:block">click card to switch</span>
-        }
+        <div className="flex items-center gap-2 shrink-0">
+          {loading
+            ? <Loader2 size={13} className="text-slate-500 animate-spin shrink-0" />
+            : <span className="text-[10px] text-[#8E919A] shrink-0 hidden sm:block">click card to switch</span>
+          }
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="text-zinc-500 hover:text-white p-1 rounded-md hover:bg-white/5 transition-colors"
+              title="Close speed advisor"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
       </div>
 
       {error && (() => {

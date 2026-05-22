@@ -6,6 +6,7 @@ import GeminiAdvisor from '@/components/GeminiAdvisor';
 import { analyzeHardware } from '@/lib/scoring';
 import { GPU_PRESETS }      from '@/lib/gpuPresets';
 import { Share2, Cpu, X } from 'lucide-react';
+import AutoDetectModal from '@/components/AutoDetectModal';
 
 /* ── GPU preset field re-derivation (used on URL/localStorage load) ── */
 function gpuFieldsFromLabel(label) {
@@ -130,7 +131,6 @@ export default function Home() {
   const [selectedModel, setSelectedModel] = useState(null);
   const [geminiEnabled, setGeminiEnabled] = useState(false);
   const [copied, setCopied]           = useState(false);
-  const [copiedCmd, setCopiedCmd]     = useState(null);
   const [showDetectModal, setShowDetectModal] = useState(false);
   const [summary, setSummary]         = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -227,7 +227,7 @@ export default function Home() {
             <div className="w-7 h-7 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center">
               <Cpu size={14} className="text-[#8E919A]" />
             </div>
-            <span className="font-semibold text-white tracking-tight" style={{ fontFamily: 'var(--font-inter)' }}>
+            <span className="font-display font-bold text-white tracking-tight">
               Local LLM Matcher
             </span>
             <span className="hidden sm:inline text-xs text-[#8E919A] font-normal ml-1">
@@ -239,7 +239,7 @@ export default function Home() {
               onClick={() => setShowDetectModal(true)}
               className="btn-ghost text-xs flex items-center gap-1.5 font-semibold"
             >
-              <span>🔌</span> Auto-Detect Specs
+              <span>Auto-Detect Specs</span>
             </button>
             {hasHardware && (
               <button onClick={shareURL} className="btn-ghost text-xs flex items-center gap-1.5">
@@ -261,45 +261,21 @@ export default function Home() {
       {/* ── Main content ────────────────────────────────────── */}
       <main className="max-w-7xl mx-auto px-4 pt-6 pb-20 text-[#F3F3F5]">
 
-        {/* Gemini AI inline advisor */}
-        {geminiEnabled && hasHardware && selectedModel && (
-          <div className="mb-4">
-            <GeminiAdvisor
-              hw={hw}
-              currentModel={selectedModel}
-              allModels={models}
-              enabled={geminiEnabled}
-            />
-          </div>
-        )}
-
-        {/* Gemini text summary */}
-        {geminiEnabled && hasHardware && totalResults > 0 && (
-          <div className="card p-4 space-y-3 mb-4">
-            <button
-              onClick={fetchSummary}
-              disabled={summaryLoading}
-              className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {summaryLoading ? 'Generating…' : '✨ Gemini AI Summary'}
-            </button>
-            {summary && (
-              <p className="text-sm text-zinc-300 leading-relaxed">{summary}</p>
-            )}
-          </div>
-        )}
-
         {/* Empty / loading / results */}
         {!hasHardware ? (
           <div className="card p-12 text-center space-y-4 mt-4">
-            <div className="text-4xl">🖥️</div>
+            <div className="flex justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center text-zinc-400">
+                <Cpu size={24} className="text-zinc-500" />
+              </div>
+            </div>
             <div className="text-zinc-300 font-semibold">Configure your hardware above to see results</div>
             <div className="text-zinc-500 text-sm max-w-sm mx-auto space-y-3">
               <p>Use the bar at the top to pick your GPU (or Apple Silicon chip) and set your RAM.</p>
               
               {/* Premium Auto-Detect Callout */}
               <div className="p-4 bg-white/[0.02] border border-white/5 rounded-xl space-y-2.5 my-4">
-                <p className="text-xs text-zinc-300 font-semibold">🔌 Too lazy to select specs manually?</p>
+                <p className="text-xs text-zinc-300 font-semibold">Too lazy to select specs manually?</p>
                 <button
                   onClick={() => setShowDetectModal(true)}
                   className="btn-primary text-xs py-1.5 px-4 inline-flex items-center gap-1.5 font-semibold"
@@ -331,16 +307,47 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <ResultsPanel
-            results={results}
-            hw={hw}
-            models={models}
-            onApplyHardware={setHw}
-            geminiEnabled={geminiEnabled}
-            onSelectModel={model => setSelectedModel(model)}
-            selectedModelName={selectedModel?.name}
-            onClearUseCases={onClearUseCases}
-          />
+          <div className={`grid grid-cols-1 gap-6 ${geminiEnabled && selectedModel ? 'lg:grid-cols-12' : ''}`}>
+            <div className={geminiEnabled && selectedModel ? 'lg:col-span-8' : ''}>
+              <ResultsPanel
+                results={results}
+                hw={hw}
+                models={models}
+                onApplyHardware={setHw}
+                geminiEnabled={geminiEnabled}
+                onSelectModel={model => setSelectedModel(prev => prev?.name === model?.name ? null : model)}
+                selectedModelName={selectedModel?.name}
+                onClearUseCases={onClearUseCases}
+              />
+            </div>
+            
+            {geminiEnabled && selectedModel && (
+              <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-[128px] h-fit">
+                <GeminiAdvisor
+                  hw={hw}
+                  currentModel={selectedModel}
+                  allModels={models}
+                  enabled={geminiEnabled}
+                  onClose={() => setSelectedModel(null)}
+                />
+                
+                {totalResults > 0 && (
+                  <div className="card p-4 space-y-3">
+                    <button
+                      onClick={fetchSummary}
+                      disabled={summaryLoading}
+                      className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 text-xs font-semibold"
+                    >
+                      {summaryLoading ? 'Generating…' : '✨ Gemini AI Summary'}
+                    </button>
+                    {summary && (
+                      <p className="text-xs text-zinc-300 leading-relaxed bg-black/20 border border-white/5 rounded-xl p-3.5">{summary}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </main>
 
@@ -354,96 +361,7 @@ export default function Home() {
 
       {/* ── Auto-Detect Specs Modal ─────────────────────────── */}
       {showDetectModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#15151A]/85 backdrop-blur-xl p-6 shadow-2xl space-y-5">
-            
-            {/* Close Button */}
-            <button
-              onClick={() => setShowDetectModal(false)}
-              className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
-            >
-              <X size={18} />
-            </button>
-
-            {/* Header */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-zinc-300">
-                <span>🔌</span>
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">
-                  Hardware Auto-Detection
-                </h3>
-                <p className="text-[11px] text-[#8E919A] mt-0.5">
-                  Auto-populate the LLM Matcher with your exact local specs.
-                </p>
-              </div>
-            </div>
-
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              Paste this one-line command into your terminal. It will scan your CPU cores, RAM bandwidth, GPU VRAM, OS, and drive type, then reload this page with the parameters pre-filled.
-            </p>
-
-            {/* Terminal Command Boxes */}
-            <div className="space-y-4">
-              
-              {/* Windows Tab */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center text-[10px] text-zinc-500 uppercase tracking-widest font-mono font-bold">
-                  <span>🪟 Windows (PowerShell)</span>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText('powershell -c "irm https://llm-matcher.vercel.app/detect-specs.ps1 | iex"');
-                      setCopiedCmd('win');
-                      setTimeout(() => setCopiedCmd(null), 2000);
-                    }}
-                    className="text-[10px] text-zinc-300 hover:text-white transition-colors uppercase font-sans font-semibold"
-                  >
-                    {copiedCmd === 'win' ? '✓ Copied!' : 'Copy Command'}
-                  </button>
-                </div>
-                <div className="relative rounded-lg bg-black/40 border border-white/5 p-3 text-xs font-mono text-zinc-300 select-all overflow-x-auto whitespace-nowrap">
-                  powershell -c &quot;irm https://llm-matcher.vercel.app/detect-specs.ps1 | iex&quot;
-                </div>
-              </div>
-
-              {/* macOS / Linux Tab */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center text-[10px] text-zinc-500 uppercase tracking-widest font-mono font-bold">
-                  <span>🍎 macOS / 🐧 Linux (Bash)</span>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText('curl -s https://llm-matcher.vercel.app/detect-specs.sh | bash');
-                      setCopiedCmd('unix');
-                      setTimeout(() => setCopiedCmd(null), 2000);
-                    }}
-                    className="text-[10px] text-zinc-300 hover:text-white transition-colors uppercase font-sans font-semibold"
-                  >
-                    {copiedCmd === 'unix' ? '✓ Copied!' : 'Copy Command'}
-                  </button>
-                </div>
-                <div className="relative rounded-lg bg-black/40 border border-white/5 p-3 text-xs font-mono text-zinc-300 select-all overflow-x-auto whitespace-nowrap">
-                  curl -s https://llm-matcher.vercel.app/detect-specs.sh | bash
-                </div>
-              </div>
-
-            </div>
-
-            {/* Note & Security Disclaimer */}
-            <div className="rounded-xl border border-white/5 bg-white/[0.01] p-3.5 text-[10px] text-zinc-500 leading-relaxed font-sans">
-              🔒 <strong className="text-white">Privacy &amp; Security:</strong> The script is completely open-source and runs strictly on your machine. No telemetry or hardware statistics are uploaded or saved to any server—they are simply encoded into the local URL query parameters.
-            </div>
-
-            {/* Done button */}
-            <button
-              onClick={() => setShowDetectModal(false)}
-              className="btn-ghost w-full py-2 text-xs text-zinc-400 hover:text-white"
-            >
-              Done / Close
-            </button>
-
-          </div>
-        </div>
+        <AutoDetectModal onClose={() => setShowDetectModal(false)} />
       )}
 
     </div>

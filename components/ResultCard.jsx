@@ -1,16 +1,23 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { Copy, Check, ExternalLink, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
+import { 
+  Copy, Check, ExternalLink, AlertTriangle, CheckCircle, AlertCircle,
+  Star, MessageSquare, Code2, Brain, FileText, Globe, Eye
+} from 'lucide-react';
 
 const QUALITY_COLORS = {
   good:      'text-[#8E919A] bg-white/[0.01] border-white/5',
   great:     'text-[#84E1BC] bg-[#84E1BC]/5 border-[#84E1BC]/10',
-  excellent: 'text-[#84E1BC] bg-[#84E1BC]/10 border-[#84E1BC]/20',
+  excellent: 'text-purple-300 bg-purple-500/5 border-purple-500/10',
 };
 
 const USE_CASE_ICONS = {
-  chat: '💬', code: '💻', reasoning: '🧠',
-  'long-docs': '📄', multilingual: '🌍', vision: '👁️',
+  chat: <MessageSquare size={11} className="text-zinc-400 shrink-0" />,
+  code: <Code2 size={11} className="text-zinc-400 shrink-0" />,
+  reasoning: <Brain size={11} className="text-zinc-400 shrink-0" />,
+  'long-docs': <FileText size={11} className="text-zinc-400 shrink-0" />,
+  multilingual: <Globe size={11} className="text-zinc-400 shrink-0" />,
+  vision: <Eye size={11} className="text-zinc-400 shrink-0" />,
 };
 
 const QUANT_INFO = {
@@ -30,11 +37,22 @@ const QUANT_INFO = {
   F32:     { label: 'Full 32-bit',   stars: 5, note: 'Max precision, 8× VRAM of Q4_K_M' },
 };
 
-/* Tier accent colours — top rule only, no side-stripe */
-const TIER_ACCENT_COLOR = {
-  recommended: '#84E1BC',
-  comfortable: '#71717a',  /* zinc-500 */
-  stretch:     'rgba(245,158,11,0.5)',  /* amber-500/50 */
+const TIER_BORDER = {
+  recommended: 'border-emerald-500/20 hover:border-emerald-500/40 bg-emerald-500/[0.02]',
+  comfortable: 'border-zinc-500/20 hover:border-zinc-500/40 bg-zinc-500/[0.01]',
+  stretch:     'border-amber-500/20 hover:border-amber-500/40 bg-amber-500/[0.01]',
+};
+
+const TIER_BORDER_SELECTED = {
+  recommended: 'ring-1 ring-[#84E1BC]/30 border-[#84E1BC]/40 bg-[#84E1BC]/5',
+  comfortable: 'ring-1 ring-zinc-500/30 border-zinc-500/40 bg-zinc-500/10',
+  stretch:     'ring-1 ring-amber-500/30 border-amber-500/40 bg-amber-500/10',
+};
+
+const TIER_DOT = {
+  recommended: 'bg-[#84E1BC]',
+  comfortable: 'bg-zinc-500',
+  stretch:     'bg-amber-500/60',
 };
 
 /* ── useCountUp — animates a number from 0 → target on mount ── */
@@ -64,16 +82,6 @@ function tokSpeedLabel(tps) {
   return                { label: 'Very slow',     color: 'text-zinc-500' };
 }
 
-function Stars({ count }) {
-  return (
-    <span className="font-mono text-[11px] tracking-tight">
-      {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} className={i < count ? 'text-amber-400/80' : 'text-zinc-700'}>★</span>
-      ))}
-    </span>
-  );
-}
-
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
   function copy() {
@@ -92,6 +100,20 @@ function CopyButton({ text }) {
         : <Copy size={11} className="shrink-0" />}
       <span className="truncate max-w-[140px]">{copied ? 'Copied!' : text}</span>
     </button>
+  );
+}
+
+function Stars({ count }) {
+  return (
+    <div className="flex items-center gap-0.5" aria-label={`${count} out of 5 stars`}>
+      {[...Array(5)].map((_, i) => (
+        <Star
+          key={i}
+          size={11}
+          className={i < count ? 'text-amber-400 fill-amber-400' : 'text-zinc-700'}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -162,24 +184,18 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
 
   const effectiveVram = hwVram || (vramRequired + (vramFree > 0 ? vramFree : 0));
   const qi = QUANT_INFO[quant];
-  const accentColor = TIER_ACCENT_COLOR[tier] || '#71717a';
 
   const animatedTok = useCountUp(tokPerSec || 0);
   const speedInfo   = tokSpeedLabel(tokPerSec || 0);
 
   return (
     <div
-      className={`card p-5 flex flex-col gap-3 overflow-hidden
+      className={`card p-5 flex flex-col gap-3 overflow-hidden transition-all duration-200
         ${geminiEnabled ? 'cursor-pointer' : ''}
-        ${isSelected && geminiEnabled ? 'ring-1 ring-amber-500/20' : ''}`}
+        ${isSelected && geminiEnabled ? TIER_BORDER_SELECTED[tier] : TIER_BORDER[tier]}`}
       style={{ '--tw-shadow': '0 4px 20px rgba(0,0,0,0.45)' }}
       onClick={geminiEnabled ? () => onSelect?.(result.model) : undefined}
     >
-      {/* Tier accent top rule */}
-      <div
-        className="-mx-5 -mt-5 h-[2px] mb-0 rounded-t-xl"
-        style={{ background: accentColor }}
-      />
 
       {/* ── Header ── */}
       <div className="flex items-start justify-between gap-3">
@@ -193,7 +209,10 @@ export default function ResultCard({ result, hwVram, rank, onSelect, isSelected,
             </span>
           )}
           <div className="min-w-0">
-            <div className="font-semibold text-zinc-100 text-sm leading-snug truncate">{model.name}</div>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className={`w-1.5 h-1.5 rounded-full ${TIER_DOT[tier]} shrink-0`} />
+              <div className="font-semibold text-zinc-100 text-sm leading-snug truncate">{model.name}</div>
+            </div>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               {/* Quant badge */}
               <span className="font-mono text-xs text-[#84E1BC] bg-[#84E1BC]/5 border border-[#84E1BC]/10 px-1.5 py-0.5 rounded">

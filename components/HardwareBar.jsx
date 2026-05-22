@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   ChevronDown, ChevronRight, X, Settings2,
   ToggleLeft, ToggleRight, ArrowLeft,
+  MessageSquare, Code2, Brain, FileText, Globe, Eye
 } from 'lucide-react';
 import { GPU_PRESETS } from '@/lib/gpuPresets';
 import { CPU_PRESETS, RAM_TYPES } from '@/lib/cpuPresets';
@@ -30,28 +31,28 @@ const CPU_TIER_LABELS = {
   low:   'Budget / Older',
 };
 const BACKEND_LABELS = {
-  cuda:   { label: 'CUDA (NVIDIA)',    color: 'text-emerald-400',  bg: 'bg-white/[0.02] border-white/5'   },
+  cuda:   { label: 'CUDA (NVIDIA)',    color: 'text-[#84E1BC]',  bg: 'bg-white/[0.02] border-white/5'   },
   metal:  { label: 'Metal (Apple)',    color: 'text-purple-400',   bg: 'bg-white/[0.02] border-white/5' },
   rocm:   { label: 'ROCm (AMD Linux)', color: 'text-rose-400',     bg: 'bg-white/[0.02] border-white/5'       },
   vulkan: { label: 'Vulkan (AMD/Arc)', color: 'text-amber-400',   bg: 'bg-white/[0.02] border-white/5'   },
-  cpu:    { label: 'CPU only',         color: 'text-zinc-400',     bg: 'bg-white/[0.02] border-white/5'        },
+  cpu:    { label: 'CPU only',         color: 'text-zinc-500',     bg: 'bg-white/[0.02] border-white/5'        },
 };
 const OS_VENDORS = {
   Windows: [
-    { id: 'nvidia', label: 'NVIDIA',       icon: '🟢', desc: 'GeForce RTX / GTX series' },
-    { id: 'amd',   label: 'AMD',           icon: '🔴', desc: 'Radeon RX series'          },
-    { id: 'intel', label: 'Intel Arc',     icon: '🔵', desc: 'Arc B / A series'          },
-    { id: 'none',  label: 'No GPU',        icon: '⚙️',  desc: 'CPU-only inference'        },
+    { id: 'nvidia', label: 'NVIDIA',       desc: 'GeForce RTX / GTX series' },
+    { id: 'amd',   label: 'AMD',           desc: 'Radeon RX series'          },
+    { id: 'intel', label: 'Intel Arc',     desc: 'Arc B / A series'          },
+    { id: 'none',  label: 'No GPU',        desc: 'CPU-only inference'        },
   ],
   Linux: [
-    { id: 'nvidia', label: 'NVIDIA',       icon: '🟢', desc: 'GeForce RTX / GTX series'  },
-    { id: 'amd',   label: 'AMD',           icon: '🔴', desc: 'Radeon RX — ROCm backend'  },
-    { id: 'intel', label: 'Intel Arc',     icon: '🔵', desc: 'Arc series'                 },
-    { id: 'none',  label: 'No GPU',        icon: '⚙️',  desc: 'CPU-only inference'         },
+    { id: 'nvidia', label: 'NVIDIA',       desc: 'GeForce RTX / GTX series'  },
+    { id: 'amd',   label: 'AMD',           desc: 'Radeon RX — ROCm backend'  },
+    { id: 'intel', label: 'Intel Arc',     desc: 'Arc series'                 },
+    { id: 'none',  label: 'No GPU',        desc: 'CPU-only inference'         },
   ],
   macOS: [
-    { id: 'apple', label: 'Apple Silicon', icon: '🍎', desc: 'M1 / M2 / M3 / M4 — unified memory' },
-    { id: 'none',  label: 'Intel Mac',     icon: '⚙️',  desc: 'No discrete GPU / CPU only'          },
+    { id: 'apple', label: 'Apple Silicon', desc: 'M1 / M2 / M3 / M4 — unified memory' },
+    { id: 'none',  label: 'Intel Mac',     desc: 'No discrete GPU / CPU only'          },
   ],
 };
 
@@ -203,12 +204,11 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose, wizardState, on
             <button
               key={o}
               onClick={() => { onOSChange(o); setOsConfirmed(true); }}
-              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border transition-all text-sm
-                ${os === o ? 'border-white/20 bg-white/5 text-[#F3F3F5]' : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02] text-[#8E919A]'}`}
+              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border transition-all text-xs font-semibold tracking-wide uppercase font-mono
+                ${os === o ? 'border-[#84E1BC]/30 bg-[#84E1BC]/5 text-[#84E1BC]' : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02] text-[#8E919A]'}`}
             >
-              <span>{o === 'Windows' ? '🪟' : o === 'Linux' ? '🐧' : '🍎'}</span>
               <span>{o}</span>
-              {os === o && <span className="text-[10px] text-[#84E1BC]">auto</span>}
+              {os === o && <span className="text-[9px] text-[#84E1BC]/60 font-mono tracking-normal normal-case font-normal">(auto)</span>}
             </button>
           ))}
         </div>
@@ -241,11 +241,10 @@ function GPUWizardPanel({ hw, os, onSelect, onOSChange, onClose, wizardState, on
                   setVendor(v.id);
                 }
               }}
-              className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-lg border border-white/5 hover:border-white/10 hover:bg-white/[0.02] transition-all text-center"
+              className="flex flex-col items-start gap-1.5 px-4 py-3.5 rounded-xl border border-white/5 hover:border-[#84E1BC]/30 hover:bg-[#84E1BC]/[0.02] transition-all text-left w-full"
             >
-              <span className="text-xl">{v.icon}</span>
-              <span className="text-xs text-white font-medium">{v.label}</span>
-              <span className="text-[10px] text-[#8E919A] leading-snug">{v.desc}</span>
+              <span className="text-xs text-white font-semibold tracking-wide uppercase font-mono">{v.label}</span>
+              <span className="text-[10px] text-[#8E919A] leading-relaxed">{v.desc}</span>
             </button>
           ))}
         </div>
@@ -530,8 +529,12 @@ export default function HardwareBar({ value: hw, onChange, geminiEnabled, onGemi
   ].filter(Boolean);
 
   const USE_CASE_ICONS = {
-    'Chat': '💬', 'Code': '💻', 'Reasoning': '🧠',
-    'Long Docs': '📄', 'Multilingual': '🌍', 'Vision': '👁️',
+    'Chat': <MessageSquare size={11} className="text-[#8E919A] shrink-0" />,
+    'Code': <Code2 size={11} className="text-[#8E919A] shrink-0" />,
+    'Reasoning': <Brain size={11} className="text-[#8E919A] shrink-0" />,
+    'Long Docs': <FileText size={11} className="text-[#8E919A] shrink-0" />,
+    'Multilingual': <Globe size={11} className="text-[#8E919A] shrink-0" />,
+    'Vision': <Eye size={11} className="text-[#8E919A] shrink-0" />,
   };
 
   function toggleUseCase(uc) {
