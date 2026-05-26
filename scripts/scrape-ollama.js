@@ -39,16 +39,6 @@ async function fetchOllamaLibrary() {
   return res.json();
 }
 
-async function fetchModelDetails(name) {
-  const res = await fetch(`https://ollama.com/api/show`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': 'llm-matcher-scraper/1.0' },
-    body: JSON.stringify({ name }),
-  });
-  if (!res.ok) return null;
-  return res.json();
-}
-
 async function scrapeOllamaModel(modelName) {
   // modelName = "llama3.1:8b" or "mistral:7b"
   const [base, tag] = modelName.split(':');
