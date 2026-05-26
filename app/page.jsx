@@ -7,6 +7,7 @@ import { analyzeHardware } from '@/lib/scoring';
 import { GPU_PRESETS }      from '@/lib/gpuPresets';
 import { Share2, Cpu, X } from 'lucide-react';
 import AutoDetectModal from '@/components/AutoDetectModal';
+import LegalModal      from '@/components/LegalModal';
 
 /* ── GPU preset field re-derivation (used on URL/localStorage load) ── */
 function gpuFieldsFromLabel(label) {
@@ -132,6 +133,8 @@ export default function Home() {
   const [geminiEnabled, setGeminiEnabled] = useState(false);
   const [copied, setCopied]           = useState(false);
   const [showDetectModal, setShowDetectModal] = useState(false);
+  const [showLegalModal, setShowLegalModal]   = useState(false);
+  const [legalModalTab, setLegalModalTab]     = useState('disclaimer');
   const [summary, setSummary]         = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const lsDebounce = useRef(null);
@@ -353,15 +356,42 @@ export default function Home() {
 
       {/* ── Footer ──────────────────────────────────────────── */}
       <footer className="border-t border-white/5 px-6 py-8 text-center text-xs text-[#8E919A]">
-        <div className="max-w-7xl mx-auto space-y-1">
+        <div className="max-w-7xl mx-auto space-y-3">
           <div>Speed estimates based on memory bandwidth formula (tok/s ≈ bandwidth / model_size × backend_efficiency). Actual performance varies.</div>
-          <div>Affiliate links help keep this free.</div>
+          <div className="flex justify-center items-center gap-4 text-[#8E919A] text-[11px] font-sans">
+            <button
+              onClick={() => { setLegalModalTab('disclaimer'); setShowLegalModal(true); }}
+              className="hover:text-white transition-colors underline decoration-white/20"
+            >
+              Disclaimer
+            </button>
+            <span className="text-white/10">•</span>
+            <button
+              onClick={() => { setLegalModalTab('terms'); setShowLegalModal(true); }}
+              className="hover:text-white transition-colors underline decoration-white/20"
+            >
+              Terms of Use
+            </button>
+            <span className="text-white/10">•</span>
+            <button
+              onClick={() => { setLegalModalTab('privacy'); setShowLegalModal(true); }}
+              className="hover:text-white transition-colors underline decoration-white/20"
+            >
+              Privacy Policy
+            </button>
+          </div>
+          <div className="text-[10px] text-zinc-600">Affiliate links help keep this free.</div>
         </div>
       </footer>
 
       {/* ── Auto-Detect Specs Modal ─────────────────────────── */}
       {showDetectModal && (
         <AutoDetectModal onClose={() => setShowDetectModal(false)} />
+      )}
+
+      {/* ── Legal & Policy Modal ────────────────────────────── */}
+      {showLegalModal && (
+        <LegalModal defaultTab={legalModalTab} onClose={() => setShowLegalModal(false)} />
       )}
 
     </div>
