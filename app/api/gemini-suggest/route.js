@@ -65,7 +65,7 @@ export async function POST(req) {
 
   // Rate limit: 10 req / 60s per IP
   const ip = req.headers.get('x-vercel-forwarded-for')
-          ?? req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+          ?? req.headers.get('x-forwarded-for')?.split(',').pop()?.trim()
           ?? 'unknown';
   const { allowed, retryAfter } = rateLimit(ip, { limit: 10, windowMs: 60_000 });
   if (!allowed) {
